@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Integral de Recursos Humanos | Ausentismo & Horas Extras</title>
+  <title>Portal Integral RH | Ausentismo & Horas Extras</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -16,31 +16,31 @@
 
   <style>
     .tab-btn-active {
-      background-color: #2563eb !important;
+      background-color: #4f46e5 !important;
       color: #ffffff !important;
       font-weight: 700 !important;
-      box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
     }
   </style>
 </head>
-<body class="bg-gray-100 font-sans text-gray-800 antialiased min-h-screen">
+<body class="bg-slate-950 font-sans text-slate-100 antialiased min-h-screen">
 
-  <!-- HEADER GLOBAL CON NAVEGACIÓN POR PESTAÑAS (TABS) -->
-  <header class="bg-slate-900 text-white sticky top-0 z-50 border-b border-slate-700 shadow-md">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+  <!-- HEADER GLOBAL CON NAVEGACIÓN -->
+  <header class="bg-slate-900/90 backdrop-blur text-white sticky top-0 z-50 border-b border-slate-800 shadow-xl">
+    <div class="max-w-7xl mx-auto px-6 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
       <div>
         <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-          <span>🏢</span> Portal de Gestión RH & Control Operativo
+          <span>🏢</span> Portal de Control Operativo & Recursos Humanos
         </h1>
-        <p class="text-xs text-slate-400">Análisis Interanual de Ausentismo, Costos y Horas Extras</p>
+        <p class="text-xs text-slate-400">Análisis Interanual Unificado (Modo Oscuro)</p>
       </div>
 
-      <!-- BOTONES NAVEGADORES DE PESTAÑAS -->
-      <nav class="flex items-center bg-slate-800 p-1.5 rounded-xl border border-slate-700">
-        <button id="btnTabAusentismo" onclick="switchTab('ausentismo')" class="px-5 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-300 hover:text-white transition-all tab-btn-active">
+      <!-- NAVEGACIÓN ENTRE PESTAÑAS -->
+      <nav class="flex items-center bg-slate-950 p-1.5 rounded-xl border border-slate-800">
+        <button id="btnTabAusentismo" onclick="switchTab('ausentismo')" class="px-5 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all tab-btn-active">
           📊 Ausentismo & Costos
         </button>
-        <button id="btnTabHorasExtras" onclick="switchTab('horasExtras')" class="px-5 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-300 hover:text-white transition-all">
+        <button id="btnTabHorasExtras" onclick="switchTab('horasExtras')" class="px-5 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all">
           ⏱️ Horas Extras (Eventuales)
         </button>
       </nav>
@@ -48,164 +48,161 @@
   </header>
 
   <!-- ================================================================= -->
-  <!-- VISTA 1: DASHBOARD DE AUSENTISMO & COSTOS -->
+  <!-- VISTA 1: DASHBOARD DE AUSENTISMO & COSTOS (MODO OSCURO) -->
   <!-- ================================================================= -->
-  <div id="viewAusentismo" class="max-w-7xl mx-auto p-6 space-y-6">
+  <main id="viewAusentismo" class="max-w-7xl mx-auto p-6 space-y-6">
     
-    <!-- HEADER Y FILTROS GENERALES -->
-    <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-4">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h2 class="text-2xl font-bold text-gray-900">Dashboard de Ausentismo & Costos</h2>
-          <p class="text-sm text-gray-500">Gestión de Recursos Humanos (Cálculos Dinámicos de Horas Planificadas por Año)</p>
-        </div>
+    <!-- BARRA DE FILTROS PRINCIPALES FIJA (STICKY TOP) -->
+    <section class="bg-slate-900/95 backdrop-blur p-5 rounded-2xl border border-slate-800 shadow-2xl sticky top-16 z-40 space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <h2 class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Filtros Principales de Ausentismo</h2>
+        <span class="text-[10px] text-slate-500">Panel Fijo al Desplazarse</span>
       </div>
 
-      <!-- BARRA DE FILTROS GENERALES -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-3 border-t border-gray-100">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div>
-          <label for="filter-year" class="block text-xs font-semibold uppercase text-gray-500 mb-1">Año Global:</label>
-          <select id="filter-year" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 focus:ring-blue-500 focus:border-blue-500">
+          <label for="filter-year" class="block text-xs font-medium text-slate-300 mb-1">Año Global:</label>
+          <select id="filter-year" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
             <option value="ALL">Todos los Años</option>
           </select>
         </div>
 
         <div>
-          <label for="filter-month" class="block text-xs font-semibold uppercase text-gray-500 mb-1">Período / Mes:</label>
-          <select id="filter-month" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 focus:ring-blue-500 focus:border-blue-500">
+          <label for="filter-month" class="block text-xs font-medium text-slate-300 mb-1">Período / Mes:</label>
+          <select id="filter-month" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
             <option value="ALL">Todos los Meses</option>
           </select>
         </div>
 
         <div>
-          <label for="filter-dept" class="block text-xs font-semibold uppercase text-gray-500 mb-1">Departamento:</label>
-          <select id="filter-dept" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 focus:ring-blue-500 focus:border-blue-500">
+          <label for="filter-dept" class="block text-xs font-medium text-slate-300 mb-1">Departamento:</label>
+          <select id="filter-dept" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
             <option value="ALL">Todos los Departamentos</option>
           </select>
         </div>
 
         <div>
-          <label for="filter-motivo" class="block text-xs font-semibold uppercase text-gray-500 mb-1">Tipo de Ausencia / Concepto:</label>
-          <select id="filter-motivo" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 focus:ring-blue-500 focus:border-blue-500">
+          <label for="filter-motivo" class="block text-xs font-medium text-slate-300 mb-1">Tipo / Concepto:</label>
+          <select id="filter-motivo" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
             <option value="ALL">Todos los Conceptos</option>
           </select>
         </div>
       </div>
     </section>
 
-    <!-- SCORECARDS GENERALES -->
+    <!-- SCORECARDS GENERALES OSCURAS -->
     <section class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-      <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
-        <p class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Tasa de Ausentismo Real</p>
-        <h3 id="kpi-tasa" class="text-3xl font-extrabold text-blue-600 mt-2">-- %</h3>
-        <p id="kpi-tasa-sub" class="text-xs text-gray-500 mt-1 font-medium">Horas Perdidas / Planificadas Filtradas</p>
+      <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-lg">
+        <p class="text-xs font-bold uppercase text-slate-400 tracking-wider">Tasa de Ausentismo Real</p>
+        <h3 id="kpi-tasa" class="text-3xl font-extrabold text-blue-400 mt-2">-- %</h3>
+        <p id="kpi-tasa-sub" class="text-xs text-slate-400 mt-1 font-medium">Horas Perdidas / Horas Planificadas</p>
       </div>
 
-      <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
-        <p class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Horas Totales Perdidas</p>
-        <h3 id="kpi-horas" class="text-3xl font-extrabold text-red-500 mt-2">-- hs</h3>
-        <p class="text-xs text-gray-500 mt-1 font-medium">Calculado a 9 hs por día</p>
+      <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-lg">
+        <p class="text-xs font-bold uppercase text-slate-400 tracking-wider">Horas Totales Perdidas</p>
+        <h3 id="kpi-horas" class="text-3xl font-extrabold text-rose-500 mt-2">-- hs</h3>
+        <p class="text-xs text-slate-400 mt-1 font-medium">Jornadas calculadas a 9 hs/día</p>
       </div>
 
-      <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
-        <p class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Días Liquidados Totales</p>
-        <h3 id="kpi-dias" class="text-3xl font-extrabold text-amber-500 mt-2">-- d</h3>
-        <p class="text-xs text-gray-500 mt-1 font-medium">Suma acumulada de ausencias</p>
+      <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-lg">
+        <p class="text-xs font-bold uppercase text-slate-400 tracking-wider">Días Liquidados Totales</p>
+        <h3 id="kpi-dias" class="text-3xl font-extrabold text-amber-400 mt-2">-- d</h3>
+        <p class="text-xs text-slate-400 mt-1 font-medium">Suma acumulada de ausencias</p>
       </div>
     </section>
 
-    <!-- SECCIÓN DE DESGLOSE DE COSTOS FINANCIEROS -->
-    <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-4">
-      <div class="border-b border-gray-100 pb-3">
-        <h3 class="text-lg font-bold text-gray-800">Impacto Económico por Criterio Financiero (+ 33% Cargas Sociales)</h3>
-        <p class="text-xs text-gray-400">Concepto 14051 (Accidente Cargo Empresa) y 14050 (Inculpables) computados con costo real</p>
+    <!-- DESGLOSE DE COSTOS FINANCIEROS OSCURO -->
+    <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg space-y-4">
+      <div class="border-b border-slate-800 pb-3">
+        <h3 class="text-lg font-bold text-slate-100">Impacto Económico por Criterio Financiero (+33% Cargas Sociales)</h3>
+        <p class="text-xs text-slate-400">Desglose según la responsabilidad de pago del concepto de licencia</p>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-emerald-50/60 border border-emerald-200 p-4 rounded-xl">
+        <div class="bg-emerald-950/40 border border-emerald-800/50 p-4 rounded-xl">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase text-emerald-800 tracking-wide">Inculpables & Legales</span>
-            <span class="text-[10px] font-semibold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full">Costo Directo</span>
+            <span class="text-xs font-bold uppercase text-emerald-300">Inculpables & Legales</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 bg-emerald-900/80 text-emerald-300 rounded-full">Costo Directo</span>
           </div>
-          <h4 id="kpi-costo-inculpable" class="text-2xl font-extrabold text-emerald-700 mt-2">$ --</h4>
-          <p id="kpi-dias-inculpable" class="text-xs text-emerald-600 mt-1 font-medium">-- días afectando masa salarial</p>
+          <h4 id="kpi-costo-inculpable" class="text-2xl font-extrabold text-emerald-400 mt-2">$ --</h4>
+          <p id="kpi-dias-inculpable" class="text-xs text-emerald-300/70 mt-1">-- días afectando masa salarial</p>
         </div>
 
-        <div class="bg-rose-50/60 border border-rose-200 p-4 rounded-xl">
+        <div class="bg-rose-950/40 border border-rose-800/50 p-4 rounded-xl">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase text-rose-800 tracking-wide">ART Empresa (Conc. 14051)</span>
-            <span class="text-[10px] font-semibold px-2 py-0.5 bg-rose-100 text-rose-800 rounded-full">Costo Asumido</span>
+            <span class="text-xs font-bold uppercase text-rose-300">ART Empresa (14051)</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 bg-rose-900/80 text-rose-300 rounded-full">Costo Asumido</span>
           </div>
-          <h4 id="kpi-costo-art-empresa" class="text-2xl font-extrabold text-rose-700 mt-2">$ --</h4>
-          <p id="kpi-dias-art-empresa" class="text-xs text-rose-600 mt-1 font-medium">-- días a cargo de la empresa</p>
+          <h4 id="kpi-costo-art-empresa" class="text-2xl font-extrabold text-rose-400 mt-2">$ --</h4>
+          <p id="kpi-dias-art-empresa" class="text-xs text-rose-300/70 mt-1">-- días a cargo empresa</p>
         </div>
 
-        <div class="bg-amber-50/60 border border-amber-200 p-4 rounded-xl">
+        <div class="bg-amber-950/40 border border-amber-800/50 p-4 rounded-xl">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase text-amber-800 tracking-wide">ART Recuperable</span>
-            <span class="text-[10px] font-semibold px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full">Reembolsable</span>
+            <span class="text-xs font-bold uppercase text-amber-300">ART Recuperable</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 bg-amber-900/80 text-amber-300 rounded-full">Reembolsable</span>
           </div>
-          <h4 id="kpi-costo-art-recuperable" class="text-2xl font-extrabold text-amber-700 mt-2">$ --</h4>
-          <p id="kpi-dias-art-recuperable" class="text-xs text-amber-600 mt-1 font-medium">-- días a tramitar con ART</p>
+          <h4 id="kpi-costo-art-recuperable" class="text-2xl font-extrabold text-amber-400 mt-2">$ --</h4>
+          <p id="kpi-dias-art-recuperable" class="text-xs text-amber-300/70 mt-1">-- días a tramitar con ART</p>
         </div>
 
-        <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl">
+        <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase text-gray-600 tracking-wide">Sin Costo / ANSES</span>
-            <span class="text-[10px] font-semibold px-2 py-0.5 bg-gray-200 text-gray-700 rounded-full">No Abonado ($0)</span>
+            <span class="text-xs font-bold uppercase text-slate-400">Sin Costo / ANSES</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 bg-slate-800 text-slate-300 rounded-full">No Abonado ($0)</span>
           </div>
-          <h4 id="kpi-costo-sincosto" class="text-2xl font-extrabold text-gray-700 mt-2">$ 0</h4>
-          <p id="kpi-dias-sincosto" class="text-xs text-gray-500 mt-1 font-medium">-- días (Maternidad/Excedencia/Faltas)</p>
+          <h4 id="kpi-costo-sincosto" class="text-2xl font-extrabold text-slate-300 mt-2">$ 0</h4>
+          <p id="kpi-dias-sincosto" class="text-xs text-slate-500 mt-1">-- días (Maternidad/Excedencia/Faltas)</p>
         </div>
       </div>
     </section>
 
-    <!-- TABLA DE EVOLUCIÓN MES A MES VS ACUMULADO -->
-    <section class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-      <div class="p-5 border-b border-gray-200">
-        <h3 class="text-base font-bold text-gray-800">Evolución Mensual No Acumulada vs. Acumulado Interanual</h3>
-        <p class="text-xs text-gray-400">Comparación del % de ausentismo con horas estipuladas calculadas estrictamente por año</p>
+    <!-- TABLA DE EVOLUCIÓN MENSUAL Y ACUMULADA OSCURA -->
+    <section class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
+      <div class="p-5 border-b border-slate-800">
+        <h3 class="text-base font-bold text-slate-100">Evolución Mensual No Acumulada vs. Acumulado Interanual</h3>
+        <p class="text-xs text-slate-400">Cálculo exacto del % de ausentismo con horas estipuladas independientes por año</p>
       </div>
 
       <div class="overflow-x-auto">
-        <table class="w-full text-sm text-left text-gray-500">
-          <thead class="text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-200">
+        <table class="w-full text-sm text-left text-slate-300">
+          <thead class="text-xs text-slate-300 uppercase bg-slate-950 border-b border-slate-800">
             <tr>
               <th class="px-4 py-3" rowspan="2">Mes</th>
-              <th class="px-4 py-3 text-center border-l border-gray-200 bg-emerald-50/50 text-emerald-900" colspan="2">Año 2025</th>
-              <th class="px-4 py-3 text-center border-l border-gray-200 bg-blue-50/50 text-blue-900" colspan="2">Año 2026</th>
-              <th class="px-4 py-3 text-center border-l border-gray-200" rowspan="2">Var. Mensual (26 vs 25)</th>
+              <th class="px-4 py-3 text-center border-l border-slate-800 bg-emerald-950/40 text-emerald-300" colspan="2">Año 2025</th>
+              <th class="px-4 py-3 text-center border-l border-slate-800 bg-blue-950/40 text-blue-300" colspan="2">Año 2026</th>
+              <th class="px-4 py-3 text-center border-l border-slate-800" rowspan="2">Var. Mensual (26 vs 25)</th>
             </tr>
             <tr>
-              <th class="px-4 py-2 text-center border-l border-gray-200 bg-emerald-50/30 text-emerald-800">% Mensual</th>
-              <th class="px-4 py-2 text-center bg-emerald-50/30 text-emerald-800">% Acumulado</th>
-              <th class="px-4 py-2 text-center border-l border-gray-200 bg-blue-50/30 text-blue-800">% Mensual</th>
-              <th class="px-4 py-2 text-center bg-blue-50/30 text-blue-800">% Acumulado</th>
+              <th class="px-4 py-2 text-center border-l border-slate-800 bg-emerald-950/20 text-emerald-400">% Mensual</th>
+              <th class="px-4 py-2 text-center bg-emerald-950/20 text-emerald-400">% Acumulado</th>
+              <th class="px-4 py-2 text-center border-l border-slate-800 bg-blue-950/20 text-blue-400">% Mensual</th>
+              <th class="px-4 py-2 text-center bg-blue-950/20 text-blue-400">% Acumulado</th>
             </tr>
           </thead>
-          <tbody id="tabla-evolucion-body" class="divide-y divide-gray-200 text-xs">
+          <tbody id="tabla-evolucion-body" class="divide-y divide-slate-800 text-xs">
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- GRÁFICOS DE AUSENTISMO -->
-    <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+    <!-- GRÁFICOS OSCUROS -->
+    <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h3 class="text-lg font-bold text-gray-800">1. Evolución Mensual Comparativa (Horas Perdidas)</h3>
-          <p class="text-xs text-gray-400">Tendencia mensual superpuesta entre años</p>
+          <h3 class="text-lg font-bold text-slate-100">1. Evolución Mensual Comparativa (Horas Perdidas)</h3>
+          <p class="text-xs text-slate-400">Tendencia mensual superpuesta entre años</p>
         </div>
         
-        <div class="flex items-center gap-3 bg-gray-50 p-2 rounded-xl border border-gray-200">
-          <label class="flex items-center gap-1.5 text-xs font-semibold cursor-pointer text-gray-700">
-            <input type="checkbox" id="chart-year-2025" checked class="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4">
+        <div class="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
+          <label class="flex items-center gap-1.5 text-xs font-semibold cursor-pointer text-slate-300">
+            <input type="checkbox" id="chart-year-2025" checked class="rounded text-emerald-500 bg-slate-900 border-slate-700 w-4 h-4">
             <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> 2025
           </label>
-          <div class="h-4 w-px bg-gray-300"></div>
-          <label class="flex items-center gap-1.5 text-xs font-semibold cursor-pointer text-gray-700">
-            <input type="checkbox" id="chart-year-2026" checked class="rounded text-blue-600 focus:ring-blue-500 w-4 h-4">
-            <span class="w-3 h-3 rounded-full bg-blue-600 inline-block"></span> 2026
+          <div class="h-4 w-px bg-slate-800"></div>
+          <label class="flex items-center gap-1.5 text-xs font-semibold cursor-pointer text-slate-300">
+            <input type="checkbox" id="chart-year-2026" checked class="rounded text-blue-500 bg-slate-900 border-slate-700 w-4 h-4">
+            <span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span> 2026
           </label>
         </div>
       </div>
@@ -216,42 +213,42 @@
     </section>
 
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-        <h3 class="text-lg font-bold text-gray-800 mb-1">2. Horas Perdidas por Departamento</h3>
-        <p class="text-xs text-gray-400 mb-6">Ordenado de mayor a menor ausentismo (Lobby Bar y Las Vajillas sumados en AA & BB)</p>
+      <div class="lg:col-span-7 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
+        <h3 class="text-lg font-bold text-slate-100 mb-1">2. Horas Perdidas por Departamento</h3>
+        <p class="text-xs text-slate-400 mb-6">Ordenado de mayor a menor impacto (Lobby Bar y Las Vajillas sumados en AA & BB)</p>
         <div class="h-[420px]">
           <canvas id="chart-departamento"></canvas>
         </div>
       </div>
 
-      <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-        <h3 class="text-lg font-bold text-gray-800 mb-1">3. Distribución por Tipo de Ausencia</h3>
-        <p class="text-xs text-gray-400 mb-4">Proporción de días perdidos por concepto</p>
+      <div class="lg:col-span-5 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
+        <h3 class="text-lg font-bold text-slate-100 mb-1">3. Distribución por Tipo de Ausencia</h3>
+        <p class="text-xs text-slate-400 mb-4">Proporción de días perdidos por concepto</p>
         <div class="h-[420px] flex items-center justify-center">
           <canvas id="chart-motivo"></canvas>
         </div>
       </div>
     </section>
 
-    <!-- DETALLE DE REGISTROS -->
-    <section class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-      <div class="p-5 border-b border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <!-- DETALLE DE REGISTROS OSCURO -->
+    <section class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
+      <div class="p-5 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h3 class="text-base font-bold text-gray-800">Detalle de Registros de Licencias</h3>
-          <p class="text-xs text-gray-400">Listado por legajo con categoría financiera y costo estimado</p>
+          <h3 class="text-base font-bold text-slate-100">Detalle de Registros de Licencias</h3>
+          <p class="text-xs text-slate-400">Listado por legajo con categoría financiera y costo estimado</p>
         </div>
 
         <div class="flex items-center gap-2">
-          <label for="tabla-filter-month" class="text-xs font-semibold uppercase text-gray-500 whitespace-nowrap">Filtrar Mes Tabla:</label>
-          <select id="tabla-filter-month" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500">
+          <label for="tabla-filter-month" class="text-xs font-semibold uppercase text-slate-400 whitespace-nowrap">Filtrar Mes Tabla:</label>
+          <select id="tabla-filter-month" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-indigo-500 focus:border-indigo-500">
             <option value="ALL">Todos los Meses de la muestra</option>
           </select>
         </div>
       </div>
 
       <div class="overflow-x-auto">
-        <table class="w-full text-sm text-left text-gray-500">
-          <thead class="text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-200">
+        <table class="w-full text-sm text-left text-slate-300">
+          <thead class="text-xs text-slate-400 uppercase bg-slate-950 border-b border-slate-800">
             <tr>
               <th class="px-6 py-3">Legajo</th>
               <th class="px-6 py-3">Empleado</th>
@@ -263,17 +260,17 @@
               <th class="px-6 py-3 text-right">Costo Est. (+33% CS)</th>
             </tr>
           </thead>
-          <tbody id="tabla-body" class="divide-y divide-gray-200">
+          <tbody id="tabla-body" class="divide-y divide-slate-800">
           </tbody>
         </table>
       </div>
     </section>
-  </div>
+  </main>
 
   <!-- ================================================================= -->
   <!-- VISTA 2: DASHBOARD DE HORAS EXTRAS (PERSONAL EVENTUAL) -->
   <!-- ================================================================= -->
-  <div id="viewHorasExtras" class="hidden max-w-7xl mx-auto p-6 space-y-6 bg-slate-900 text-slate-100 rounded-2xl my-6">
+  <main id="viewHorasExtras" class="hidden max-w-7xl mx-auto p-6 space-y-6">
     
     <div class="flex justify-between items-center border-b border-slate-800 pb-4">
       <div>
@@ -293,20 +290,24 @@
 
     <div id="statusAlertHE" class="hidden p-4 rounded-lg bg-indigo-950/80 border border-indigo-500/30 text-indigo-300 text-sm"></div>
 
-    <!-- Filtros Horas Extras -->
-    <section class="bg-slate-800/60 p-5 rounded-xl border border-slate-700/60 shadow-lg">
-      <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Filtros Globales de Análisis (HE)</h3>
+    <!-- Filtros Horas Extras Fijos -->
+    <section class="bg-slate-900/95 backdrop-blur p-5 rounded-2xl border border-slate-800 shadow-2xl sticky top-16 z-40 space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <h3 class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Filtros Principales de Horas Extras</h3>
+        <span class="text-[10px] text-slate-500">Panel Fijo al Desplazarse</span>
+      </div>
+
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
           <label class="block text-xs font-medium text-slate-300 mb-1">Año(s)</label>
-          <div id="containerAnios" class="bg-slate-900 border border-slate-700 rounded-lg p-2 max-h-32 overflow-y-auto space-y-1 text-sm text-slate-300">
+          <div id="containerAnios" class="bg-slate-950 border border-slate-800 rounded-lg p-2 max-h-28 overflow-y-auto space-y-1 text-sm text-slate-300">
             <span class="text-slate-500 text-xs">Cargando años...</span>
           </div>
         </div>
 
         <div>
           <label class="block text-xs font-medium text-slate-300 mb-1">Mes</label>
-          <select id="filterMes" onchange="aplicarFiltrosHE()" class="w-full bg-slate-900 border border-slate-700 text-slate-200 text-sm rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
+          <select id="filterMes" onchange="aplicarFiltrosHE()" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
             <option value="TODOS">Todos los Meses</option>
             <option value="1">Enero (1)</option>
             <option value="2">Febrero (2)</option>
@@ -325,13 +326,13 @@
 
         <div>
           <label class="block text-xs font-medium text-slate-300 mb-1">Departamento</label>
-          <select id="filterDepto" onchange="aplicarFiltrosHE()" class="w-full bg-slate-900 border border-slate-700 text-slate-200 text-sm rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
+          <select id="filterDepto" onchange="aplicarFiltrosHE()" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
             <option value="TODOS">Todos los Departamentos</option>
           </select>
         </div>
 
         <div class="flex items-end">
-          <button onclick="limpiarFiltrosHE()" class="w-full bg-slate-700 hover:bg-slate-600 text-slate-200 font-medium py-2.5 px-4 rounded-lg text-sm border border-slate-600 transition-colors">
+          <button onclick="limpiarFiltrosHE()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium py-2.5 px-4 rounded-lg text-sm border border-slate-700 transition-colors">
             🧹 Limpiar Filtros
           </button>
         </div>
@@ -340,30 +341,30 @@
 
     <!-- KPIs Horas Extras -->
     <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div class="bg-slate-800/80 p-5 rounded-xl border border-slate-700/60 shadow-lg">
+      <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
         <p class="text-sm font-medium text-slate-400">Total Horas Extras</p>
         <p id="kpiTotalHoras" class="text-3xl font-bold text-slate-100 mt-1">0 hs</p>
       </div>
 
-      <div class="bg-slate-800/80 p-5 rounded-xl border border-slate-700/60 shadow-lg">
+      <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
         <p class="text-sm font-medium text-slate-400">Costo Empresa Total</p>
         <p id="kpiCostoTotal" class="text-3xl font-bold text-indigo-400 mt-1">$ 0</p>
         <p class="text-xs text-slate-500 mt-1">Incluye +45% adic. y +33% costo emp.</p>
       </div>
 
-      <div class="bg-slate-800/80 p-5 rounded-xl border border-slate-700/60 shadow-lg">
+      <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
         <p class="text-sm font-medium text-slate-400">Promedio hs / Empleado</p>
         <p id="kpiPromedioEmpleado" class="text-3xl font-bold text-slate-100 mt-1">0 hs</p>
       </div>
 
-      <div class="bg-slate-800/80 p-5 rounded-xl border border-slate-700/60 shadow-lg">
+      <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
         <p class="text-sm font-medium text-slate-400">Depto con Mayor Carga</p>
         <p id="kpiDeptoTop" class="text-xl font-bold text-cyan-400 mt-1">-</p>
       </div>
     </section>
 
     <!-- Gráficos HE -->
-    <section class="bg-slate-800/80 p-6 rounded-xl border border-slate-700/60 shadow-lg">
+    <section class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg">
       <div class="flex justify-between items-center mb-4">
         <div>
           <h3 class="text-xl font-bold text-slate-100">Evolución Mensual General (2025 vs 2026)</h3>
@@ -375,15 +376,15 @@
       </div>
     </section>
 
-    <section class="bg-slate-800/80 p-6 rounded-xl border border-slate-700/60 shadow-lg">
+    <section class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
         <div>
-          <h3 class="text-xl font-bold text-slate-100">Horas Extras por Departamento (Ordenado por Carga Horaria)</h3>
+          <h3 class="text-xl font-bold text-slate-100">Horas Extras por Departamento</h3>
           <p class="text-xs text-slate-400">Comparativa interanual 2025 vs 2026 ordenada de mayor a menor impacto</p>
         </div>
         <div class="flex items-center space-x-2">
           <label class="text-xs font-semibold text-slate-300">Ver Mes:</label>
-          <select id="selectMesDeptoChart" onchange="renderChartDeptoMes()" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-lg p-2 focus:ring-indigo-500 focus:border-indigo-500">
+          <select id="selectMesDeptoChart" onchange="renderChartDeptoMes()" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-indigo-500 focus:border-indigo-500">
             <option value="TODOS">Consolidado Anual (Todos los Meses)</option>
             <option value="1">Enero</option>
             <option value="2">Febrero</option>
@@ -406,7 +407,7 @@
     </section>
 
     <!-- Mapa de Calor HE -->
-    <section class="bg-slate-800/80 p-6 rounded-xl border border-slate-700/60 shadow-lg space-y-4">
+    <section class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg space-y-4">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
         <div>
           <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2">
@@ -416,7 +417,7 @@
         </div>
         <div class="flex items-center space-x-3 text-xs">
           <span class="flex items-center gap-1 text-slate-300"><span class="w-3 h-3 rounded bg-emerald-600 inline-block"></span> Reducción (&lt;-5%)</span>
-          <span class="flex items-center gap-1 text-slate-300"><span class="w-3 h-3 rounded bg-slate-700 inline-block"></span> Estable (-5% a 5%)</span>
+          <span class="flex items-center gap-1 text-slate-300"><span class="w-3 h-3 rounded bg-slate-800 inline-block"></span> Estable (-5% a 5%)</span>
           <span class="flex items-center gap-1 text-slate-300"><span class="w-3 h-3 rounded bg-rose-600 inline-block"></span> Incremento (&gt;5%)</span>
         </div>
       </div>
@@ -424,7 +425,7 @@
       <div class="overflow-x-auto">
         <table class="min-w-full text-center text-xs text-slate-200 border-collapse">
           <thead>
-            <tr class="bg-slate-900 border-b border-slate-700 text-slate-400 font-semibold">
+            <tr class="bg-slate-950 border-b border-slate-800 text-slate-400 font-semibold">
               <th class="py-3 px-3 text-left">Departamento</th>
               <th class="py-3 px-2">Ene</th>
               <th class="py-3 px-2">Feb</th>
@@ -449,14 +450,14 @@
 
     <!-- Jornada y Rango Etario HE -->
     <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="bg-slate-800/80 p-5 rounded-xl border border-slate-700/60 shadow-lg">
+      <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
         <h3 class="text-lg font-bold mb-4 text-slate-200">Tipo de Jornada (Diurna vs Nocturna)</h3>
         <div class="relative w-full h-72">
           <canvas id="chartTipoJornada"></canvas>
         </div>
       </div>
 
-      <div class="bg-slate-800/80 p-5 rounded-xl border border-slate-700/60 shadow-lg">
+      <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
         <h3 class="text-lg font-bold mb-4 text-slate-200">Distribución por Rango Etario</h3>
         <div class="relative w-full h-72">
           <canvas id="chartRangoEtario"></canvas>
@@ -465,11 +466,11 @@
     </section>
 
     <!-- Top 10 HE -->
-    <section class="bg-slate-800/80 p-5 rounded-xl border border-slate-700/60 shadow-lg">
+    <section class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
       <h3 class="text-lg font-bold mb-4 text-slate-200">Top 10 Empleados con Mayor Horas Extras</h3>
       <div class="overflow-x-auto">
         <table class="min-w-full text-left text-sm text-slate-300">
-          <thead class="bg-slate-900/80 border-b border-slate-700 text-slate-400">
+          <thead class="bg-slate-950 border-b border-slate-800 text-slate-400">
             <tr>
               <th class="py-3 px-4 font-semibold">#</th>
               <th class="py-3 px-4 font-semibold">Legajo</th>
@@ -479,7 +480,7 @@
               <th class="py-3 px-4 font-semibold">Costo Real Estimado</th>
             </tr>
           </thead>
-          <tbody id="tablaTop10" class="divide-y divide-slate-700/50">
+          <tbody id="tablaTop10" class="divide-y divide-slate-800">
             <tr><td colspan="6" class="py-4 text-center text-slate-500">Cargando datos...</td></tr>
           </tbody>
         </table>
@@ -487,7 +488,7 @@
     </section>
 
     <!-- Auditoría Excedidos HE -->
-    <section class="bg-red-950/30 border border-red-800/40 p-6 rounded-xl shadow-lg space-y-4">
+    <section class="bg-red-950/20 border border-red-900/40 p-6 rounded-xl shadow-lg space-y-4">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-red-900/40 pb-4">
         <div>
           <h3 class="text-xl font-bold text-red-400 flex items-center gap-2">
@@ -499,12 +500,12 @@
         <div class="flex flex-wrap items-center gap-3">
           <div>
             <label class="block text-xs font-semibold text-slate-400 mb-1">Año</label>
-            <select id="filterExcedidosAnio" onchange="renderTablaExcedidos()" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-lg p-2 focus:ring-red-500 focus:border-red-500"></select>
+            <select id="filterExcedidosAnio" onchange="renderTablaExcedidos()" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-red-500 focus:border-red-500"></select>
           </div>
 
           <div>
             <label class="block text-xs font-semibold text-slate-400 mb-1">Mes</label>
-            <select id="filterExcedidosMes" onchange="renderTablaExcedidos()" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-lg p-2 focus:ring-red-500 focus:border-red-500">
+            <select id="filterExcedidosMes" onchange="renderTablaExcedidos()" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-red-500 focus:border-red-500">
               <option value="1">Enero</option>
               <option value="2">Febrero</option>
               <option value="3">Marzo</option>
@@ -522,14 +523,14 @@
 
           <div>
             <label class="block text-xs font-semibold text-slate-400 mb-1">Departamento</label>
-            <select id="filterExcedidosDepto" onchange="renderTablaExcedidos()" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-lg p-2 focus:ring-red-500 focus:border-red-500">
+            <select id="filterExcedidosDepto" onchange="renderTablaExcedidos()" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-red-500 focus:border-red-500">
               <option value="TODOS">Todos los Departamentos</option>
             </select>
           </div>
         </div>
       </div>
 
-      <div class="bg-slate-900/90 rounded-lg border border-red-900/30 overflow-x-auto shadow-sm">
+      <div class="bg-slate-950 rounded-lg border border-red-900/30 overflow-x-auto shadow-sm">
         <table class="min-w-full text-left text-sm text-slate-300">
           <thead class="bg-red-950/60 border-b border-red-900/40 text-red-300">
             <tr>
@@ -548,7 +549,7 @@
         </table>
       </div>
     </section>
-  </div>
+  </main>
 
   <!-- ================================================================= -->
   <!-- SCRIPTS Y LÓGICA DE FUNCIONAMIENTO COMPLETA -->
@@ -556,7 +557,7 @@
   <script>
     Chart.register(ChartDataLabels);
 
-    // CONTROL DE NAVEGACIÓN ENTRE PESTAÑAS
+    // NAVEGACIÓN
     function switchTab(tabName) {
       const viewAus = document.getElementById('viewAusentismo');
       const viewHE = document.getElementById('viewHorasExtras');
@@ -617,15 +618,15 @@
       const m = motivoRaw ? motivoRaw.toLowerCase() : '';
 
       if (cod === '15102' || cod === '15107' || m.includes('maternidad') || m.includes('excedencia') || m.includes('sin goce') || m.includes('injustificada') || m.includes('falta') || m.includes('suspension') || costoBruto <= 0) {
-        return { tipo: 'SIN_COSTO', label: 'Sin Costo / ANSES', color: 'gray' };
+        return { tipo: 'SIN_COSTO', label: 'Sin Costo / ANSES' };
       }
       if (cod === '14051' || m.includes('14051') || m.includes('a cargo empresa') || m.includes('art empresa') || m.includes('empresa')) {
-        return { tipo: 'ART_EMPRESA', label: 'ART (Empresa - 14051)', color: 'rose' };
+        return { tipo: 'ART_EMPRESA', label: 'ART (Empresa - 14051)' };
       }
       if (m.includes('accidente') || m.includes('art')) {
-        return { tipo: 'ART_RECUPERABLE', label: 'ART (Recuperable)', color: 'amber' };
+        return { tipo: 'ART_RECUPERABLE', label: 'ART (Recuperable)' };
       }
-      return { tipo: 'INCULPABLE', label: 'Inculpable / Legal', color: 'emerald' };
+      return { tipo: 'INCULPABLE', label: 'Inculpable / Legal' };
     }
 
     function parseNum(val) {
@@ -899,26 +900,26 @@
         const tasaAcum2026 = acumPlan2026 > 0 ? ((acumHs2026 / acumPlan2026) * 100) : 0;
 
         const diff = tasaMensual2026 - tasaMensual2025;
-        let badgeDiff = `<span class="text-gray-400">-</span>`;
+        let badgeDiff = `<span class="text-slate-500">-</span>`;
         if (plan2026 > 0 && plan2025 > 0) {
           if (diff > 0) {
-            badgeDiff = `<span class="bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded">+${diff.toFixed(2)}%</span>`;
+            badgeDiff = `<span class="bg-rose-950 text-rose-300 font-bold px-2 py-0.5 rounded border border-rose-800/50">+${diff.toFixed(2)}%</span>`;
           } else if (diff < 0) {
-            badgeDiff = `<span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded">${diff.toFixed(2)}%</span>`;
+            badgeDiff = `<span class="bg-emerald-950 text-emerald-300 font-bold px-2 py-0.5 rounded border border-emerald-800/50">${diff.toFixed(2)}%</span>`;
           } else {
-            badgeDiff = `<span class="bg-gray-100 text-gray-700 font-bold px-2 py-0.5 rounded">0.00%</span>`;
+            badgeDiff = `<span class="bg-slate-800 text-slate-300 font-bold px-2 py-0.5 rounded">0.00%</span>`;
           }
         }
 
         const tr = document.createElement('tr');
-        tr.className = "hover:bg-gray-50";
+        tr.className = "hover:bg-slate-800/50 transition-colors";
         tr.innerHTML = `
-          <td class="px-4 py-3 font-bold text-gray-800">${nombreMes}</td>
-          <td class="px-4 py-3 text-center border-l border-gray-200 font-medium ${plan2025 > 0 ? 'text-gray-900' : 'text-gray-400'}">${plan2025 > 0 ? tasaMensual2025.toFixed(2) + '%' : '-'}</td>
-          <td class="px-4 py-3 text-center font-semibold text-emerald-700 bg-emerald-50/20">${acumPlan2025 > 0 ? tasaAcum2025.toFixed(2) + '%' : '-'}</td>
-          <td class="px-4 py-3 text-center border-l border-gray-200 font-medium ${plan2026 > 0 ? 'text-gray-900' : 'text-gray-400'}">${plan2026 > 0 ? tasaMensual2026.toFixed(2) + '%' : '-'}</td>
-          <td class="px-4 py-3 text-center font-semibold text-blue-700 bg-blue-50/20">${acumPlan2026 > 0 ? tasaAcum2026.toFixed(2) + '%' : '-'}</td>
-          <td class="px-4 py-3 text-center border-l border-gray-200">${badgeDiff}</td>
+          <td class="px-4 py-3 font-bold text-slate-200">${nombreMes}</td>
+          <td class="px-4 py-3 text-center border-l border-slate-800 font-medium ${plan2025 > 0 ? 'text-slate-200' : 'text-slate-500'}">${plan2025 > 0 ? tasaMensual2025.toFixed(2) + '%' : '-'}</td>
+          <td class="px-4 py-3 text-center font-semibold text-emerald-400 bg-emerald-950/20">${acumPlan2025 > 0 ? tasaAcum2025.toFixed(2) + '%' : '-'}</td>
+          <td class="px-4 py-3 text-center border-l border-slate-800 font-medium ${plan2026 > 0 ? 'text-slate-200' : 'text-slate-500'}">${plan2026 > 0 ? tasaMensual2026.toFixed(2) + '%' : '-'}</td>
+          <td class="px-4 py-3 text-center font-semibold text-blue-400 bg-blue-950/20">${acumPlan2026 > 0 ? tasaAcum2026.toFixed(2) + '%' : '-'}</td>
+          <td class="px-4 py-3 text-center border-l border-slate-800">${badgeDiff}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -968,7 +969,7 @@
           label: '2025 (hs)',
           data: horas2025,
           borderColor: '#10b981',
-          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          backgroundColor: 'rgba(16, 185, 129, 0.15)',
           fill: true,
           tension: 0.3
         });
@@ -977,8 +978,8 @@
         datasets.push({
           label: '2026 (hs)',
           data: horas2026,
-          borderColor: '#2563eb',
-          backgroundColor: 'rgba(37, 99, 235, 0.1)',
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59, 130, 246, 0.15)',
           fill: true,
           tension: 0.3
         });
@@ -997,7 +998,12 @@
               font: { weight: 'bold', size: 10 },
               color: function(context) { return context.dataset.borderColor; },
               formatter: function(value) { return value > 0 ? value.toLocaleString() : ''; }
-            }
+            },
+            legend: { labels: { color: '#cbd5e1' } }
+          },
+          scales: {
+            x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+            y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
           }
         }
       });
@@ -1042,7 +1048,7 @@
           labels: sortedDepts,
           datasets: [
             { label: '2025 (hs)', data: sortedDepts.map(d => depts2025[d] || 0), backgroundColor: '#10b981', borderRadius: 4 },
-            { label: '2026 (hs)', data: sortedDepts.map(d => depts2026[d] || 0), backgroundColor: '#2563eb', borderRadius: 4 }
+            { label: '2026 (hs)', data: sortedDepts.map(d => depts2026[d] || 0), backgroundColor: '#3b82f6', borderRadius: 4 }
           ]
         },
         options: {
@@ -1054,13 +1060,14 @@
               anchor: 'end',
               align: 'end',
               font: { weight: 'bold', size: 10 },
-              color: '#374151',
+              color: '#e2e8f0',
               formatter: function(value) { return value > 0 ? `${value.toLocaleString()} hs` : ''; }
-            }
+            },
+            legend: { labels: { color: '#cbd5e1' } }
           },
           scales: {
-            x: { beginAtZero: true, grid: { display: false } },
-            y: { ticks: { font: { size: 11, weight: 'bold' } } }
+            x: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+            y: { ticks: { font: { size: 11, weight: 'bold' }, color: '#cbd5e1' }, grid: { display: false } }
           }
         }
       });
@@ -1093,7 +1100,7 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 15, usePointStyle: true } },
+            legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 15, usePointStyle: true, color: '#cbd5e1' } },
             datalabels: {
               color: '#ffffff',
               font: { weight: 'bold', size: 11 },
@@ -1121,7 +1128,7 @@
       }
 
       if (rowsToDisplay.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="px-6 py-4 text-center text-gray-400">No hay registros para el mes seleccionado.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="px-6 py-4 text-center text-slate-500">No hay registros para el mes seleccionado.</td></tr>`;
         return;
       }
 
@@ -1135,22 +1142,22 @@
         let costoTotalItem = clasif.tipo !== 'SIN_COSTO' ? (costoBruto * FACTOR_CARGAS_SOCIALES) : 0;
         const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
 
-        let badgeClass = "bg-emerald-100 text-emerald-800";
-        if (clasif.tipo === 'ART_EMPRESA') badgeClass = "bg-rose-100 text-rose-800";
-        if (clasif.tipo === 'ART_RECUPERABLE') badgeClass = "bg-amber-100 text-amber-800";
-        if (clasif.tipo === 'SIN_COSTO') badgeClass = "bg-gray-100 text-gray-700";
+        let badgeClass = "bg-emerald-950 text-emerald-300 border border-emerald-800/50";
+        if (clasif.tipo === 'ART_EMPRESA') badgeClass = "bg-rose-950 text-rose-300 border border-rose-800/50";
+        if (clasif.tipo === 'ART_RECUPERABLE') badgeClass = "bg-amber-950 text-amber-300 border border-amber-800/50";
+        if (clasif.tipo === 'SIN_COSTO') badgeClass = "bg-slate-800 text-slate-400";
 
         const tr = document.createElement('tr');
-        tr.className = "hover:bg-gray-50";
+        tr.className = "hover:bg-slate-800/50 transition-colors";
         tr.innerHTML = `
-          <td class="px-6 py-4 font-medium text-gray-900">${getValAus(item, ['Legajo']) || '-'}</td>
-          <td class="px-6 py-4">${getValAus(item, ['Apellidos'])} ${getValAus(item, ['Nombre'])}</td>
-          <td class="px-6 py-4">${dept}</td>
-          <td class="px-6 py-4 font-medium text-gray-700">${motivo || 'N/A'}</td>
+          <td class="px-6 py-4 font-mono font-medium text-slate-200">${getValAus(item, ['Legajo']) || '-'}</td>
+          <td class="px-6 py-4 font-bold text-slate-100">${getValAus(item, ['Apellidos'])} ${getValAus(item, ['Nombre'])}</td>
+          <td class="px-6 py-4 text-slate-300">${dept}</td>
+          <td class="px-6 py-4 font-medium text-slate-200">${motivo || 'N/A'}</td>
           <td class="px-6 py-4"><span class="${badgeClass} text-xs font-semibold px-2.5 py-1 rounded-md">${clasif.label}</span></td>
-          <td class="px-6 py-4 text-center font-medium text-gray-700">${getValAus(item, ['Período liqui', 'Período']) || '-'}</td>
-          <td class="px-6 py-4 text-center font-bold text-amber-600">${dias} d</td>
-          <td class="px-6 py-4 text-right font-bold ${clasif.tipo === 'SIN_COSTO' ? 'text-gray-400' : 'text-emerald-600'}">${formatPesos(costoTotalItem)}</td>
+          <td class="px-6 py-4 text-center font-medium text-slate-300">${getValAus(item, ['Período liqui', 'Período']) || '-'}</td>
+          <td class="px-6 py-4 text-center font-bold text-amber-400">${dias} d</td>
+          <td class="px-6 py-4 text-right font-bold ${clasif.tipo === 'SIN_COSTO' ? 'text-slate-500' : 'text-emerald-400'}">${formatPesos(costoTotalItem)}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -1268,7 +1275,7 @@
       aniosOrdenados.forEach(anio => {
         containerAnios.innerHTML += `
           <label class="flex items-center space-x-2 text-xs font-medium text-slate-300 cursor-pointer">
-            <input type="checkbox" value="${anio}" checked onchange="aplicarFiltrosHE()" class="chkAnio rounded bg-slate-800 border-slate-700 text-indigo-500 focus:ring-indigo-500">
+            <input type="checkbox" value="${anio}" checked onchange="aplicarFiltrosHE()" class="chkAnio rounded bg-slate-900 border-slate-800 text-indigo-500 focus:ring-indigo-500">
             <span>Año ${anio}</span>
           </label>
         `;
@@ -1467,14 +1474,14 @@
           const h2026 = deptoMesData[d]['2026'][m];
 
           if (h2025 === 0 && h2026 === 0) {
-            cellsHtml += `<td class="py-2 px-1 text-slate-600 bg-slate-900/40">-</td>`;
+            cellsHtml += `<td class="py-2 px-1 text-slate-600 bg-slate-950/40">-</td>`;
           } else if (h2025 === 0 && h2026 > 0) {
             cellsHtml += `<td class="py-2 px-1 bg-rose-950/80 text-rose-400 font-bold" title="2025: 0hs | 2026: ${h2026}hs">NUEVO</td>`;
           } else {
             const varPct = ((h2026 - h2025) / h2025) * 100;
-            let bgColor = 'bg-slate-800/60 text-slate-400';
-            if (varPct > 5) bgColor = 'bg-rose-900/70 text-rose-300 font-semibold';
-            else if (varPct < -5) bgColor = 'bg-emerald-900/70 text-emerald-300 font-semibold';
+            let bgColor = 'bg-slate-900/60 text-slate-400';
+            if (varPct > 5) bgColor = 'bg-rose-950 text-rose-300 font-semibold border border-rose-900/40';
+            else if (varPct < -5) bgColor = 'bg-emerald-950 text-emerald-300 font-semibold border border-emerald-900/40';
 
             const sign = varPct > 0 ? '+' : '';
             cellsHtml += `<td class="py-2 px-1 ${bgColor}" title="2025: ${h2025.toFixed(0)}hs | 2026: ${h2026.toFixed(0)}hs">${sign}${varPct.toFixed(0)}%</td>`;
@@ -1528,12 +1535,12 @@
       const tbody = document.getElementById('tablaExcedidos');
 
       if (excedidos.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400 bg-slate-900/60">✅ Ningún empleado superó las 100 horas en el período seleccionado.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400 bg-slate-950/60">✅ Ningún empleado superó las 100 horas en el período seleccionado.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = excedidos.map((e, idx) => `
-        <tr class="hover:bg-red-950/40 transition-colors">
+        <tr class="hover:bg-red-950/30 transition-colors">
           <td class="py-3 px-4 font-mono text-slate-500">${idx + 1}</td>
           <td class="py-3 px-4 font-mono text-slate-300 font-semibold">${e.legajo}</td>
           <td class="py-3 px-4 font-bold text-slate-100">${e.nombre}</td>
@@ -1607,7 +1614,10 @@
             },
             legend: { position: 'top', labels: { color: '#CBD5E1' } }
           },
-          scales: { y: { beginAtZero: true, title: { display: true, text: 'Horas Extras', color: '#94A3B8' }, grace: '10%' } }
+          scales: {
+            x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+            y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8' }, grace: '10%' }
+          }
         }
       });
     }
@@ -1669,7 +1679,10 @@
             },
             legend: { position: 'top', labels: { color: '#CBD5E1' } }
           },
-          scales: { y: { beginAtZero: true, title: { display: true, text: 'Horas Extras Total', color: '#94A3B8' }, grace: '10%' } }
+          scales: {
+            x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+            y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8' }, grace: '10%' }
+          }
         }
       });
 
@@ -1714,7 +1727,7 @@
       });
     }
 
-    // INICIALIZACIÓN GENERAL AL CÁRGAR LA PÁGINA
+    // INICIALIZACIÓN
     window.onload = function() {
       initAusentismo();
       initHorasExtras();
