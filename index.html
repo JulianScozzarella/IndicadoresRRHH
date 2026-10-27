@@ -22,7 +22,7 @@
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 class="text-2xl font-bold text-gray-900">Dashboard de Ausentismo & Costos</h1>
-          <p class="text-sm text-gray-500">Análisis Financiero & Cuadro de Evolución Interanual (Años 2025 y 2026 Independientes)</p>
+          <p class="text-sm text-gray-500">Gestión de Recursos Humanos (Cálculos Dinámicos de Horas Planificadas por Año)</p>
         </div>
       </div>
 
@@ -61,9 +61,9 @@
     <!-- SCORECARDS GENERALES -->
     <section class="grid grid-cols-1 sm:grid-cols-3 gap-6">
       <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
-        <p class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Tasa de Ausentismo</p>
+        <p class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Tasa de Ausentismo Real</p>
         <h2 id="kpi-tasa" class="text-3xl font-extrabold text-blue-600 mt-2">-- %</h2>
-        <p id="kpi-tasa-sub" class="text-xs text-gray-500 mt-1 font-medium">Horas Perdidas / Planificadas</p>
+        <p id="kpi-tasa-sub" class="text-xs text-gray-500 mt-1 font-medium">Horas Perdidas / Planificadas Filtradas</p>
       </div>
 
       <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
@@ -131,11 +131,11 @@
       </div>
     </section>
 
-    <!-- TABLA DE EVOLUCIÓN MES A MES VS ACUMULADO (AÑOS INDEPENDIENTES) -->
+    <!-- TABLA DE EVOLUCIÓN MES A MES VS ACUMULADO -->
     <section class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
       <div class="p-5 border-b border-gray-200">
         <h3 class="text-base font-bold text-gray-800">Evolución Mensual No Acumulada vs. Acumulado Interanual</h3>
-        <p class="text-xs text-gray-400">Cálculo del % de ausentismo con horas planificadas y perdidas separadas estrictamente por año</p>
+        <p class="text-xs text-gray-400">Comparación del % de ausentismo con horas estipuladas calculadas estrictamente por año</p>
       </div>
 
       <div class="overflow-x-auto">
@@ -490,7 +490,7 @@
 
       const totalHorasPerdidas = totalDiasLiquidados * HORAS_POR_DIA;
 
-      // CÁLCULO ESTRICTO DE HORAS PLANIFICADAS FILTRADAS
+      // SUMATORIA DINÁMICA DE HORAS PLANIFICADAS SEGÚN EL FILTRO DE AÑO SELECCIONADO
       let horasPlanificadasDivisor = 0;
 
       Object.keys(mapHorasPlanificadas).forEach(key => {
@@ -525,7 +525,7 @@
 
       document.getElementById('kpi-dias-sincosto').textContent = `${diasSinCosto.toLocaleString()} días (Maternidad/Excedencia/Faltas)`;
 
-      // RENDERIZAR TABLA DE EVOLUCIÓN ESTRICTA POR AÑO
+      // RENDERIZAR TABLA DE EVOLUCIÓN
       renderTablaEvolucion(filtered);
 
       // RENDERIZAR GRÁFICOS Y TABLA DETALLE
@@ -537,7 +537,7 @@
       renderTabla(filtered, tablaMonthFilter);
     }
 
-    // --- TABLA DE EVOLUCIÓN CON SEPARACIÓN ESTRICTA DE HORAS PLANIFICADAS 2025 Y 2026 ---
+    // --- TABLA DE EVOLUCIÓN MES A MES VS ACUMULADO ---
     function renderTablaEvolucion(filteredData) {
       const tbody = document.getElementById('tabla-evolucion-body');
       tbody.innerHTML = '';
@@ -568,18 +568,15 @@
       mesesNombres.forEach((nombreMes, i) => {
         const mKey = (i + 1).toString().padStart(2, '0');
         
-        // Obtención de horas planificadas separadas unívocamente por año
         const plan2025 = mapHorasPlanificadas[`${mKey}/2025`] || 0;
         const plan2026 = mapHorasPlanificadas[`${mKey}/2026`] || 0;
 
         const hs2025 = hsPerdidas2025[i];
         const hs2026 = hsPerdidas2026[i];
 
-        // Tasas Mensuales Puntuadas por año
         const tasaMensual2025 = plan2025 > 0 ? ((hs2025 / plan2025) * 100) : 0;
         const tasaMensual2026 = plan2026 > 0 ? ((hs2026 / plan2026) * 100) : 0;
 
-        // Acumulaciones independientes
         acumHs2025 += hs2025;
         acumPlan2025 += plan2025;
 
@@ -589,7 +586,6 @@
         const tasaAcum2025 = acumPlan2025 > 0 ? ((acumHs2025 / acumPlan2025) * 100) : 0;
         const tasaAcum2026 = acumPlan2026 > 0 ? ((acumHs2026 / acumPlan2026) * 100) : 0;
 
-        // Variación interanual (% 2026 - % 2025)
         const diff = tasaMensual2026 - tasaMensual2025;
         let badgeDiff = `<span class="text-gray-400">-</span>`;
         if (plan2026 > 0 && plan2025 > 0) {
