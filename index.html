@@ -79,7 +79,7 @@
       </div>
     </section>
 
-    <!-- GRÁFICO 1: EVOLUCIÓN MENSUAL (ANCHO COMPLETO) -->
+    <!-- GRÁFICO 1: EVOLUCIÓN MENSUAL -->
     <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
@@ -105,10 +105,10 @@
       </div>
     </section>
 
-    <!-- GRÁFICOS 2 Y 3 (FORMATO MEJORADO Y SIN AMONTONAMIENTO) -->
+    <!-- GRÁFICOS 2 Y 3 -->
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       
-      <!-- GRÁFICO 2: BARRAS HORIZONTALES POR DEPARTAMENTO -->
+      <!-- BARRAS HORIZONTALES POR DEPARTAMENTO -->
       <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
         <h3 class="text-lg font-bold text-gray-800 mb-1">2. Horas Perdidas por Departamento</h3>
         <p class="text-xs text-gray-400 mb-6">Ordenado de mayor a menor ausentismo (Lobby Bar y Las Vajillas sumados en AA & BB)</p>
@@ -117,7 +117,7 @@
         </div>
       </div>
 
-      <!-- GRÁFICO 3: TORTA CON DISEÑO LIMPIO Y LEYENDA CLARA -->
+      <!-- TORTA DE TIPO DE AUSENCIA -->
       <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
         <h3 class="text-lg font-bold text-gray-800 mb-1">3. Distribución por Tipo de Ausencia</h3>
         <p class="text-xs text-gray-400 mb-4">Proporción de días perdidos por concepto</p>
@@ -128,11 +128,23 @@
 
     </section>
 
-    <!-- TABLA DE DETALLE -->
+    <!-- TABLA DE DETALLE CON FILTRO DE MES EXCLUSIVO -->
     <section class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-      <div class="p-5 border-b border-gray-200">
-        <h3 class="text-base font-bold text-gray-700">Detalle de Registros de Licencias</h3>
+      <div class="p-5 border-b border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h3 class="text-base font-bold text-gray-800">Detalle de Registros de Licencias</h3>
+          <p class="text-xs text-gray-400">Listado detallado por legajo y ausencia</p>
+        </div>
+
+        <!-- FILTRO DE MES EXCLUSIVO PARA LA TABLA -->
+        <div class="flex items-center gap-2">
+          <label for="tabla-filter-month" class="text-xs font-semibold uppercase text-gray-500 whitespace-nowrap">Filtrar Mes Tabla:</label>
+          <select id="tabla-filter-month" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500">
+            <option value="ALL">Todos los Meses de la muestra</option>
+          </select>
+        </div>
       </div>
+
       <div class="overflow-x-auto">
         <table class="w-full text-sm text-left text-gray-500">
           <thead class="text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-200">
@@ -167,6 +179,7 @@
     let rawDotacion = [];
     let mapHorasPlanificadas = {};
     let totalHorasPlanificadasGlobal = 0;
+    let currentFilteredData = [];
     let charts = {};
 
     function getVal(row, candidates) {
@@ -180,7 +193,6 @@
       return '';
     }
 
-    // NORMALIZACIÓN DE DEPARTAMENTO: "Lobby bar" y "Las vajias/vajillas" -> "AA & BB"
     function normalizarDepartamento(deptRaw) {
       if (!deptRaw) return 'Sin Depto';
       let d = deptRaw.trim();
@@ -257,6 +269,11 @@
         });
       });
 
+      // Listener para el filtro específico de la tabla
+      document.getElementById('tabla-filter-month').addEventListener('change', (e) => {
+        renderTabla(currentFilteredData, e.target.value);
+      });
+
     }).catch(err => console.error("Error al cargar CSVs:", err));
 
     function fetchCSV(url) {
@@ -276,11 +293,13 @@
       const selectMotivo = document.getElementById('filter-motivo');
       const selectYear = document.getElementById('filter-year');
       const selectMonth = document.getElementById('filter-month');
+      const selectTablaMonth = document.getElementById('tabla-filter-month');
 
       const depts = new Set();
       const motivos = new Set();
       const years = new Set();
       const months = new Set();
+      const periodosCompletos = new Set();
 
       data.forEach(item => {
         const dept = normalizarDepartamento(getVal(item, ['Departamento', 'Sector']));
@@ -294,6 +313,7 @@
           const [m, y] = periodo.split('/');
           months.add(m);
           years.add(y);
+          periodosCompletos.add(periodo);
         }
       });
 
@@ -301,6 +321,12 @@
       Array.from(motivos).sort().forEach(m => selectMotivo.add(new Option(m, m)));
       Array.from(years).sort().forEach(y => selectYear.add(new Option(y, y)));
       Array.from(months).sort().forEach(m => selectMonth.add(new Option(`Mes ${m}`, m)));
+
+      // Poblar dropdown exclusivo de la tabla con los períodos específicos (ej: 01/2026, 02/2026, etc.)
+      selectTablaMonth.innerHTML = '<option value="ALL">Todos los Meses de la muestra</option>';
+      Array.from(periodosCompletos).sort().forEach(p => {
+        selectTablaMonth.add(new Option(`Período ${p}`, p));
+      });
     }
 
     function applyFiltersAndRender() {
@@ -309,7 +335,7 @@
       const selectedDept = document.getElementById('filter-dept').value;
       const selectedMotivo = document.getElementById('filter-motivo').value;
 
-      const filtered = rawAusentismo.filter(item => {
+      currentFilteredData = rawAusentismo.filter(item => {
         const dept = normalizarDepartamento(getVal(item, ['Departamento', 'Sector']));
         const motivo = getVal(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
         const periodo = estandarizarPeriodo(getVal(item, ['Período liqui', 'Período', 'Periodo']));
@@ -326,7 +352,7 @@
         return true;
       });
 
-      renderDashboard(filtered, selectedYear, selectedMonth);
+      renderDashboard(currentFilteredData, selectedYear, selectedMonth);
     }
 
     function renderDashboard(filtered, selectedYear, selectedMonth) {
@@ -365,11 +391,13 @@
       document.getElementById('kpi-horas').textContent = `${totalHorasPerdidas.toLocaleString()} hs`;
       document.getElementById('kpi-dias').textContent = `${totalDiasLiquidados.toLocaleString()} d`;
 
-      // RENDERIZAR GRÁFICOS
+      // RENDERIZAR GRÁFICOS Y TABLA
       renderChartComparativo(rawAusentismo);
       renderChartDepartamento(rawAusentismo);
       renderChartMotivo(filtered);
-      renderTabla(filtered);
+
+      const tablaMonthFilter = document.getElementById('tabla-filter-month').value;
+      renderTabla(filtered, tablaMonthFilter);
     }
 
     // --- 1. EVOLUCIÓN MENSUAL ---
@@ -454,7 +482,7 @@
       });
     }
 
-    // --- 2. BARRAS HORIZONTALES POR DEPARTAMENTO (SIN ENCIMAR) ---
+    // --- 2. BARRAS HORIZONTALES POR DEPARTAMENTO ---
     function renderChartDepartamento(fullData) {
       const ctx = document.getElementById('chart-departamento').getContext('2d');
       if (charts.departamento) charts.departamento.destroy();
@@ -486,7 +514,6 @@
         }
       });
 
-      // Ordenar departamentos de mayor a menor ausentismo total
       const sortedDepts = Object.keys(deptsTotales).sort((a, b) => deptsTotales[b] - deptsTotales[a]);
 
       const data2025 = sortedDepts.map(d => depts2025[d] || 0);
@@ -502,7 +529,7 @@
           ]
         },
         options: {
-          indexAxis: 'y', // Convertir a barras horizontales
+          indexAxis: 'y',
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
@@ -522,7 +549,7 @@
       });
     }
 
-    // --- 3. TORTA DE TIPO DE AUSENCIA (MÁS LIMPIA Y LEGIBLE) ---
+    // --- 3. TORTA DE TIPO DE AUSENCIA ---
     function renderChartMotivo(data) {
       const ctx = document.getElementById('chart-motivo').getContext('2d');
       if (charts.motivo) charts.motivo.destroy();
@@ -560,7 +587,7 @@
               formatter: function(value) {
                 if (value === 0) return '';
                 const pct = ((value / totalDias) * 100).toFixed(1);
-                return pct > 3 ? `${pct}%` : ''; // Mostrar porcentaje solo si es mayor al 3% para no saturar
+                return pct > 3 ? `${pct}%` : '';
               }
             }
           }
@@ -568,16 +595,26 @@
       });
     }
 
-    function renderTabla(data) {
+    // --- RENDER DE LA TABLA (CON FILTRADO EXCLUSIVO DE MES) ---
+    function renderTabla(data, monthFilter) {
       const tbody = document.getElementById('tabla-body');
       tbody.innerHTML = '';
 
-      if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-4 text-center text-gray-400">No hay registros para los filtros seleccionados.</td></tr>`;
+      let rowsToDisplay = data;
+
+      if (monthFilter && monthFilter !== 'ALL') {
+        rowsToDisplay = data.filter(item => {
+          const p = estandarizarPeriodo(getVal(item, ['Período liqui', 'Período', 'Periodo']));
+          return p === monthFilter;
+        });
+      }
+
+      if (rowsToDisplay.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-4 text-center text-gray-400">No hay registros para el mes seleccionado.</td></tr>`;
         return;
       }
 
-      data.slice(0, 20).forEach(item => {
+      rowsToDisplay.forEach(item => {
         const dias = parseNum(getVal(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
         const horas = dias * HORAS_POR_DIA;
         const dept = normalizarDepartamento(getVal(item, ['Departamento', 'Sector']));
@@ -589,7 +626,7 @@
           <td class="px-6 py-4">${getVal(item, ['Apellidos'])} ${getVal(item, ['Nombre'])}</td>
           <td class="px-6 py-4">${dept}</td>
           <td class="px-6 py-4"><span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">${getVal(item, ['Desc. de concep', 'Concepto']) || 'N/A'}</span></td>
-          <td class="px-6 py-4 text-center">${getVal(item, ['Período liqui', 'Período']) || '-'}</td>
+          <td class="px-6 py-4 text-center font-medium text-gray-700">${getVal(item, ['Período liqui', 'Período']) || '-'}</td>
           <td class="px-6 py-4 text-center font-bold text-amber-600">${dias} d</td>
           <td class="px-6 py-4 text-center font-semibold text-gray-700">${horas} hs</td>
         `;
