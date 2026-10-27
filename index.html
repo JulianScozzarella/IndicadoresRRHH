@@ -656,32 +656,38 @@
       return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(monto);
     }
 
-    // NORMALIZACIÓN ESTRICTA Y ROBUSTA A FORMATO MM/YYYY (ej: "1/2026" -> "01/2026")
+    // NORMALIZACIÓN UNIVERSAL DE PERÍODOS (Soporta fechas de Sheets tipo "26/1/2026", "01/2026", "2026-01-01", etc.)
     function estandarizarPeriodo(str) {
       if (!str) return '';
       let clean = str.toString().trim().toLowerCase();
-      
-      // Formato con barra (ej: "1/2026" o "01/2026")
+
+      // Formato fecha tipo Google Sheets "26/1/2026" o "1/2026" o "01/2026"
       if (clean.includes('/')) {
         let parts = clean.split('/');
-        if (parts.length >= 2) {
-          let mes = parts[0].padStart(2, '0');
-          let anio = parts[1].length === 2 ? `20${parts[1]}` : parts[1];
-          return `${mes}/${anio}`;
+        if (parts.length === 3) {
+          // DD/MM/YYYY o MM/DD/YYYY
+          let m = parts[1].padStart(2, '0');
+          let y = parts[2].length === 2 ? `20${parts[2]}` : parts[2];
+          return `${m}/${y}`;
+        } else if (parts.length === 2) {
+          // MM/YYYY
+          let m = parts[0].padStart(2, '0');
+          let y = parts[1].length === 2 ? `20${parts[1]}` : parts[1];
+          return `${m}/${y}`;
         }
       }
 
-      // Formato con guion (ej: "2026-01" o "01-2026")
+      // Formato con guion "2026-01-26" o "2026-01" o "01-2026"
       if (clean.includes('-')) {
         let parts = clean.split('-');
-        if (parts[0].length === 4) { // YYYY-MM
-          let anio = parts[0];
-          let mes = parts[1].padStart(2, '0');
-          return `${mes}/${anio}`;
+        if (parts[0].length === 4) { // YYYY-MM-DD o YYYY-MM
+          let y = parts[0];
+          let m = parts[1].padStart(2, '0');
+          return `${m}/${y}`;
         } else if (parts.length >= 2) { // MM-YYYY
-          let mes = parts[0].padStart(2, '0');
-          let anio = parts[1].length === 2 ? `20${parts[1]}` : parts[1];
-          return `${mes}/${anio}`;
+          let m = parts[0].padStart(2, '0');
+          let y = parts[1].length === 2 ? `20${parts[1]}` : parts[1];
+          return `${m}/${y}`;
         }
       }
 
@@ -690,20 +696,24 @@
 
     function initAusentismo() {
       Promise.all([
-        fetchCSV(URL_DATA_AUSENTISMO),
-        fetchCSV(URL_DOTACION_HORAS)
+        fetchCSV(URL_DATA_AUSENTISMO, true),
+        fetchCSV(URL_DOTACION_HORAS, false) // Leemos la dotación como array de filas
       ]).then(([ausentismoData, dotacionData]) => {
         rawAusentismo = ausentismoData;
-        rawDotacion = dotacionData;
-
+        
         mapHorasPlanificadas = {};
-        rawDotacion.forEach(row => {
-          const rawPer = getValAus(row, ['tidad de emplea', 'período liqui', 'período', 'periodo', 'mes', 'fecha']);
-          const hs = parseNum(getValAus(row, ['horas', 'horas planificadas', 'horas totales']));
-          const key = estandarizarPeriodo(rawPer);
+        // Lectura directa por posición de columna en la hoja Dotacion_y_Horas:
+        // Columna A (índice 0) = Periodo, Columna C (índice 2) = Horas
+        dotacionData.forEach((rowArray, idx) => {
+          if (idx === 0) return; // Omitir fila de encabezados
+          if (rowArray && rowArray.length >= 3) {
+            const rawPer = rowArray[0];
+            const hs = parseNum(rowArray[2]);
+            const key = estandarizarPeriodo(rawPer);
 
-          if (hs > 0 && key) {
-            mapHorasPlanificadas[key] = (mapHorasPlanificadas[key] || 0) + hs;
+            if (hs > 0 && key) {
+              mapHorasPlanificadas[key] = (mapHorasPlanificadas[key] || 0) + hs;
+            }
           }
         });
 
@@ -727,11 +737,11 @@
       }).catch(err => console.error("Error al cargar ausentismo:", err));
     }
 
-    function fetchCSV(url) {
+    function fetchCSV(url, headerBool) {
       return new Promise((resolve, reject) => {
         Papa.parse(url, {
           download: true,
-          header: true,
+          header: headerBool,
           skipEmptyLines: true,
           complete: (results) => resolve(results.data),
           error: (err) => reject(err)
