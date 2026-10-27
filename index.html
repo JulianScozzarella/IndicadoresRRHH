@@ -208,7 +208,7 @@
         <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div class="lg:col-span-7 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
                 <h3 class="text-lg font-bold text-slate-100 mb-1">2. Horas Perdidas por Departamento</h3>
-                <p class="text-xs text-slate-400 mb-6">Ordenado de mayor a menor impacto (Lobby Bar y Las Vajillas unificados en AA & BB)</p>
+                <p class="text-xs text-slate-400 mb-6">Ordenado de mayor a menor impacto (Lobby Bar y Las Vasijas/Vajillas unificados en AA & BB)</p>
                 <div class="h-[420px]">
                     <canvas id="chart-departamento"></canvas>
                 </div>
@@ -518,7 +518,9 @@
             if (!deptRaw) return 'Sin Depto';
             let d = deptRaw.trim();
             let dLow = d.toLowerCase();
-            if (dLow.includes('lobby bar') || dLow.includes('las vaji') || dLow.includes('vajilla') || dLow.includes('vajillas')) {
+            
+            // Unifica Lobby Bar, Las Vasijas / Las Vajillas en 'AA & BB'
+            if (dLow.includes('lobby bar') || dLow.includes('las vaji') || dLow.includes('vajilla') || dLow.includes('vajillas') || dLow.includes('vasija') || dLow.includes('vasijas')) {
                 return 'AA & BB';
             }
             return d;
