@@ -656,30 +656,33 @@
       return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(monto);
     }
 
-    // NORMALIZACIÓN GARANTIZADA A FORMATO MM/YYYY
+    // NORMALIZACIÓN ESTRICTA Y ROBUSTA A FORMATO MM/YYYY (ej: "1/2026" -> "01/2026")
     function estandarizarPeriodo(str) {
       if (!str) return '';
-      let clean = str.trim().toLowerCase();
+      let clean = str.toString().trim().toLowerCase();
       
+      // Formato con barra (ej: "1/2026" o "01/2026")
       if (clean.includes('/')) {
         let parts = clean.split('/');
-        if (parts.length === 3) {
-          let mes = parts[1].padStart(2, '0');
-          let anio = parts[2].length === 2 ? `20${parts[2]}` : parts[2];
-          return `${mes}/${anio}`;
-        } else if (parts.length === 2) {
+        if (parts.length >= 2) {
           let mes = parts[0].padStart(2, '0');
           let anio = parts[1].length === 2 ? `20${parts[1]}` : parts[1];
           return `${mes}/${anio}`;
         }
       }
 
+      // Formato con guion (ej: "2026-01" o "01-2026")
       if (clean.includes('-')) {
         let parts = clean.split('-');
-        const dic = {'ene':'01','feb':'02','mar':'03','abr':'04','may':'05','jun':'06','jul':'07','ago':'08','sep':'09','oct':'10','nov':'11','dic':'12'};
-        let m = dic[parts[0].substring(0,3)];
-        let a = parts[1].length === 2 ? `20${parts[1]}` : parts[1];
-        if (m && a) return `${m}/${a}`;
+        if (parts[0].length === 4) { // YYYY-MM
+          let anio = parts[0];
+          let mes = parts[1].padStart(2, '0');
+          return `${mes}/${anio}`;
+        } else if (parts.length >= 2) { // MM-YYYY
+          let mes = parts[0].padStart(2, '0');
+          let anio = parts[1].length === 2 ? `20${parts[1]}` : parts[1];
+          return `${mes}/${anio}`;
+        }
       }
 
       return clean;
@@ -834,7 +837,7 @@
 
       const totalHorasPerdidas = totalDiasLiquidados * HORAS_POR_DIA;
 
-      // CÁLCULO DE HORAS PLANIFICADAS DINÁMICO POR FILTROS
+      // CÁLCULO DINÁMICO DE HORAS PLANIFICADAS
       let horasPlanificadasDivisor = 0;
       Object.keys(mapHorasPlanificadas).forEach(key => {
         const [m, y] = key.split('/');
@@ -878,6 +881,7 @@
       renderTablaAusentismo(filtered, tablaMonthFilter);
     }
 
+    // LÓGICA DE EVOLUCIÓN MENSUAL Y ACUMULADA INTERANUAL
     function renderTablaEvolucionAusentismo(filteredData) {
       const tbody = document.getElementById('tabla-evolucion-body');
       tbody.innerHTML = '';
