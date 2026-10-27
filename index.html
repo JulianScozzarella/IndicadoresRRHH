@@ -22,7 +22,7 @@
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 class="text-2xl font-bold text-gray-900">Dashboard de Ausentismo & Costos</h1>
-          <p class="text-sm text-gray-500">Análisis Financiero por Tipo de Licencia (Maternidad, Excedencia y Descuentos a $0 Costo Empresa)</p>
+          <p class="text-sm text-gray-500">Análisis Financiero por Tipo de Licencia (Maternidad/Excedencia a $0 y ART Empresa Nro. 14051 Computado)</p>
         </div>
       </div>
 
@@ -83,7 +83,7 @@
     <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-4">
       <div class="border-b border-gray-100 pb-3">
         <h3 class="text-lg font-bold text-gray-800">Impacto Económico por Criterio Financiero (+ 33% Cargas Sociales)</h3>
-        <p class="text-xs text-gray-400">Maternidad, Excedencia y Licencias sin Goce están computadas a $0 costo empresa</p>
+        <p class="text-xs text-gray-400">Concepto 14051 (Accidente Cargo Empresa) y 14050 (Inculpables) computados con costo real</p>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -98,10 +98,10 @@
           <p id="kpi-dias-inculpable" class="text-xs text-emerald-600 mt-1 font-medium">-- días afectando masa salarial</p>
         </div>
 
-        <!-- ART EMPRESA -->
+        <!-- ART EMPRESA (CONCEPTO 14051) -->
         <div class="bg-rose-50/60 border border-rose-200 p-4 rounded-xl">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase text-rose-800 tracking-wide">ART Empresa</span>
+            <span class="text-xs font-bold uppercase text-rose-800 tracking-wide">ART Empresa (Conc. 14051)</span>
             <span class="text-[10px] font-semibold px-2 py-0.5 bg-rose-100 text-rose-800 rounded-full">Costo Asumido</span>
           </div>
           <h3 id="kpi-costo-art-empresa" class="text-2xl font-extrabold text-rose-700 mt-2">$ --</h3>
@@ -257,27 +257,27 @@
       return d;
     }
 
-    // CLASIFICADOR FINANCIERO (INCLUYE MATERNIDAD Y EXCEDENCIA A COSTO $0)
-    function clasificarConcepto(motivoRaw, costoBruto) {
-      if (!motivoRaw) return { tipo: 'SIN_COSTO', label: 'Sin Costo / ANSES', color: 'gray' };
-      let m = motivoRaw.toLowerCase();
+    // CLASIFICADOR FINANCIERO ESPECÍFICO CON RECONOCIMIENTO DEL CONCEPTO 14051
+    function clasificarConcepto(motivoRaw, nroConcepto, costoBruto) {
+      const cod = nroConcepto ? nroConcepto.toString().trim() : '';
+      const m = motivoRaw ? motivoRaw.toLowerCase() : '';
 
-      // 1. Maternidad, Excedencia, Sin Goce, Injustificadas, Faltas -> SIN COSTO EMPRESA
-      if (m.includes('maternidad') || m.includes('excedencia') || m.includes('sin goce') || m.includes('injustificada') || m.includes('falta') || m.includes('suspension') || costoBruto <= 0) {
+      // 1. Maternidad, Excedencia, Sin Goce, Faltas, Injustificadas o importes <= 0 -> SIN COSTO EMPRESA
+      if (cod === '15102' || cod === '15107' || m.includes('maternidad') || m.includes('excedencia') || m.includes('sin goce') || m.includes('injustificada') || m.includes('falta') || m.includes('suspension') || costoBruto <= 0) {
         return { tipo: 'SIN_COSTO', label: 'Sin Costo / ANSES', color: 'gray' };
       }
 
-      // 2. ART Empresa (Costo Asumido)
-      if (m.includes('art empresa') || m.includes('accidente empresa') || m.includes('art emp')) {
-        return { tipo: 'ART_EMPRESA', label: 'ART (Empresa)', color: 'rose' };
+      // 2. ART Empresa (Concepto 14051 "Lic. Accidente a Cargo Empresa")
+      if (cod === '14051' || m.includes('14051') || m.includes('a cargo empresa') || m.includes('art empresa') || m.includes('empresa')) {
+        return { tipo: 'ART_EMPRESA', label: 'ART (Empresa - 14051)', color: 'rose' };
       }
 
-      // 3. ART Recuperable (Reembolsable)
+      // 3. ART Recuperable (Otras licencias de accidente)
       if (m.includes('accidente') || m.includes('art')) {
         return { tipo: 'ART_RECUPERABLE', label: 'ART (Recuperable)', color: 'amber' };
       }
 
-      // 4. Inculpables y Legales por defecto
+      // 4. Inculpables y Legales (Concepto 14050 y generales)
       return { tipo: 'INCULPABLE', label: 'Inculpable / Legal', color: 'emerald' };
     }
 
@@ -446,8 +446,9 @@
         const dias = parseNum(getVal(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
         const costoBruto = parseNum(getVal(item, ['Importe', 'Monto', 'Bruto', 'Costo', 'Columna S']));
         const motivo = getVal(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
-        
-        const clasif = clasificarConcepto(motivo, costoBruto);
+        const nroConcepto = getVal(item, ['Nro. de concep', 'Nro. concepto', 'Concepto']);
+
+        const clasif = clasificarConcepto(motivo, nroConcepto, costoBruto);
 
         totalDiasLiquidados += dias;
 
@@ -709,7 +710,7 @@
       });
     }
 
-    // --- RENDER DE LA TABLA ---
+    // --- RENDER DE LA TABLA CON RECONOCIMIENTO DE CONCEPTO 14051 ---
     function renderTabla(data, monthFilter) {
       const tbody = document.getElementById('tabla-body');
       tbody.innerHTML = '';
@@ -733,8 +734,9 @@
         const horas = dias * HORAS_POR_DIA;
         const costoBruto = parseNum(getVal(item, ['Importe', 'Monto', 'Bruto', 'Costo', 'Columna S']));
         const motivo = getVal(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
+        const nroConcepto = getVal(item, ['Nro. de concep', 'Nro. concepto', 'Concepto']);
         
-        const clasif = clasificarConcepto(motivo, costoBruto);
+        const clasif = clasificarConcepto(motivo, nroConcepto, costoBruto);
         
         let costoTotalItem = 0;
         if (clasif.tipo !== 'SIN_COSTO') {
