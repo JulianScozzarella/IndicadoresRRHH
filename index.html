@@ -640,13 +640,18 @@
       return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(monto);
     }
 
+    // FUNCIÓN DE FECHAS CORREGIDA
     function estandarizarPeriodo(str) {
       if (!str) return '';
       let clean = str.trim().toLowerCase();
       
       if (clean.includes('/')) {
         let parts = clean.split('/');
-        if (parts.length === 2) {
+        if (parts.length === 3) {
+          let mes = parts[1].padStart(2, '0');
+          let anio = parts[2].length === 2 ? `20${parts[2]}` : parts[2];
+          return `${mes}/${anio}`;
+        } else if (parts.length === 2) {
           let mes = parts[0].padStart(2, '0');
           let anio = parts[1].length === 2 ? `20${parts[1]}` : parts[1];
           return `${mes}/${anio}`;
@@ -664,6 +669,7 @@
       return clean;
     }
 
+    // INICIALIZACIÓN DE AUSENTISMO CORREGIDA
     function initAusentismo() {
       Promise.all([
         fetchCSV(URL_DATA_AUSENTISMO),
@@ -674,12 +680,12 @@
 
         mapHorasPlanificadas = {};
         rawDotacion.forEach(row => {
-          const rawPer = getValAus(row, ['tidad de emplea', 'periodo', 'mes', 'fecha']);
-          const hs = parseNum(getValAus(row, ['Horas', 'Horas Planificadas']));
+          const rawPer = getValAus(row, ['Período liqui', 'Período', 'Periodo', 'periodo', 'mes', 'fecha']);
+          const hs = parseNum(getValAus(row, ['Horas', 'Horas Planificadas', 'Horas Totales', 'Horas Estipuladas']));
           const key = estandarizarPeriodo(rawPer);
 
           if (hs > 0 && key) {
-            mapHorasPlanificadas[key] = hs;
+            mapHorasPlanificadas[key] = (mapHorasPlanificadas[key] || 0) + hs;
           }
         });
 
@@ -781,6 +787,7 @@
       renderDashboardAusentismo(currentFilteredData, selectedYear, selectedMonth);
     }
 
+    // RENDERING DE AUSENTISMO CORREGIDO
     function renderDashboardAusentismo(filtered, selectedYear, selectedMonth) {
       let totalDiasLiquidados = 0;
       let diasInculpable = 0, costoInculpable = 0;
@@ -824,12 +831,15 @@
         }
       });
 
-      if (horasPlanificadasDivisor === 0) horasPlanificadasDivisor = 1;
+      if (horasPlanificadasDivisor === 0) {
+        document.getElementById('kpi-tasa').textContent = `N/D`;
+        document.getElementById('kpi-tasa-sub').textContent = `${totalHorasPerdidas.toLocaleString()} hs / (Sin hs planificadas)`;
+      } else {
+        const tasa = ((totalHorasPerdidas / horasPlanificadasDivisor) * 100).toFixed(2);
+        document.getElementById('kpi-tasa').textContent = `${tasa}%`;
+        document.getElementById('kpi-tasa-sub').textContent = `${totalHorasPerdidas.toLocaleString()} hs / ${horasPlanificadasDivisor.toLocaleString()} hs`;
+      }
 
-      const tasa = ((totalHorasPerdidas / horasPlanificadasDivisor) * 100).toFixed(2);
-
-      document.getElementById('kpi-tasa').textContent = `${tasa}%`;
-      document.getElementById('kpi-tasa-sub').textContent = `${totalHorasPerdidas.toLocaleString()} hs / ${horasPlanificadasDivisor.toLocaleString()} hs`;
       document.getElementById('kpi-horas').textContent = `${totalHorasPerdidas.toLocaleString()} hs`;
       document.getElementById('kpi-dias').textContent = `${totalDiasLiquidados.toLocaleString()} d`;
 
