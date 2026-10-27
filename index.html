@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal Integral RH | Ausentismo & Horas Extras</title>
+  <title>Portal Integral RH | Control Operativo</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -25,7 +25,7 @@
 </head>
 <body class="bg-slate-950 font-sans text-slate-100 antialiased min-h-screen">
 
-  <!-- HEADER GLOBAL CON NAVEGACIÓN -->
+  <!-- HEADER GLOBAL CON NAVEGACIÓN EN 3 PESTAÑAS -->
   <header class="bg-slate-900/90 backdrop-blur text-white sticky top-0 z-50 border-b border-slate-800 shadow-xl">
     <div class="max-w-7xl mx-auto px-6 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
       <div>
@@ -36,11 +36,14 @@
       </div>
 
       <!-- NAVEGACIÓN ENTRE PESTAÑAS -->
-      <nav class="flex items-center bg-slate-950 p-1.5 rounded-xl border border-slate-800">
-        <button id="btnTabAusentismo" onclick="switchTab('ausentismo')" class="px-5 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all tab-btn-active">
+      <nav class="flex items-center bg-slate-950 p-1.5 rounded-xl border border-slate-800 gap-1">
+        <button id="btnTabAusentismo" onclick="switchTab('ausentismo')" class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all tab-btn-active">
           📊 Ausentismo & Costos
         </button>
-        <button id="btnTabHorasExtras" onclick="switchTab('horasExtras')" class="px-5 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all">
+        <button id="btnTabHistorial" onclick="switchTab('historial')" class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all">
+          📋 Historial de Licencias
+        </button>
+        <button id="btnTabHorasExtras" onclick="switchTab('horasExtras')" class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all">
           ⏱️ Horas Extras (Eventuales)
         </button>
       </nav>
@@ -48,11 +51,11 @@
   </header>
 
   <!-- ================================================================= -->
-  <!-- VISTA 1: DASHBOARD DE AUSENTISMO & COSTOS (MODO OSCURO) -->
+  <!-- VISTA 1: DASHBOARD DE AUSENTISMO & COSTOS -->
   <!-- ================================================================= -->
   <main id="viewAusentismo" class="max-w-7xl mx-auto p-6 space-y-6">
     
-    <!-- BARRA DE FILTROS PRINCIPALES FIJA (STICKY TOP) -->
+    <!-- BARRA DE FILTROS PRINCIPALES FIJA -->
     <section class="bg-slate-900/95 backdrop-blur p-5 rounded-2xl border border-slate-800 shadow-2xl sticky top-16 z-40 space-y-3">
       <div class="flex items-center justify-between border-b border-slate-800 pb-2">
         <h2 class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Filtros Principales de Ausentismo</h2>
@@ -90,7 +93,7 @@
       </div>
     </section>
 
-    <!-- SCORECARDS GENERALES OSCURAS -->
+    <!-- SCORECARDS GENERALES -->
     <section class="grid grid-cols-1 sm:grid-cols-3 gap-6">
       <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-lg">
         <p class="text-xs font-bold uppercase text-slate-400 tracking-wider">Tasa de Ausentismo Real</p>
@@ -111,7 +114,7 @@
       </div>
     </section>
 
-    <!-- DESGLOSE DE COSTOS FINANCIEROS OSCURO -->
+    <!-- DESGLOSE DE COSTOS FINANCIEROS -->
     <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg space-y-4">
       <div class="border-b border-slate-800 pb-3">
         <h3 class="text-lg font-bold text-slate-100">Impacto Económico por Criterio Financiero (+33% Cargas Sociales)</h3>
@@ -157,7 +160,7 @@
       </div>
     </section>
 
-    <!-- TABLA DE EVOLUCIÓN MENSUAL Y ACUMULADA OSCURA -->
+    <!-- TABLA DE EVOLUCIÓN MENSUAL Y ACUMULADA -->
     <section class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
       <div class="p-5 border-b border-slate-800">
         <h3 class="text-base font-bold text-slate-100">Evolución Mensual No Acumulada vs. Acumulado Interanual</h3>
@@ -186,7 +189,7 @@
       </div>
     </section>
 
-    <!-- GRÁFICOS OSCUROS -->
+    <!-- GRÁFICOS PRINCIPALES -->
     <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
@@ -229,17 +232,21 @@
         </div>
       </div>
     </section>
+  </main>
 
-    <!-- DETALLE DE REGISTROS OSCURO -->
+  <!-- ================================================================= -->
+  <!-- VISTA 2: PESTAÑA DEDICADA "HISTORIAL DE LICENCIAS" -->
+  <!-- ================================================================= -->
+  <main id="viewHistorial" class="hidden max-w-7xl mx-auto p-6 space-y-6">
     <section class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
       <div class="p-5 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h3 class="text-base font-bold text-slate-100">Detalle de Registros de Licencias</h3>
-          <p class="text-xs text-slate-400">Listado por legajo con categoría financiera y costo estimado</p>
+          <h3 class="text-xl font-bold text-slate-100">📋 Historial Completo de Licencias Registradas</h3>
+          <p class="text-xs text-slate-400">Listado detallado por legajo con categoría financiera y costo estimado</p>
         </div>
 
         <div class="flex items-center gap-2">
-          <label for="tabla-filter-month" class="text-xs font-semibold uppercase text-slate-400 whitespace-nowrap">Filtrar Mes Tabla:</label>
+          <label for="tabla-filter-month" class="text-xs font-semibold uppercase text-slate-400 whitespace-nowrap">Filtrar Período:</label>
           <select id="tabla-filter-month" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-indigo-500 focus:border-indigo-500">
             <option value="ALL">Todos los Meses de la muestra</option>
           </select>
@@ -268,7 +275,7 @@
   </main>
 
   <!-- ================================================================= -->
-  <!-- VISTA 2: DASHBOARD DE HORAS EXTRAS (PERSONAL EVENTUAL) -->
+  <!-- VISTA 3: DASHBOARD DE HORAS EXTRAS -->
   <!-- ================================================================= -->
   <main id="viewHorasExtras" class="hidden max-w-7xl mx-auto p-6 space-y-6">
     
@@ -552,7 +559,7 @@
   </main>
 
   <!-- ================================================================= -->
-  <!-- SCRIPTS Y LÓGICA DE FUNCIONAMIENTO COMPLETA -->
+  <!-- SCRIPTS Y LÓGICA COMPLETA DE FUNCIONAMIENTO -->
   <!-- ================================================================= -->
   <script>
     Chart.register(ChartDataLabels);
@@ -560,20 +567,29 @@
     // NAVEGACIÓN
     function switchTab(tabName) {
       const viewAus = document.getElementById('viewAusentismo');
+      const viewHis = document.getElementById('viewHistorial');
       const viewHE = document.getElementById('viewHorasExtras');
       const btnAus = document.getElementById('btnTabAusentismo');
+      const btnHis = document.getElementById('btnTabHistorial');
       const btnHE = document.getElementById('btnTabHorasExtras');
+
+      viewAus.classList.add('hidden');
+      viewHis.classList.add('hidden');
+      viewHE.classList.add('hidden');
+
+      btnAus.classList.remove('tab-btn-active');
+      btnHis.classList.remove('tab-btn-active');
+      btnHE.classList.remove('tab-btn-active');
 
       if (tabName === 'ausentismo') {
         viewAus.classList.remove('hidden');
-        viewHE.classList.add('hidden');
         btnAus.classList.add('tab-btn-active');
-        btnHE.classList.remove('tab-btn-active');
+      } else if (tabName === 'historial') {
+        viewHis.classList.remove('hidden');
+        btnHis.classList.add('tab-btn-active');
       } else {
-        viewAus.classList.add('hidden');
         viewHE.classList.remove('hidden');
         btnHE.classList.add('tab-btn-active');
-        btnAus.classList.remove('tab-btn-active');
       }
     }
 
@@ -640,6 +656,7 @@
       return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(monto);
     }
 
+    // NORMALIZACIÓN GARANTIZADA A FORMATO MM/YYYY
     function estandarizarPeriodo(str) {
       if (!str) return '';
       let clean = str.trim().toLowerCase();
@@ -678,7 +695,6 @@
 
         mapHorasPlanificadas = {};
         rawDotacion.forEach(row => {
-          // 'tidad de emplea' mapea la Columna A exacta de la solapa Dotacion_y_Horas
           const rawPer = getValAus(row, ['tidad de emplea', 'período liqui', 'período', 'periodo', 'mes', 'fecha']);
           const hs = parseNum(getValAus(row, ['horas', 'horas planificadas', 'horas totales']));
           const key = estandarizarPeriodo(rawPer);
@@ -818,6 +834,7 @@
 
       const totalHorasPerdidas = totalDiasLiquidados * HORAS_POR_DIA;
 
+      // CÁLCULO DE HORAS PLANIFICADAS DINÁMICO POR FILTROS
       let horasPlanificadasDivisor = 0;
       Object.keys(mapHorasPlanificadas).forEach(key => {
         const [m, y] = key.split('/');
