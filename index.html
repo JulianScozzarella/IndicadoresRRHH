@@ -21,8 +21,8 @@
     <header class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-4">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 class="text-2xl font-bold text-gray-900">Dashboard de Ausentismo</h1>
-          <p class="text-sm text-gray-500">Gestión de Recursos Humanos & Operaciones (Base 9hs/día)</p>
+          <h1 class="text-2xl font-bold text-gray-900">Dashboard de Ausentismo & Costos</h1>
+          <p class="text-sm text-gray-500">Análisis Financiero por Tipo de Licencia (Inculpables, ART y Sin Costo)</p>
         </div>
       </div>
 
@@ -58,24 +58,66 @@
       </div>
     </header>
 
-    <!-- SCORECARDS / KPIS -->
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-        <p class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Tasa de Ausentismo Real</p>
-        <h2 id="kpi-tasa" class="text-4xl font-extrabold text-blue-600 mt-2">-- %</h2>
+    <!-- SCORECARDS GENERALES -->
+    <section class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
+        <p class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Tasa de Ausentismo</p>
+        <h2 id="kpi-tasa" class="text-3xl font-extrabold text-blue-600 mt-2">-- %</h2>
         <p id="kpi-tasa-sub" class="text-xs text-gray-500 mt-1 font-medium">Horas Perdidas / Planificadas</p>
       </div>
 
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
         <p class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Horas Totales Perdidas</p>
-        <h2 id="kpi-horas" class="text-4xl font-extrabold text-red-500 mt-2">-- hs</h2>
-        <p class="text-xs text-gray-500 mt-1 font-medium">Calculado a 9 hs por día liquidado</p>
+        <h2 id="kpi-horas" class="text-3xl font-extrabold text-red-500 mt-2">-- hs</h2>
+        <p class="text-xs text-gray-500 mt-1 font-medium">Calculado a 9 hs por día</p>
       </div>
 
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-        <p class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Días Liquidados Perdidos</p>
-        <h2 id="kpi-dias" class="text-4xl font-extrabold text-amber-500 mt-2">-- d</h2>
-        <p class="text-xs text-gray-500 mt-1 font-medium">Suma total de días acumulados</p>
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
+        <p class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Días Liquidados Totales</p>
+        <h2 id="kpi-dias" class="text-3xl font-extrabold text-amber-500 mt-2">-- d</h2>
+        <p class="text-xs text-gray-500 mt-1 font-medium">Suma acumulada de ausencias</p>
+      </div>
+    </section>
+
+    <!-- SECCIÓN DE DESGLOSE DE COSTOS FINANCIEROS -->
+    <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-4">
+      <div class="border-b border-gray-100 pb-3">
+        <h3 class="text-lg font-bold text-gray-800">Impacto Económico por Tipo de Licencia (+ 33% Cargas Sociales)</h3>
+        <p class="text-xs text-gray-400">Desglose según la responsabilidad financiera de la empresa</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- COSTO INCULPABLES Y LEGALES -->
+        <div class="bg-emerald-50/60 border border-emerald-200 p-5 rounded-xl">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase text-emerald-800 tracking-wide">1. Inculpables & Legales</span>
+            <span class="text-xs font-semibold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full">Costo Directo</span>
+          </div>
+          <h3 id="kpi-costo-inculpable" class="text-2xl font-extrabold text-emerald-700 mt-2">$ --</h3>
+          <p id="kpi-dias-inculpable" class="text-xs text-emerald-600 mt-1 font-medium">-- días afectando masa salarial</p>
+        </div>
+
+        <!-- ACCIDENTES ART -->
+        <div class="bg-amber-50/60 border border-amber-200 p-5 rounded-xl">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase text-amber-800 tracking-wide">2. Accidentes Laborales (ART)</span>
+            <span class="text-xs font-semibold px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full">Cobertura ART</span>
+          </div>
+          <h3 id="kpi-costo-art" class="text-2xl font-extrabold text-amber-700 mt-2">$ --</h3>
+          <p id="kpi-dias-art" class="text-xs text-amber-600 mt-1 font-medium">-- días gestionados vía ART</p>
+        </div>
+
+        <!-- NO JUSTIFICADAS / SIN COSTO -->
+        <div class="bg-gray-50 border border-gray-200 p-5 rounded-xl">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase text-gray-600 tracking-wide">3. Sin Costo / Descontadas</span>
+            <span class="text-xs font-semibold px-2 py-0.5 bg-gray-200 text-gray-700 rounded-full">Sin Costo Salarial</span>
+          </div>
+          <h3 id="kpi-costo-sincosto" class="text-2xl font-extrabold text-gray-700 mt-2">$ 0</h3>
+          <p id="kpi-dias-sincosto" class="text-xs text-gray-500 mt-1 font-medium">-- días no abonados (solo costo hs perdidas)</p>
+        </div>
+
       </div>
     </section>
 
@@ -128,15 +170,14 @@
 
     </section>
 
-    <!-- TABLA DE DETALLE CON FILTRO DE MES EXCLUSIVO -->
+    <!-- TABLA DE DETALLE CON CLASIFICACIÓN Y COSTO -->
     <section class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
       <div class="p-5 border-b border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h3 class="text-base font-bold text-gray-800">Detalle de Registros de Licencias</h3>
-          <p class="text-xs text-gray-400">Listado detallado por legajo y ausencia</p>
+          <p class="text-xs text-gray-400">Listado por legajo con su grupo de clasificación y costo financiero</p>
         </div>
 
-        <!-- FILTRO DE MES EXCLUSIVO PARA LA TABLA -->
         <div class="flex items-center gap-2">
           <label for="tabla-filter-month" class="text-xs font-semibold uppercase text-gray-500 whitespace-nowrap">Filtrar Mes Tabla:</label>
           <select id="tabla-filter-month" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500">
@@ -153,9 +194,10 @@
               <th class="px-6 py-3">Empleado</th>
               <th class="px-6 py-3">Departamento</th>
               <th class="px-6 py-3">Concepto / Ausencia</th>
+              <th class="px-6 py-3">Categoría Financiera</th>
               <th class="px-6 py-3 text-center">Período</th>
-              <th class="px-6 py-3 text-center">Días Liquidados</th>
-              <th class="px-6 py-3 text-center">Horas Perdidas (x9)</th>
+              <th class="px-6 py-3 text-center">Días</th>
+              <th class="px-6 py-3 text-right">Costo Est. (+33% CS)</th>
             </tr>
           </thead>
           <tbody id="tabla-body" class="divide-y divide-gray-200">
@@ -174,6 +216,7 @@
     const URL_DOTACION_HORAS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRsPAbz--SGf1aJFcFOyLLdqxXZqPhpFSMxKbN6Oz9Em7AZjQmThmcboOzMDeptewjsqh7qo6C6oh27/pub?gid=847796593&single=true&output=csv';
 
     const HORAS_POR_DIA = 9;
+    const FACTOR_CARGAS_SOCIALES = 1.33;
 
     let rawAusentismo = [];
     let rawDotacion = [];
@@ -204,11 +247,34 @@
       return d;
     }
 
+    // CLASIFICADOR FINANCIERO DE LICENCIAS
+    function clasificarConcepto(motivoRaw) {
+      if (!motivoRaw) return { tipo: 'SIN_COSTO', label: 'Sin Costo / Injustificada', color: 'gray' };
+      let m = motivoRaw.toLowerCase();
+
+      // 1. Accidentes ART
+      if (m.includes('accidente') || m.includes('art')) {
+        return { tipo: 'ART', label: 'Accidente ART', color: 'amber' };
+      }
+
+      // 2. Sin Costo / No Justificadas / Sin Goce
+      if (m.includes('sin goce') || m.includes('injustificada') || m.includes('falta') || m.includes('suspension')) {
+        return { tipo: 'SIN_COSTO', label: 'Sin Costo / Injustificada', color: 'gray' };
+      }
+
+      // 3. Inculpables y Legales (por defecto si se pagan)
+      return { tipo: 'INCULPABLE', label: 'Inculpable / Legal', color: 'emerald' };
+    }
+
     function parseNum(val) {
       if (!val) return 0;
       let clean = val.toString().replace(/\./g, '').replace(',', '.').replace(/[^0-9.-]/g, '');
       let num = parseFloat(clean);
       return isNaN(num) ? 0 : num;
+    }
+
+    function formatPesos(monto) {
+      return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(monto);
     }
 
     function estandarizarPeriodo(str) {
@@ -269,7 +335,6 @@
         });
       });
 
-      // Listener para el filtro específico de la tabla
       document.getElementById('tabla-filter-month').addEventListener('change', (e) => {
         renderTabla(currentFilteredData, e.target.value);
       });
@@ -322,7 +387,6 @@
       Array.from(years).sort().forEach(y => selectYear.add(new Option(y, y)));
       Array.from(months).sort().forEach(m => selectMonth.add(new Option(`Mes ${m}`, m)));
 
-      // Poblar dropdown exclusivo de la tabla con los períodos específicos (ej: 01/2026, 02/2026, etc.)
       selectTablaMonth.innerHTML = '<option value="ALL">Todos los Meses de la muestra</option>';
       Array.from(periodosCompletos).sort().forEach(p => {
         selectTablaMonth.add(new Option(`Período ${p}`, p));
@@ -357,10 +421,28 @@
 
     function renderDashboard(filtered, selectedYear, selectedMonth) {
       let totalDiasLiquidados = 0;
+      
+      let diasInculpable = 0, costoInculpable = 0;
+      let diasArt = 0, costoArt = 0;
+      let diasSinCosto = 0;
 
       filtered.forEach(item => {
         const dias = parseNum(getVal(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
+        const costoBruto = parseNum(getVal(item, ['Importe', 'Monto', 'Bruto', 'Costo', 'Columna S']));
+        const motivo = getVal(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
+        const clasif = clasificarConcepto(motivo);
+
         totalDiasLiquidados += dias;
+
+        if (clasif.tipo === 'INCULPABLE') {
+          diasInculpable += dias;
+          costoInculpable += (costoBruto * FACTOR_CARGAS_SOCIALES);
+        } else if (clasif.tipo === 'ART') {
+          diasArt += dias;
+          costoArt += (costoBruto * FACTOR_CARGAS_SOCIALES);
+        } else if (clasif.tipo === 'SIN_COSTO') {
+          diasSinCosto += dias;
+        }
       });
 
       const totalHorasPerdidas = totalDiasLiquidados * HORAS_POR_DIA;
@@ -385,11 +467,20 @@
 
       const tasa = ((totalHorasPerdidas / horasPlanificadasDivisor) * 100).toFixed(2);
 
-      // KPIS
+      // KPIS GENERALES
       document.getElementById('kpi-tasa').textContent = `${tasa}%`;
       document.getElementById('kpi-tasa-sub').textContent = `${totalHorasPerdidas.toLocaleString()} hs / ${horasPlanificadasDivisor.toLocaleString()} hs`;
       document.getElementById('kpi-horas').textContent = `${totalHorasPerdidas.toLocaleString()} hs`;
       document.getElementById('kpi-dias').textContent = `${totalDiasLiquidados.toLocaleString()} d`;
+
+      // KPIS FINANCIEROS CLASIFICADOS
+      document.getElementById('kpi-costo-inculpable').textContent = formatPesos(costoInculpable);
+      document.getElementById('kpi-dias-inculpable').textContent = `${diasInculpable.toLocaleString()} días afectando masa salarial`;
+
+      document.getElementById('kpi-costo-art').textContent = formatPesos(costoArt);
+      document.getElementById('kpi-dias-art').textContent = `${diasArt.toLocaleString()} días gestionados vía ART`;
+
+      document.getElementById('kpi-dias-sincosto').textContent = `${diasSinCosto.toLocaleString()} días no abonados (solo hs perdidas)`;
 
       // RENDERIZAR GRÁFICOS Y TABLA
       renderChartComparativo(rawAusentismo);
@@ -595,7 +686,7 @@
       });
     }
 
-    // --- RENDER DE LA TABLA (CON FILTRADO EXCLUSIVO DE MES) ---
+    // --- RENDER DE LA TABLA CON CATEGORÍA Y COSTO FINANCIERO ---
     function renderTabla(data, monthFilter) {
       const tbody = document.getElementById('tabla-body');
       tbody.innerHTML = '';
@@ -610,14 +701,28 @@
       }
 
       if (rowsToDisplay.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-4 text-center text-gray-400">No hay registros para el mes seleccionado.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="px-6 py-4 text-center text-gray-400">No hay registros para el mes seleccionado.</td></tr>`;
         return;
       }
 
       rowsToDisplay.forEach(item => {
         const dias = parseNum(getVal(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
         const horas = dias * HORAS_POR_DIA;
+        const costoBruto = parseNum(getVal(item, ['Importe', 'Monto', 'Bruto', 'Costo', 'Columna S']));
+        const motivo = getVal(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
+        const clasif = clasificarConcepto(motivo);
+        
+        let costoTotalItem = 0;
+        if (clasif.tipo !== 'SIN_COSTO') {
+          costoTotalItem = costoBruto * FACTOR_CARGAS_SOCIALES;
+        }
+
         const dept = normalizarDepartamento(getVal(item, ['Departamento', 'Sector']));
+
+        // Badges dinámicos según categoría
+        let badgeClass = "bg-emerald-100 text-emerald-800";
+        if (clasif.tipo === 'ART') badgeClass = "bg-amber-100 text-amber-800";
+        if (clasif.tipo === 'SIN_COSTO') badgeClass = "bg-gray-100 text-gray-700";
 
         const tr = document.createElement('tr');
         tr.className = "hover:bg-gray-50";
@@ -625,10 +730,11 @@
           <td class="px-6 py-4 font-medium text-gray-900">${getVal(item, ['Legajo']) || '-'}</td>
           <td class="px-6 py-4">${getVal(item, ['Apellidos'])} ${getVal(item, ['Nombre'])}</td>
           <td class="px-6 py-4">${dept}</td>
-          <td class="px-6 py-4"><span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">${getVal(item, ['Desc. de concep', 'Concepto']) || 'N/A'}</span></td>
+          <td class="px-6 py-4 font-medium text-gray-700">${motivo || 'N/A'}</td>
+          <td class="px-6 py-4"><span class="${badgeClass} text-xs font-semibold px-2.5 py-1 rounded-md">${clasif.label}</span></td>
           <td class="px-6 py-4 text-center font-medium text-gray-700">${getVal(item, ['Período liqui', 'Período']) || '-'}</td>
           <td class="px-6 py-4 text-center font-bold text-amber-600">${dias} d</td>
-          <td class="px-6 py-4 text-center font-semibold text-gray-700">${horas} hs</td>
+          <td class="px-6 py-4 text-right font-bold ${clasif.tipo === 'SIN_COSTO' ? 'text-gray-400' : 'text-emerald-600'}">${formatPesos(costoTotalItem)}</td>
         `;
         tbody.appendChild(tr);
       });
