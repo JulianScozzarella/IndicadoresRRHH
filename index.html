@@ -22,7 +22,7 @@
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 class="text-2xl font-bold text-gray-900">Dashboard de Ausentismo & Costos</h1>
-          <p class="text-sm text-gray-500">Análisis Financiero por Tipo de Licencia (Maternidad/Excedencia a $0 y ART Empresa Nro. 14051 Computado)</p>
+          <p class="text-sm text-gray-500">Análisis Financiero & Cuadro de Evolución Interanual (Mensual vs. Acumulado)</p>
         </div>
       </div>
 
@@ -131,6 +131,36 @@
       </div>
     </section>
 
+    <!-- TABLA DE EVOLUCIÓN MES A MES VS ACUMULADO (NUEVA) -->
+    <section class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+      <div class="p-5 border-b border-gray-200">
+        <h3 class="text-base font-bold text-gray-800">Evolución Mensual No Acumulada vs. Acumulado Interanual</h3>
+        <p class="text-xs text-gray-400">Comparación del % de ausentismo puntual de cada mes y su evolución acumulada (2025 vs 2026)</p>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left text-gray-500">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th class="px-4 py-3" rowspan="2">Mes</th>
+              <th class="px-4 py-3 text-center border-l border-gray-200 bg-emerald-50/50 text-emerald-900" colspan="2">Año 2025</th>
+              <th class="px-4 py-3 text-center border-l border-gray-200 bg-blue-50/50 text-blue-900" colspan="2">Año 2026</th>
+              <th class="px-4 py-3 text-center border-l border-gray-200" rowspan="2">Var. Mensual (26 vs 25)</th>
+            </tr>
+            <tr>
+              <th class="px-4 py-2 text-center border-l border-gray-200 bg-emerald-50/30 text-emerald-800">% Mensual</th>
+              <th class="px-4 py-2 text-center bg-emerald-50/30 text-emerald-800">% Acumulado</th>
+              <th class="px-4 py-2 text-center border-l border-gray-200 bg-blue-50/30 text-blue-800">% Mensual</th>
+              <th class="px-4 py-2 text-center bg-blue-50/30 text-blue-800">% Acumulado</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-evolucion-body" class="divide-y divide-gray-200 text-xs">
+            <!-- Filas generadas dinámicamente -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
     <!-- GRÁFICO 1: EVOLUCIÓN MENSUAL -->
     <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
@@ -180,7 +210,7 @@
 
     </section>
 
-    <!-- TABLA DE DETALLE -->
+    <!-- TABLA DE DETALLE DE REGISTROS -->
     <section class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
       <div class="p-5 border-b border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -257,27 +287,22 @@
       return d;
     }
 
-    // CLASIFICADOR FINANCIERO ESPECÍFICO CON RECONOCIMIENTO DEL CONCEPTO 14051
     function clasificarConcepto(motivoRaw, nroConcepto, costoBruto) {
       const cod = nroConcepto ? nroConcepto.toString().trim() : '';
       const m = motivoRaw ? motivoRaw.toLowerCase() : '';
 
-      // 1. Maternidad, Excedencia, Sin Goce, Faltas, Injustificadas o importes <= 0 -> SIN COSTO EMPRESA
       if (cod === '15102' || cod === '15107' || m.includes('maternidad') || m.includes('excedencia') || m.includes('sin goce') || m.includes('injustificada') || m.includes('falta') || m.includes('suspension') || costoBruto <= 0) {
         return { tipo: 'SIN_COSTO', label: 'Sin Costo / ANSES', color: 'gray' };
       }
 
-      // 2. ART Empresa (Concepto 14051 "Lic. Accidente a Cargo Empresa")
       if (cod === '14051' || m.includes('14051') || m.includes('a cargo empresa') || m.includes('art empresa') || m.includes('empresa')) {
         return { tipo: 'ART_EMPRESA', label: 'ART (Empresa - 14051)', color: 'rose' };
       }
 
-      // 3. ART Recuperable (Otras licencias de accidente)
       if (m.includes('accidente') || m.includes('art')) {
         return { tipo: 'ART_RECUPERABLE', label: 'ART (Recuperable)', color: 'amber' };
       }
 
-      // 4. Inculpables y Legales (Concepto 14050 y generales)
       return { tipo: 'INCULPABLE', label: 'Inculpable / Legal', color: 'emerald' };
     }
 
@@ -506,13 +531,99 @@
 
       document.getElementById('kpi-dias-sincosto').textContent = `${diasSinCosto.toLocaleString()} días (Maternidad/Excedencia/Faltas)`;
 
-      // RENDERIZAR GRÁFICOS Y TABLA
+      // RENDERIZAR NUEVA TABLA DE EVOLUCIÓN ACUMULADA
+      renderTablaEvolucion(filtered);
+
+      // RENDERIZAR GRÁFICOS Y TABLA DETALLE
       renderChartComparativo(rawAusentismo);
       renderChartDepartamento(rawAusentismo);
       renderChartMotivo(filtered);
 
       const tablaMonthFilter = document.getElementById('tabla-filter-month').value;
       renderTabla(filtered, tablaMonthFilter);
+    }
+
+    // --- NUEVA TABLA DE EVOLUCIÓN MES A MES VS ACUMULADO ---
+    function renderTablaEvolucion(filteredData) {
+      const tbody = document.getElementById('tabla-evolucion-body');
+      tbody.innerHTML = '';
+
+      const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+      
+      const hsPerdidas2025 = new Array(12).fill(0);
+      const hsPerdidas2026 = new Array(12).fill(0);
+
+      filteredData.forEach(item => {
+        const p = estandarizarPeriodo(getVal(item, ['Período liqui', 'Período', 'Periodo']));
+        if (p && p.includes('/')) {
+          const [m, y] = p.split('/');
+          const mesIdx = parseInt(m, 10) - 1;
+          const dias = parseNum(getVal(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
+          const hs = dias * HORAS_POR_DIA;
+
+          if (mesIdx >= 0 && mesIdx < 12) {
+            if (y === '2025') hsPerdidas2025[mesIdx] += hs;
+            if (y === '2026') hsPerdidas2026[mesIdx] += hs;
+          }
+        }
+      });
+
+      let acumHs2025 = 0, acumPlan2025 = 0;
+      let acumHs2026 = 0, acumPlan2026 = 0;
+
+      mesesNombres.forEach((nombreMes, i) => {
+        const mKey = (i + 1).toString().padStart(2, '0');
+        const plan2025 = mapHorasPlanificadas[`${mKey}/2025`] || 19440;
+        const plan2026 = mapHorasPlanificadas[`${mKey}/2026`] || 19440;
+
+        const hs2025 = hsPerdidas2025[i];
+        const hs2026 = hsPerdidas2026[i];
+
+        // Tasas Mensuales Puntuadas
+        const tasaMensual2025 = plan2025 > 0 ? ((hs2025 / plan2025) * 100) : 0;
+        const tasaMensual2026 = plan2026 > 0 ? ((hs2026 / plan2026) * 100) : 0;
+
+        // Acumulaciones
+        acumHs2025 += hs2025;
+        acumPlan2025 += plan2025;
+
+        acumHs2026 += hs2026;
+        acumPlan2026 += plan2026;
+
+        const tasaAcum2025 = acumPlan2025 > 0 ? ((acumHs2025 / acumPlan2025) * 100) : 0;
+        const tasaAcum2026 = acumPlan2026 > 0 ? ((acumHs2026 / acumPlan2026) * 100) : 0;
+
+        // Variación
+        const diff = tasaMensual2026 - tasaMensual2025;
+        let badgeDiff = `<span class="text-gray-400">-</span>`;
+        if (hs2026 > 0 || hs2025 > 0) {
+          if (diff > 0) {
+            badgeDiff = `<span class="bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded">+${diff.toFixed(2)}%</span>`;
+          } else if (diff < 0) {
+            badgeDiff = `<span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded">${diff.toFixed(2)}%</span>`;
+          } else {
+            badgeDiff = `<span class="bg-gray-100 text-gray-700 font-bold px-2 py-0.5 rounded">0.00%</span>`;
+          }
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-gray-50";
+        tr.innerHTML = `
+          <td class="px-4 py-3 font-bold text-gray-800">${nombreMes}</td>
+          
+          <!-- 2025 -->
+          <td class="px-4 py-3 text-center border-l border-gray-200 font-medium ${hs2025 > 0 ? 'text-gray-900' : 'text-gray-400'}">${tasaMensual2025.toFixed(2)}%</td>
+          <td class="px-4 py-3 text-center font-semibold text-emerald-700 bg-emerald-50/20">${tasaAcum2025.toFixed(2)}%</td>
+          
+          <!-- 2026 -->
+          <td class="px-4 py-3 text-center border-l border-gray-200 font-medium ${hs2026 > 0 ? 'text-gray-900' : 'text-gray-400'}">${hs2026 > 0 ? tasaMensual2026.toFixed(2) + '%' : '-'}</td>
+          <td class="px-4 py-3 text-center font-semibold text-blue-700 bg-blue-50/20">${hs2026 > 0 ? tasaAcum2026.toFixed(2) + '%' : '-'}</td>
+          
+          <!-- Variación -->
+          <td class="px-4 py-3 text-center border-l border-gray-200">${badgeDiff}</td>
+        `;
+        tbody.appendChild(tr);
+      });
     }
 
     // --- 1. EVOLUCIÓN MENSUAL ---
@@ -710,7 +821,7 @@
       });
     }
 
-    // --- RENDER DE LA TABLA CON RECONOCIMIENTO DE CONCEPTO 14051 ---
+    // --- RENDER DE LA TABLA DE DETALLE DE REGISTROS ---
     function renderTabla(data, monthFilter) {
       const tbody = document.getElementById('tabla-body');
       tbody.innerHTML = '';
@@ -745,7 +856,6 @@
 
         const dept = normalizarDepartamento(getVal(item, ['Departamento', 'Sector']));
 
-        // Badges dinámicos
         let badgeClass = "bg-emerald-100 text-emerald-800";
         if (clasif.tipo === 'ART_EMPRESA') badgeClass = "bg-rose-100 text-rose-800";
         if (clasif.tipo === 'ART_RECUPERABLE') badgeClass = "bg-amber-100 text-amber-800";
