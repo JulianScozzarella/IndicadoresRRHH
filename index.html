@@ -1,1813 +1,1759 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal Integral RH | Control Operativo</title>
-  
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Chart.js + Plugin DataLabels -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
-  <!-- SheetJS & PapaParse -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-
-  <style>
-    .tab-btn-active {
-      background-color: #4f46e5 !important;
-      color: #ffffff !important;
-      font-weight: 700 !important;
-      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Integral RH | Control Operativo</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js + Plugin DataLabels -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <!-- SheetJS & PapaParse -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <style>
+        .tab-btn-active {
+            background-color: #4f46e5 !important;
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+        }
+    </style>
 </head>
 <body class="bg-slate-950 font-sans text-slate-100 antialiased min-h-screen">
 
-  <!-- HEADER GLOBAL CON NAVEGACIÓN EN 3 PESTAÑAS -->
-  <header class="bg-slate-900/90 backdrop-blur text-white sticky top-0 z-50 border-b border-slate-800 shadow-xl">
-    <div class="max-w-7xl mx-auto px-6 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
-      <div>
-        <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-          <span>🏢</span> Portal de Control Operativo & Recursos Humanos
-        </h1>
-        <p class="text-xs text-slate-400">Análisis Interanual Unificado (Modo Oscuro)</p>
-      </div>
-
-      <!-- NAVEGACIÓN ENTRE PESTAÑAS -->
-      <nav class="flex items-center bg-slate-950 p-1.5 rounded-xl border border-slate-800 gap-1">
-        <button id="btnTabAusentismo" onclick="switchTab('ausentismo')" class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all tab-btn-active">
-          📊 Ausentismo & Costos
-        </button>
-        <button id="btnTabHistorial" onclick="switchTab('historial')" class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all">
-          📋 Historial de Licencias
-        </button>
-        <button id="btnTabHorasExtras" onclick="switchTab('horasExtras')" class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all">
-          ⏱️ Horas Extras (Eventuales)
-        </button>
-      </nav>
-    </div>
-  </header>
-
-  <!-- ================================================================= -->
-  <!-- VISTA 1: DASHBOARD DE AUSENTISMO & COSTOS -->
-  <!-- ================================================================= -->
-  <main id="viewAusentismo" class="max-w-7xl mx-auto p-6 space-y-6">
-    
-    <!-- BARRA DE FILTROS PRINCIPALES FIJA CON MULTI-SELECCIÓN -->
-    <section class="bg-slate-900/95 backdrop-blur p-5 rounded-2xl border border-slate-800 shadow-2xl sticky top-16 z-40 space-y-3">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-        <h2 class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Filtros Principales de Ausentismo (Multi-Selección)</h2>
-        <button onclick="limpiarFiltrosAusentismo()" class="text-xs font-semibold text-slate-400 hover:text-white bg-slate-800 px-3 py-1 rounded-lg border border-slate-700 transition-colors">
-          🧹 Limpiar Filtros
-        </button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Dropdown Año -->
-        <div class="relative">
-          <label class="block text-xs font-medium text-slate-300 mb-1">Año(s):</label>
-          <button type="button" onclick="toggleDropdown('ddYearAus')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
-            <span id="labelYearAus" class="truncate">Todos los Años</span>
-            <span class="text-xs text-slate-500">▼</span>
-          </button>
-          <div id="ddYearAus" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200">
-            <!-- Opciones JS -->
-          </div>
+    <!-- HEADER GLOBAL CON NAVEGACIÓN EN 3 PESTAÑAS -->
+    <header class="bg-slate-900/90 backdrop-blur text-white sticky top-0 z-50 border-b border-slate-800 shadow-xl">
+        <div class="max-w-7xl mx-auto px-6 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div>
+                <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                    <span>🏢</span> Portal de Control Operativo & Recursos Humanos
+                </h1>
+                <p class="text-xs text-slate-400">Análisis Interanual Unificado (Modo Oscuro)</p>
+            </div>
+            
+            <!-- NAVEGACIÓN ENTRE PESTAÑAS -->
+            <nav class="flex items-center bg-slate-950 p-1.5 rounded-xl border border-slate-800 gap-1">
+                <button id="btnTabAusentismo" onclick="switchTab('ausentismo')" class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all tab-btn-active">
+                    📊 Ausentismo & Costos
+                </button>
+                <button id="btnTabHistorial" onclick="switchTab('historial')" class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all">
+                    📋 Historial de Licencias
+                </button>
+                <button id="btnTabHorasExtras" onclick="switchTab('horasExtras')" class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all">
+                    ⏱️ Horas Extras (Eventuales)
+                </button>
+            </nav>
         </div>
+    </header>
 
-        <!-- Dropdown Mes -->
-        <div class="relative">
-          <label class="block text-xs font-medium text-slate-300 mb-1">Período / Mes(es):</label>
-          <button type="button" onclick="toggleDropdown('ddMonthAus')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
-            <span id="labelMonthAus" class="truncate">Todos los Meses</span>
-            <span class="text-xs text-slate-500">▼</span>
-          </button>
-          <div id="ddMonthAus" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200">
-            <!-- Opciones JS -->
-          </div>
-        </div>
+    <!-- VISTA 1: DASHBOARD DE AUSENTISMO & COSTOS -->
+    <main id="viewAusentismo" class="max-w-7xl mx-auto p-6 space-y-6">
+        <section class="bg-slate-900/95 backdrop-blur p-5 rounded-2xl border border-slate-800 shadow-2xl sticky top-16 z-40 space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <h2 class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Filtros Principales de Ausentismo (Multi-Selección)</h2>
+                <button onclick="limpiarFiltrosAusentismo()" class="text-xs font-semibold text-slate-400 hover:text-white bg-slate-800 px-3 py-1 rounded-lg border border-slate-700 transition-colors">
+                    🧹 Limpiar Filtros
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="relative">
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Año(s):</label>
+                    <button type="button" onclick="toggleDropdown('ddYearAus')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
+                        <span id="labelYearAus" class="truncate">Todos los Años</span>
+                        <span class="text-xs text-slate-500">▼</span>
+                    </button>
+                    <div id="ddYearAus" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200"></div>
+                </div>
 
-        <!-- Dropdown Departamento -->
-        <div class="relative">
-          <label class="block text-xs font-medium text-slate-300 mb-1">Departamento(s):</label>
-          <button type="button" onclick="toggleDropdown('ddDeptAus')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
-            <span id="labelDeptAus" class="truncate">Todos los Departamentos</span>
-            <span class="text-xs text-slate-500">▼</span>
-          </button>
-          <div id="ddDeptAus" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200">
-            <!-- Opciones JS -->
-          </div>
-        </div>
+                <div class="relative">
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Período / Mes(es):</label>
+                    <button type="button" onclick="toggleDropdown('ddMonthAus')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
+                        <span id="labelMonthAus" class="truncate">Todos los Meses</span>
+                        <span class="text-xs text-slate-500">▼</span>
+                    </button>
+                    <div id="ddMonthAus" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200"></div>
+                </div>
 
-        <!-- Dropdown Motivo -->
-        <div class="relative">
-          <label class="block text-xs font-medium text-slate-300 mb-1">Tipo / Concepto(s):</label>
-          <button type="button" onclick="toggleDropdown('ddMotivoAus')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
-            <span id="labelMotivoAus" class="truncate">Todos los Conceptos</span>
-            <span class="text-xs text-slate-500">▼</span>
-          </button>
-          <div id="ddMotivoAus" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200">
-            <!-- Opciones JS -->
-          </div>
-        </div>
-      </div>
-    </section>
+                <div class="relative">
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Departamento(s):</label>
+                    <button type="button" onclick="toggleDropdown('ddDeptAus')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
+                        <span id="labelDeptAus" class="truncate">Todos los Departamentos</span>
+                        <span class="text-xs text-slate-500">▼</span>
+                    </button>
+                    <div id="ddDeptAus" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200"></div>
+                </div>
 
-    <!-- SCORECARDS GENERALES -->
-    <section class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-      <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-lg">
-        <p class="text-xs font-bold uppercase text-slate-400 tracking-wider">Tasa de Ausentismo Real</p>
-        <h3 id="kpi-tasa" class="text-3xl font-extrabold text-blue-400 mt-2">-- %</h3>
-        <p id="kpi-tasa-sub" class="text-xs text-slate-400 mt-1 font-medium">Horas Perdidas / Horas Planificadas</p>
-      </div>
+                <div class="relative">
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Tipo / Concepto(s):</label>
+                    <button type="button" onclick="toggleDropdown('ddMotivoAus')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
+                        <span id="labelMotivoAus" class="truncate">Todos los Conceptos</span>
+                        <span class="text-xs text-slate-500">▼</span>
+                    </button>
+                    <div id="ddMotivoAus" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200"></div>
+                </div>
+            </div>
+        </section>
 
-      <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-lg">
-        <p class="text-xs font-bold uppercase text-slate-400 tracking-wider">Horas Totales Perdidas</p>
-        <h3 id="kpi-horas" class="text-3xl font-extrabold text-rose-500 mt-2">-- hs</h3>
-        <p class="text-xs text-slate-400 mt-1 font-medium">Jornadas calculadas a 9 hs/día</p>
-      </div>
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-lg">
+                <p class="text-xs font-bold uppercase text-slate-400 tracking-wider">Tasa de Ausentismo Real</p>
+                <h3 id="kpi-tasa" class="text-3xl font-extrabold text-blue-400 mt-2">-- %</h3>
+                <p id="kpi-tasa-sub" class="text-xs text-slate-400 mt-1 font-medium">Horas Perdidas / Horas Planificadas</p>
+            </div>
+            <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-lg">
+                <p class="text-xs font-bold uppercase text-slate-400 tracking-wider">Horas Totales Perdidas</p>
+                <h3 id="kpi-horas" class="text-3xl font-extrabold text-rose-500 mt-2">-- hs</h3>
+                <p class="text-xs text-slate-400 mt-1 font-medium">Jornadas calculadas a 9 hs/día</p>
+            </div>
+            <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-lg">
+                <p class="text-xs font-bold uppercase text-slate-400 tracking-wider">Días Liquidados Totales</p>
+                <h3 id="kpi-dias" class="text-3xl font-extrabold text-amber-400 mt-2">-- d</h3>
+                <p class="text-xs text-slate-400 mt-1 font-medium">Suma acumulada de ausencias</p>
+            </div>
+        </section>
 
-      <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-lg">
-        <p class="text-xs font-bold uppercase text-slate-400 tracking-wider">Días Liquidados Totales</p>
-        <h3 id="kpi-dias" class="text-3xl font-extrabold text-amber-400 mt-2">-- d</h3>
-        <p class="text-xs text-slate-400 mt-1 font-medium">Suma acumulada de ausencias</p>
-      </div>
-    </section>
+        <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg space-y-4">
+            <div class="border-b border-slate-800 pb-3">
+                <h3 class="text-lg font-bold text-slate-100">Impacto Económico por Criterio Financiero (+33% Cargas Sociales)</h3>
+                <p class="text-xs text-slate-400">Desglose según la responsabilidad de pago del concepto de licencia</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-emerald-950/40 border border-emerald-800/50 p-4 rounded-xl">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase text-emerald-300">Inculpables & Legales</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 bg-emerald-900/80 text-emerald-300 rounded-full">Costo Directo</span>
+                    </div>
+                    <h4 id="kpi-costo-inculpable" class="text-2xl font-extrabold text-emerald-400 mt-2">$ --</h4>
+                    <p id="kpi-dias-inculpable" class="text-xs text-emerald-300/70 mt-1">-- días afectando masa salarial</p>
+                </div>
+                <div class="bg-rose-950/40 border border-rose-800/50 p-4 rounded-xl">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase text-rose-300">ART Empresa (14051)</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 bg-rose-900/80 text-rose-300 rounded-full">Costo Asumido</span>
+                    </div>
+                    <h4 id="kpi-costo-art-empresa" class="text-2xl font-extrabold text-rose-400 mt-2">$ --</h4>
+                    <p id="kpi-dias-art-empresa" class="text-xs text-rose-300/70 mt-1">-- días a cargo empresa</p>
+                </div>
+                <div class="bg-amber-950/40 border border-amber-800/50 p-4 rounded-xl">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase text-amber-300">ART Recuperable</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 bg-amber-900/80 text-amber-300 rounded-full">Reembolsable</span>
+                    </div>
+                    <h4 id="kpi-costo-art-recuperable" class="text-2xl font-extrabold text-amber-400 mt-2">$ --</h4>
+                    <p id="kpi-dias-art-recuperable" class="text-xs text-amber-300/70 mt-1">-- días a tramitar con ART</p>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase text-slate-400">Sin Costo / ANSES</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 bg-slate-800 text-slate-300 rounded-full">No Abonado ($0)</span>
+                    </div>
+                    <h4 id="kpi-costo-sincosto" class="text-2xl font-extrabold text-slate-300 mt-2">$ 0</h4>
+                    <p id="kpi-dias-sincosto" class="text-xs text-slate-500 mt-1">-- días (Maternidad/Excedencia/Faltas)</p>
+                </div>
+            </div>
+        </section>
 
-    <!-- DESGLOSE DE COSTOS FINANCIEROS -->
-    <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg space-y-4">
-      <div class="border-b border-slate-800 pb-3">
-        <h3 class="text-lg font-bold text-slate-100">Impacto Económico por Criterio Financiero (+33% Cargas Sociales)</h3>
-        <p class="text-xs text-slate-400">Desglose según la responsabilidad de pago del concepto de licencia</p>
-      </div>
+        <section class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
+            <div class="p-5 border-b border-slate-800">
+                <h3 class="text-base font-bold text-slate-100">Evolución Mensual No Acumulada vs. Acumulado Interanual</h3>
+                <p class="text-xs text-slate-400">Cálculo exacto del % de ausentismo con horas estipuladas independientes por año</p>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-slate-300">
+                    <thead class="text-xs text-slate-300 uppercase bg-slate-950 border-b border-slate-800">
+                        <tr>
+                            <th class="px-4 py-3" rowspan="2">Mes</th>
+                            <th class="px-4 py-3 text-center border-l border-slate-800 bg-emerald-950/40 text-emerald-300" colspan="2">Año 2025</th>
+                            <th class="px-4 py-3 text-center border-l border-slate-800 bg-blue-950/40 text-blue-300" colspan="2">Año 2026</th>
+                            <th class="px-4 py-3 text-center border-l border-slate-800" rowspan="2">Var. Mensual (26 vs 25)</th>
+                        </tr>
+                        <tr>
+                            <th class="px-4 py-2 text-center border-l border-slate-800 bg-emerald-950/20 text-emerald-400">% Mensual</th>
+                            <th class="px-4 py-2 text-center bg-emerald-950/20 text-emerald-400">% Acumulado</th>
+                            <th class="px-4 py-2 text-center border-l border-slate-800 bg-blue-950/20 text-blue-400">% Mensual</th>
+                            <th class="px-4 py-2 text-center bg-blue-950/20 text-blue-400">% Acumulado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-evolucion-body" class="divide-y divide-slate-800 text-xs"></tbody>
+                </table>
+            </div>
+        </section>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-emerald-950/40 border border-emerald-800/50 p-4 rounded-xl">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase text-emerald-300">Inculpables & Legales</span>
-            <span class="text-[10px] font-bold px-2 py-0.5 bg-emerald-900/80 text-emerald-300 rounded-full">Costo Directo</span>
-          </div>
-          <h4 id="kpi-costo-inculpable" class="text-2xl font-extrabold text-emerald-400 mt-2">$ --</h4>
-          <p id="kpi-dias-inculpable" class="text-xs text-emerald-300/70 mt-1">-- días afectando masa salarial</p>
-        </div>
+        <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-100">1. Evolución Mensual Comparativa (Horas Perdidas)</h3>
+                    <p class="text-xs text-slate-400">Tendencia mensual superpuesta entre años</p>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
+                    <label class="flex items-center gap-1.5 text-xs font-semibold cursor-pointer text-slate-300">
+                        <input type="checkbox" id="chart-year-2025" checked class="rounded text-emerald-500 bg-slate-900 border-slate-700 w-4 h-4">
+                        <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> 2025
+                    </label>
+                    <div class="h-4 w-px bg-slate-800"></div>
+                    <label class="flex items-center gap-1.5 text-xs font-semibold cursor-pointer text-slate-300">
+                        <input type="checkbox" id="chart-year-2026" checked class="rounded text-blue-500 bg-slate-900 border-slate-700 w-4 h-4">
+                        <span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span> 2026
+                    </label>
+                </div>
+            </div>
+            <div class="h-80">
+                <canvas id="chart-comparativo"></canvas>
+            </div>
+        </section>
 
-        <div class="bg-rose-950/40 border border-rose-800/50 p-4 rounded-xl">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase text-rose-300">ART Empresa (14051)</span>
-            <span class="text-[10px] font-bold px-2 py-0.5 bg-rose-900/80 text-rose-300 rounded-full">Costo Asumido</span>
-          </div>
-          <h4 id="kpi-costo-art-empresa" class="text-2xl font-extrabold text-rose-400 mt-2">$ --</h4>
-          <p id="kpi-dias-art-empresa" class="text-xs text-rose-300/70 mt-1">-- días a cargo empresa</p>
-        </div>
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-7 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
+                <h3 class="text-lg font-bold text-slate-100 mb-1">2. Horas Perdidas por Departamento</h3>
+                <p class="text-xs text-slate-400 mb-6">Ordenado de mayor a menor impacto (Lobby Bar y Las Vajillas unificados en AA & BB)</p>
+                <div class="h-[420px]">
+                    <canvas id="chart-departamento"></canvas>
+                </div>
+            </div>
+            <div class="lg:col-span-5 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
+                <h3 class="text-lg font-bold text-slate-100 mb-1">3. Distribución por Tipo de Ausencia</h3>
+                <p class="text-xs text-slate-400 mb-4">Proporción de días perdidos por concepto</p>
+                <div class="h-[420px] flex items-center justify-center">
+                    <canvas id="chart-motivo"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
 
-        <div class="bg-amber-950/40 border border-amber-800/50 p-4 rounded-xl">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase text-amber-300">ART Recuperable</span>
-            <span class="text-[10px] font-bold px-2 py-0.5 bg-amber-900/80 text-amber-300 rounded-full">Reembolsable</span>
-          </div>
-          <h4 id="kpi-costo-art-recuperable" class="text-2xl font-extrabold text-amber-400 mt-2">$ --</h4>
-          <p id="kpi-dias-art-recuperable" class="text-xs text-amber-300/70 mt-1">-- días a tramitar con ART</p>
-        </div>
+    <!-- VISTA 2: HISTORIAL DE LICENCIAS -->
+    <main id="viewHistorial" class="hidden max-w-7xl mx-auto p-6 space-y-6">
+        <section class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
+            <div class="p-5 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-100">📋 Historial Completo de Licencias Registradas</h3>
+                    <p class="text-xs text-slate-400">Listado detallado por legajo con categoría financiera y costo estimado</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <label for="tabla-filter-month" class="text-xs font-semibold uppercase text-slate-400 whitespace-nowrap">Filtrar Período:</label>
+                    <select id="tabla-filter-month" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="ALL">Todos los Meses de la muestra</option>
+                    </select>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-slate-300">
+                    <thead class="text-xs text-slate-400 uppercase bg-slate-950 border-b border-slate-800">
+                        <tr>
+                            <th class="px-6 py-3">Legajo</th>
+                            <th class="px-6 py-3">Empleado</th>
+                            <th class="px-6 py-3">Departamento</th>
+                            <th class="px-6 py-3">Concepto / Ausencia</th>
+                            <th class="px-6 py-3">Categoría Financiera</th>
+                            <th class="px-6 py-3 text-center">Período</th>
+                            <th class="px-6 py-3 text-center">Días</th>
+                            <th class="px-6 py-3 text-right">Costo Est. (+33% CS)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-body" class="divide-y divide-slate-800"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
 
-        <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase text-slate-400">Sin Costo / ANSES</span>
-            <span class="text-[10px] font-bold px-2 py-0.5 bg-slate-800 text-slate-300 rounded-full">No Abonado ($0)</span>
-          </div>
-          <h4 id="kpi-costo-sincosto" class="text-2xl font-extrabold text-slate-300 mt-2">$ 0</h4>
-          <p id="kpi-dias-sincosto" class="text-xs text-slate-500 mt-1">-- días (Maternidad/Excedencia/Faltas)</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- TABLA DE EVOLUCIÓN MENSUAL Y ACUMULADA -->
-    <section class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
-      <div class="p-5 border-b border-slate-800">
-        <h3 class="text-base font-bold text-slate-100">Evolución Mensual No Acumulada vs. Acumulado Interanual</h3>
-        <p class="text-xs text-slate-400">Cálculo exacto del % de ausentismo con horas estipuladas independientes por año</p>
-      </div>
-
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm text-left text-slate-300">
-          <thead class="text-xs text-slate-300 uppercase bg-slate-950 border-b border-slate-800">
-            <tr>
-              <th class="px-4 py-3" rowspan="2">Mes</th>
-              <th class="px-4 py-3 text-center border-l border-slate-800 bg-emerald-950/40 text-emerald-300" colspan="2">Año 2025</th>
-              <th class="px-4 py-3 text-center border-l border-slate-800 bg-blue-950/40 text-blue-300" colspan="2">Año 2026</th>
-              <th class="px-4 py-3 text-center border-l border-slate-800" rowspan="2">Var. Mensual (26 vs 25)</th>
-            </tr>
-            <tr>
-              <th class="px-4 py-2 text-center border-l border-slate-800 bg-emerald-950/20 text-emerald-400">% Mensual</th>
-              <th class="px-4 py-2 text-center bg-emerald-950/20 text-emerald-400">% Acumulado</th>
-              <th class="px-4 py-2 text-center border-l border-slate-800 bg-blue-950/20 text-blue-400">% Mensual</th>
-              <th class="px-4 py-2 text-center bg-blue-950/20 text-blue-400">% Acumulado</th>
-            </tr>
-          </thead>
-          <tbody id="tabla-evolucion-body" class="divide-y divide-slate-800 text-xs">
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- GRÁFICOS PRINCIPALES -->
-    <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-        <div>
-          <h3 class="text-lg font-bold text-slate-100">1. Evolución Mensual Comparativa (Horas Perdidas)</h3>
-          <p class="text-xs text-slate-400">Tendencia mensual superpuesta entre años</p>
+    <!-- VISTA 3: DASHBOARD DE HORAS EXTRAS -->
+    <main id="viewHorasExtras" class="hidden max-w-7xl mx-auto p-6 space-y-6">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+            <div>
+                <h2 class="text-2xl font-bold text-white">Dashboard de Control de Personal Eventual & Horas Extras</h2>
+                <p class="text-indigo-400 text-sm">Monitoreo operativo, costos y sobrecarga de personal</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <label class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-semibold shadow-md cursor-pointer text-sm transition-all">
+                    📁 Seleccionar Archivo Excel
+                    <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden">
+                </label>
+                <button onclick="cargarHEDesdeURL()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-lg text-sm font-semibold border border-slate-700 transition-all">
+                    🔄 Sincronizar
+                </button>
+            </div>
         </div>
         
-        <div class="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
-          <label class="flex items-center gap-1.5 text-xs font-semibold cursor-pointer text-slate-300">
-            <input type="checkbox" id="chart-year-2025" checked class="rounded text-emerald-500 bg-slate-900 border-slate-700 w-4 h-4">
-            <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> 2025
-          </label>
-          <div class="h-4 w-px bg-slate-800"></div>
-          <label class="flex items-center gap-1.5 text-xs font-semibold cursor-pointer text-slate-300">
-            <input type="checkbox" id="chart-year-2026" checked class="rounded text-blue-500 bg-slate-900 border-slate-700 w-4 h-4">
-            <span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span> 2026
-          </label>
-        </div>
-      </div>
-      
-      <div class="h-80">
-        <canvas id="chart-comparativo"></canvas>
-      </div>
-    </section>
+        <div id="statusAlertHE" class="hidden p-4 rounded-lg bg-indigo-950/80 border border-indigo-500/30 text-indigo-300 text-sm"></div>
 
-    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <div class="lg:col-span-7 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
-        <h3 class="text-lg font-bold text-slate-100 mb-1">2. Horas Perdidas por Departamento</h3>
-        <p class="text-xs text-slate-400 mb-6">Ordenado de mayor a menor impacto (Lobby Bar y Las Vajillas unificados en AA & BB)</p>
-        <div class="h-[420px]">
-          <canvas id="chart-departamento"></canvas>
-        </div>
-      </div>
+        <section class="bg-slate-900/95 backdrop-blur p-5 rounded-2xl border border-slate-800 shadow-2xl sticky top-16 z-40 space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <h3 class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Filtros Principales de Horas Extras</h3>
+                <button onclick="limpiarFiltrosHE()" class="text-xs font-semibold text-slate-400 hover:text-white bg-slate-800 px-3 py-1 rounded-lg border border-slate-700 transition-colors">
+                    🧹 Limpiar Filtros
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="relative">
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Año(s):</label>
+                    <button type="button" onclick="toggleDropdown('ddAniosHE')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
+                        <span id="labelAniosHE" class="truncate">Todos los Años</span>
+                        <span class="text-xs text-slate-500">▼</span>
+                    </button>
+                    <div id="ddAniosHE" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200"></div>
+                </div>
+                <div class="relative">
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Mes(es):</label>
+                    <button type="button" onclick="toggleDropdown('ddMesesHE')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
+                        <span id="labelMesesHE" class="truncate">Todos los Meses</span>
+                        <span class="text-xs text-slate-500">▼</span>
+                    </button>
+                    <div id="ddMesesHE" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200"></div>
+                </div>
+                <div class="relative">
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Departamento(s):</label>
+                    <button type="button" onclick="toggleDropdown('ddDeptoHE')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
+                        <span id="labelDeptoHE" class="truncate">Todos los Departamentos</span>
+                        <span class="text-xs text-slate-500">▼</span>
+                    </button>
+                    <div id="ddDeptoHE" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200"></div>
+                </div>
+            </div>
+        </section>
 
-      <div class="lg:col-span-5 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
-        <h3 class="text-lg font-bold text-slate-100 mb-1">3. Distribución por Tipo de Ausencia</h3>
-        <p class="text-xs text-slate-400 mb-4">Proporción de días perdidos por concepto</p>
-        <div class="h-[420px] flex items-center justify-center">
-          <canvas id="chart-motivo"></canvas>
-        </div>
-      </div>
-    </section>
-  </main>
+        <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
+                <p class="text-sm font-medium text-slate-400">Total Horas Extras</p>
+                <p id="kpiTotalHoras" class="text-3xl font-bold text-slate-100 mt-1">0 hs</p>
+            </div>
+            <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
+                <p class="text-sm font-medium text-slate-400">Costo Empresa Total</p>
+                <p id="kpiCostoTotal" class="text-3xl font-bold text-indigo-400 mt-1">$ 0</p>
+                <p class="text-xs text-slate-500 mt-1">Incluye +45% adic. y +33% costo emp.</p>
+            </div>
+            <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
+                <p class="text-sm font-medium text-slate-400">Promedio hs / Empleado</p>
+                <p id="kpiPromedioEmpleado" class="text-3xl font-bold text-slate-100 mt-1">0 hs</p>
+            </div>
+            <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
+                <p class="text-sm font-medium text-slate-400">Depto con Mayor Carga</p>
+                <p id="kpiDeptoTop" class="text-xl font-bold text-cyan-400 mt-1">-</p>
+            </div>
+        </section>
 
-  <!-- ================================================================= -->
-  <!-- VISTA 2: PESTAÑA DEDICADA "HISTORIAL DE LICENCIAS" -->
-  <!-- ================================================================= -->
-  <main id="viewHistorial" class="hidden max-w-7xl mx-auto p-6 space-y-6">
-    <section class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
-      <div class="p-5 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h3 class="text-xl font-bold text-slate-100">📋 Historial Completo de Licencias Registradas</h3>
-          <p class="text-xs text-slate-400">Listado detallado por legajo con categoría financiera y costo estimado</p>
-        </div>
+        <section class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-100">Evolución Mensual General (2025 vs 2026)</h3>
+                    <p class="text-xs text-slate-400">Total de horas extras consolidadas mes a mes</p>
+                </div>
+            </div>
+            <div class="relative w-full h-80">
+                <canvas id="chartEvolucionInteranual"></canvas>
+            </div>
+        </section>
 
-        <div class="flex items-center gap-2">
-          <label for="tabla-filter-month" class="text-xs font-semibold uppercase text-slate-400 whitespace-nowrap">Filtrar Período:</label>
-          <select id="tabla-filter-month" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-indigo-500 focus:border-indigo-500">
-            <option value="ALL">Todos los Meses de la muestra</option>
-          </select>
-        </div>
-      </div>
+        <section class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-100">Horas Extras por Departamento</h3>
+                    <p class="text-xs text-slate-400">Comparativa interanual 2025 vs 2026 ordenada de mayor a menor impacto</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <label class="text-xs font-semibold text-slate-300">Ver Mes:</label>
+                    <select id="selectMesDeptoChart" onchange="renderChartDeptoMes()" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="TODOS">Consolidado Anual (Todos los Meses)</option>
+                        <option value="1">Enero</option>
+                        <option value="2">Febrero</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Mayo</option>
+                        <option value="6">Junio</option>
+                        <option value="7">Julio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                </div>
+            </div>
+            <div class="relative w-full h-80">
+                <canvas id="chartDeptoInteranual"></canvas>
+            </div>
+        </section>
 
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm text-left text-slate-300">
-          <thead class="text-xs text-slate-400 uppercase bg-slate-950 border-b border-slate-800">
-            <tr>
-              <th class="px-6 py-3">Legajo</th>
-              <th class="px-6 py-3">Empleado</th>
-              <th class="px-6 py-3">Departamento</th>
-              <th class="px-6 py-3">Concepto / Ausencia</th>
-              <th class="px-6 py-3">Categoría Financiera</th>
-              <th class="px-6 py-3 text-center">Período</th>
-              <th class="px-6 py-3 text-center">Días</th>
-              <th class="px-6 py-3 text-right">Costo Est. (+33% CS)</th>
-            </tr>
-          </thead>
-          <tbody id="tabla-body" class="divide-y divide-slate-800">
-          </tbody>
-        </table>
-      </div>
-    </section>
-  </main>
+        <section class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg space-y-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                        🔥 Mapa de Calor de Variación Interanual por Departamento (% 2026 vs 2025)
+                    </h3>
+                    <p class="text-xs text-slate-400">Matriz mensual de desvíos: identifica incrementos o reducciones de carga horaria por sector</p>
+                </div>
+                <div class="flex items-center space-x-3 text-xs">
+                    <span class="flex items-center gap-1 text-slate-300"><span class="w-3 h-3 rounded bg-emerald-600 inline-block"></span> Reducción (&lt;-5%)</span>
+                    <span class="flex items-center gap-1 text-slate-300"><span class="w-3 h-3 rounded bg-slate-800 inline-block"></span> Estable (-5% a 5%)</span>
+                    <span class="flex items-center gap-1 text-slate-300"><span class="w-3 h-3 rounded bg-rose-600 inline-block"></span> Incremento (&gt;5%)</span>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-center text-xs text-slate-200 border-collapse">
+                    <thead>
+                        <tr class="bg-slate-950 border-b border-slate-800 text-slate-400 font-semibold">
+                            <th class="py-3 px-3 text-left">Departamento</th>
+                            <th class="py-3 px-2">Ene</th>
+                            <th class="py-3 px-2">Feb</th>
+                            <th class="py-3 px-2">Mar</th>
+                            <th class="py-3 px-2">Abr</th>
+                            <th class="py-3 px-2">May</th>
+                            <th class="py-3 px-2">Jun</th>
+                            <th class="py-3 px-2">Jul</th>
+                            <th class="py-3 px-2">Ago</th>
+                            <th class="py-3 px-2">Sep</th>
+                            <th class="py-3 px-2">Oct</th>
+                            <th class="py-3 px-2">Nov</th>
+                            <th class="py-3 px-2">Dic</th>
+                        </tr>
+                    </thead>
+                    <tbody id="heatmapBody" class="divide-y divide-slate-800">
+                        <tr><td colspan="13" class="py-6 text-center text-slate-500">Cargando mapa de calor...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-  <!-- ================================================================= -->
-  <!-- VISTA 3: DASHBOARD DE HORAS EXTRAS -->
-  <!-- ================================================================= -->
-  <main id="viewHorasExtras" class="hidden max-w-7xl mx-auto p-6 space-y-6">
-    
-    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-      <div>
-        <h2 class="text-2xl font-bold text-white">Dashboard de Control de Personal Eventual & Horas Extras</h2>
-        <p class="text-indigo-400 text-sm">Monitoreo operativo, costos y sobrecarga de personal</p>
-      </div>
-      <div class="flex items-center space-x-3">
-        <label class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-semibold shadow-md cursor-pointer text-sm transition-all">
-          📁 Seleccionar Archivo Excel
-          <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden">
-        </label>
-        <button onclick="cargarHEDesdeURL()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-lg text-sm font-semibold border border-slate-700 transition-all">
-          🔄 Sincronizar
-        </button>
-      </div>
-    </div>
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
+                <h3 class="text-lg font-bold mb-4 text-slate-200">Tipo de Jornada (Diurna vs Nocturna)</h3>
+                <div class="relative w-full h-72">
+                    <canvas id="chartTipoJornada"></canvas>
+                </div>
+            </div>
+            <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
+                <h3 class="text-lg font-bold mb-4 text-slate-200">Distribución por Rango Etario</h3>
+                <div class="relative w-full h-72">
+                    <canvas id="chartRangoEtario"></canvas>
+                </div>
+            </div>
+        </section>
 
-    <div id="statusAlertHE" class="hidden p-4 rounded-lg bg-indigo-950/80 border border-indigo-500/30 text-indigo-300 text-sm"></div>
+        <section class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
+            <h3 class="text-lg font-bold mb-4 text-slate-200">Top 10 Empleados con Mayor Horas Extras</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-left text-sm text-slate-300">
+                    <thead class="bg-slate-950 border-b border-slate-800 text-slate-400">
+                        <tr>
+                            <th class="py-3 px-4 font-semibold">#</th>
+                            <th class="py-3 px-4 font-semibold">Legajo</th>
+                            <th class="py-3 px-4 font-semibold">Empleado</th>
+                            <th class="py-3 px-4 font-semibold">Departamento</th>
+                            <th class="py-3 px-4 font-semibold">Total Horas</th>
+                            <th class="py-3 px-4 font-semibold">Costo Real Estimado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaTop10" class="divide-y divide-slate-800">
+                        <tr><td colspan="6" class="py-4 text-center text-slate-500">Cargando datos...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-    <!-- Filtros Horas Extras Fijos con Multi-Selección -->
-    <section class="bg-slate-900/95 backdrop-blur p-5 rounded-2xl border border-slate-800 shadow-2xl sticky top-16 z-40 space-y-3">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-        <h3 class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Filtros Principales de Horas Extras</h3>
-        <button onclick="limpiarFiltrosHE()" class="text-xs font-semibold text-slate-400 hover:text-white bg-slate-800 px-3 py-1 rounded-lg border border-slate-700 transition-colors">
-          🧹 Limpiar Filtros
-        </button>
-      </div>
+        <section class="bg-red-950/20 border border-red-900/40 p-6 rounded-xl shadow-lg space-y-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-red-900/40 pb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-red-400 flex items-center gap-2">
+                        ⚠️ Control de Exceso de Horas (&gt; 100 hs mensuales)
+                    </h3>
+                    <p class="text-xs text-red-300/70">Filtro independiente para auditar personal eventual sobrecargado en un mes específico</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Año</label>
+                        <select id="filterExcedidosAnio" onchange="renderTablaExcedidos()" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-red-500 focus:border-red-500"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Mes</label>
+                        <select id="filterExcedidosMes" onchange="renderTablaExcedidos()" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-red-500 focus:border-red-500">
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Departamento</label>
+                        <select id="filterExcedidosDepto" onchange="renderTablaExcedidos()" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-red-500 focus:border-red-500">
+                            <option value="TODOS">Todos los Departamentos</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-slate-950 rounded-lg border border-red-900/30 overflow-x-auto shadow-sm">
+                <table class="min-w-full text-left text-sm text-slate-300">
+                    <thead class="bg-red-950/60 border-b border-red-900/40 text-red-300">
+                        <tr>
+                            <th class="py-3 px-4 font-semibold">#</th>
+                            <th class="py-3 px-4 font-semibold">Legajo</th>
+                            <th class="py-3 px-4 font-semibold">Empleado</th>
+                            <th class="py-3 px-4 font-semibold">Departamento</th>
+                            <th class="py-3 px-4 font-semibold">Horas Mes</th>
+                            <th class="py-3 px-4 font-semibold">Exceso (&gt;100 hs)</th>
+                            <th class="py-3 px-4 font-semibold">Costo Estimado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaExcedidos" class="divide-y divide-slate-800">
+                        <tr><td colspan="7" class="py-4 text-center text-slate-500">Selecciona el período para auditar excedidos.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- Dropdown Años HE -->
-        <div class="relative">
-          <label class="block text-xs font-medium text-slate-300 mb-1">Año(s):</label>
-          <button type="button" onclick="toggleDropdown('ddAniosHE')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
-            <span id="labelAniosHE" class="truncate">Todos los Años</span>
-            <span class="text-xs text-slate-500">▼</span>
-          </button>
-          <div id="ddAniosHE" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200">
-            <!-- JS -->
-          </div>
-        </div>
+    <!-- SCRIPTS Y LÓGICA COMPLETA DE FUNCIONAMIENTO -->
+    <script>
+        Chart.register(ChartDataLabels);
 
-        <!-- Dropdown Meses HE -->
-        <div class="relative">
-          <label class="block text-xs font-medium text-slate-300 mb-1">Mes(es):</label>
-          <button type="button" onclick="toggleDropdown('ddMesesHE')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
-            <span id="labelMesesHE" class="truncate">Todos los Meses</span>
-            <span class="text-xs text-slate-500">▼</span>
-          </button>
-          <div id="ddMesesHE" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200">
-            <!-- JS -->
-          </div>
-        </div>
-
-        <!-- Dropdown Departamento HE -->
-        <div class="relative">
-          <label class="block text-xs font-medium text-slate-300 mb-1">Departamento(s):</label>
-          <button type="button" onclick="toggleDropdown('ddDeptoHE')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
-            <span id="labelDeptoHE" class="truncate">Todos los Departamentos</span>
-            <span class="text-xs text-slate-500">▼</span>
-          </button>
-          <div id="ddDeptoHE" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200">
-            <!-- JS -->
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- KPIs Horas Extras -->
-    <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
-        <p class="text-sm font-medium text-slate-400">Total Horas Extras</p>
-        <p id="kpiTotalHoras" class="text-3xl font-bold text-slate-100 mt-1">0 hs</p>
-      </div>
-
-      <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
-        <p class="text-sm font-medium text-slate-400">Costo Empresa Total</p>
-        <p id="kpiCostoTotal" class="text-3xl font-bold text-indigo-400 mt-1">$ 0</p>
-        <p class="text-xs text-slate-500 mt-1">Incluye +45% adic. y +33% costo emp.</p>
-      </div>
-
-      <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
-        <p class="text-sm font-medium text-slate-400">Promedio hs / Empleado</p>
-        <p id="kpiPromedioEmpleado" class="text-3xl font-bold text-slate-100 mt-1">0 hs</p>
-      </div>
-
-      <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
-        <p class="text-sm font-medium text-slate-400">Depto con Mayor Carga</p>
-        <p id="kpiDeptoTop" class="text-xl font-bold text-cyan-400 mt-1">-</p>
-      </div>
-    </section>
-
-    <!-- Gráficos HE -->
-    <section class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg">
-      <div class="flex justify-between items-center mb-4">
-        <div>
-          <h3 class="text-xl font-bold text-slate-100">Evolución Mensual General (2025 vs 2026)</h3>
-          <p class="text-xs text-slate-400">Total de horas extras consolidadas mes a mes</p>
-        </div>
-      </div>
-      <div class="relative w-full h-80">
-        <canvas id="chartEvolucionInteranual"></canvas>
-      </div>
-    </section>
-
-    <section class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
-        <div>
-          <h3 class="text-xl font-bold text-slate-100">Horas Extras por Departamento</h3>
-          <p class="text-xs text-slate-400">Comparativa interanual 2025 vs 2026 ordenada de mayor a menor impacto</p>
-        </div>
-        <div class="flex items-center space-x-2">
-          <label class="text-xs font-semibold text-slate-300">Ver Mes:</label>
-          <select id="selectMesDeptoChart" onchange="renderChartDeptoMes()" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-indigo-500 focus:border-indigo-500">
-            <option value="TODOS">Consolidado Anual (Todos los Meses)</option>
-            <option value="1">Enero</option>
-            <option value="2">Febrero</option>
-            <option value="3">Marzo</option>
-            <option value="4">Abril</option>
-            <option value="5">Mayo</option>
-            <option value="6">Junio</option>
-            <option value="7">Julio</option>
-            <option value="8">Agosto</option>
-            <option value="9">Septiembre</option>
-            <option value="10">Octubre</option>
-            <option value="11">Noviembre</option>
-            <option value="12">Diciembre</option>
-          </select>
-        </div>
-      </div>
-      <div class="relative w-full h-80">
-        <canvas id="chartDeptoInteranual"></canvas>
-      </div>
-    </section>
-
-    <!-- Mapa de Calor HE -->
-    <section class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg space-y-4">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
-        <div>
-          <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2">
-            🔥 Mapa de Calor de Variación Interanual por Departamento (% 2026 vs 2025)
-          </h3>
-          <p class="text-xs text-slate-400">Matriz mensual de desvíos: identifica incrementos o reducciones de carga horaria por sector</p>
-        </div>
-        <div class="flex items-center space-x-3 text-xs">
-          <span class="flex items-center gap-1 text-slate-300"><span class="w-3 h-3 rounded bg-emerald-600 inline-block"></span> Reducción (&lt;-5%)</span>
-          <span class="flex items-center gap-1 text-slate-300"><span class="w-3 h-3 rounded bg-slate-800 inline-block"></span> Estable (-5% a 5%)</span>
-          <span class="flex items-center gap-1 text-slate-300"><span class="w-3 h-3 rounded bg-rose-600 inline-block"></span> Incremento (&gt;5%)</span>
-        </div>
-      </div>
-
-      <div class="overflow-x-auto">
-        <table class="min-w-full text-center text-xs text-slate-200 border-collapse">
-          <thead>
-            <tr class="bg-slate-950 border-b border-slate-800 text-slate-400 font-semibold">
-              <th class="py-3 px-3 text-left">Departamento</th>
-              <th class="py-3 px-2">Ene</th>
-              <th class="py-3 px-2">Feb</th>
-              <th class="py-3 px-2">Mar</th>
-              <th class="py-3 px-2">Abr</th>
-              <th class="py-3 px-2">May</th>
-              <th class="py-3 px-2">Jun</th>
-              <th class="py-3 px-2">Jul</th>
-              <th class="py-3 px-2">Ago</th>
-              <th class="py-3 px-2">Sep</th>
-              <th class="py-3 px-2">Oct</th>
-              <th class="py-3 px-2">Nov</th>
-              <th class="py-3 px-2">Dic</th>
-            </tr>
-          </thead>
-          <tbody id="heatmapBody" class="divide-y divide-slate-800">
-            <tr><td colspan="13" class="py-6 text-center text-slate-500">Cargando mapa de calor...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Jornada y Rango Etario HE -->
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
-        <h3 class="text-lg font-bold mb-4 text-slate-200">Tipo de Jornada (Diurna vs Nocturna)</h3>
-        <div class="relative w-full h-72">
-          <canvas id="chartTipoJornada"></canvas>
-        </div>
-      </div>
-
-      <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
-        <h3 class="text-lg font-bold mb-4 text-slate-200">Distribución por Rango Etario</h3>
-        <div class="relative w-full h-72">
-          <canvas id="chartRangoEtario"></canvas>
-        </div>
-      </div>
-    </section>
-
-    <!-- Top 10 HE -->
-    <section class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
-      <h3 class="text-lg font-bold mb-4 text-slate-200">Top 10 Empleados con Mayor Horas Extras</h3>
-      <div class="overflow-x-auto">
-        <table class="min-w-full text-left text-sm text-slate-300">
-          <thead class="bg-slate-950 border-b border-slate-800 text-slate-400">
-            <tr>
-              <th class="py-3 px-4 font-semibold">#</th>
-              <th class="py-3 px-4 font-semibold">Legajo</th>
-              <th class="py-3 px-4 font-semibold">Empleado</th>
-              <th class="py-3 px-4 font-semibold">Departamento</th>
-              <th class="py-3 px-4 font-semibold">Total Horas</th>
-              <th class="py-3 px-4 font-semibold">Costo Real Estimado</th>
-            </tr>
-          </thead>
-          <tbody id="tablaTop10" class="divide-y divide-slate-800">
-            <tr><td colspan="6" class="py-4 text-center text-slate-500">Cargando datos...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Auditoría Excedidos HE -->
-    <section class="bg-red-950/20 border border-red-900/40 p-6 rounded-xl shadow-lg space-y-4">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-red-900/40 pb-4">
-        <div>
-          <h3 class="text-xl font-bold text-red-400 flex items-center gap-2">
-            ⚠️ Control de Exceso de Horas (&gt; 100 hs mensuales)
-          </h3>
-          <p class="text-xs text-red-300/70">Filtro independiente para auditar personal eventual sobrecargado en un mes específico</p>
-        </div>
-
-        <div class="flex flex-wrap items-center gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-400 mb-1">Año</label>
-            <select id="filterExcedidosAnio" onchange="renderTablaExcedidos()" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-red-500 focus:border-red-500"></select>
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-slate-400 mb-1">Mes</label>
-            <select id="filterExcedidosMes" onchange="renderTablaExcedidos()" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-red-500 focus:border-red-500">
-              <option value="1">Enero</option>
-              <option value="2">Febrero</option>
-              <option value="3">Marzo</option>
-              <option value="4">Abril</option>
-              <option value="5">Mayo</option>
-              <option value="6">Junio</option>
-              <option value="7">Julio</option>
-              <option value="8">Agosto</option>
-              <option value="9">Septiembre</option>
-              <option value="10">Octubre</option>
-              <option value="11">Noviembre</option>
-              <option value="12">Diciembre</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-slate-400 mb-1">Departamento</label>
-            <select id="filterExcedidosDepto" onchange="renderTablaExcedidos()" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-red-500 focus:border-red-500">
-              <option value="TODOS">Todos los Departamentos</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-slate-950 rounded-lg border border-red-900/30 overflow-x-auto shadow-sm">
-        <table class="min-w-full text-left text-sm text-slate-300">
-          <thead class="bg-red-950/60 border-b border-red-900/40 text-red-300">
-            <tr>
-              <th class="py-3 px-4 font-semibold">#</th>
-              <th class="py-3 px-4 font-semibold">Legajo</th>
-              <th class="py-3 px-4 font-semibold">Empleado</th>
-              <th class="py-3 px-4 font-semibold">Departamento</th>
-              <th class="py-3 px-4 font-semibold">Horas Mes</th>
-              <th class="py-3 px-4 font-semibold">Exceso (&gt;100 hs)</th>
-              <th class="py-3 px-4 font-semibold">Costo Estimado</th>
-            </tr>
-          </thead>
-          <tbody id="tablaExcedidos" class="divide-y divide-slate-800">
-            <tr><td colspan="7" class="py-4 text-center text-slate-500">Selecciona el período para auditar excedidos.</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-  </main>
-
-  <!-- ================================================================= -->
-  <!-- SCRIPTS Y LÓGICA COMPLETA DE FUNCIONAMIENTO -->
-  <!-- ================================================================= -->
-  <script>
-    Chart.register(ChartDataLabels);
-
-    // NORMALIZACIÓN UNIVERSAL DE DEPARTAMENTO (Agrupa Las Vajillas y Lobby Bar en AA & BB)
-    function normalizarDepartamento(deptRaw) {
-      if (!deptRaw) return 'Sin Depto';
-      let d = deptRaw.trim();
-      let dLow = d.toLowerCase();
-      if (dLow.includes('lobby bar') || dLow.includes('las vaji') || dLow.includes('vajilla') || dLow.includes('vajillas')) {
-        return 'AA & BB';
-      }
-      return d;
-    }
-
-    // CONTROL DE DROPDOWNS DESPLEGABLES
-    function toggleDropdown(id) {
-      const el = document.getElementById(id);
-      const isHidden = el.classList.contains('hidden');
-      document.querySelectorAll('[id^="dd"]').forEach(d => d.classList.add('hidden'));
-      if (isHidden) el.classList.remove('hidden');
-    }
-
-    // Cerrar dropdowns si se hace clic afuera
-    window.addEventListener('click', function(e) {
-      if (!e.target.closest('.relative')) {
-        document.querySelectorAll('[id^="dd"]').forEach(d => d.classList.add('hidden'));
-      }
-    });
-
-    // NAVEGACIÓN
-    function switchTab(tabName) {
-      const viewAus = document.getElementById('viewAusentismo');
-      const viewHis = document.getElementById('viewHistorial');
-      const viewHE = document.getElementById('viewHorasExtras');
-      const btnAus = document.getElementById('btnTabAusentismo');
-      const btnHis = document.getElementById('btnTabHistorial');
-      const btnHE = document.getElementById('btnTabHorasExtras');
-
-      viewAus.classList.add('hidden');
-      viewHis.classList.add('hidden');
-      viewHE.classList.add('hidden');
-
-      btnAus.classList.remove('tab-btn-active');
-      btnHis.classList.remove('tab-btn-active');
-      btnHE.classList.remove('tab-btn-active');
-
-      if (tabName === 'ausentismo') {
-        viewAus.classList.remove('hidden');
-        btnAus.classList.add('tab-btn-active');
-      } else if (tabName === 'historial') {
-        viewHis.classList.remove('hidden');
-        btnHis.classList.add('tab-btn-active');
-      } else {
-        viewHE.classList.remove('hidden');
-        btnHE.classList.add('tab-btn-active');
-      }
-    }
-
-    // =================================================================
-    // 1. LÓGICA DEL DASHBOARD DE AUSENTISMO
-    // =================================================================
-    const URL_DATA_AUSENTISMO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRsPAbz--SGf1aJFcFOyLLdqxXZqPhpFSMxKbN6Oz9Em7AZjQmThmcboOzMDeptewjsqh7qo6C6oh27/pub?gid=0&single=true&output=csv';
-    const URL_DOTACION_HORAS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRsPAbz--SGf1aJFcFOyLLdqxXZqPhpFSMxKbN6Oz9Em7AZjQmThmcboOzMDeptewjsqh7qo6C6oh27/pub?gid=847796593&single=true&output=csv';
-
-    const HORAS_POR_DIA = 9;
-    const FACTOR_CARGAS_SOCIALES = 1.33;
-
-    let rawAusentismo = [];
-    let mapHorasPlanificadas = {};
-    let currentFilteredData = [];
-    let chartsAusentismo = {};
-
-    function getValAus(row, candidates) {
-      for (let c of candidates) {
-        for (let key in row) {
-          if (key.trim().toLowerCase().includes(c.toLowerCase())) {
-            return row[key] ? row[key].toString().trim() : '';
-          }
-        }
-      }
-      return '';
-    }
-
-    function clasificarConcepto(motivoRaw, nroConcepto, costoBruto) {
-      const cod = nroConcepto ? nroConcepto.toString().trim() : '';
-      const m = motivoRaw ? motivoRaw.toLowerCase() : '';
-
-      if (cod === '15102' || cod === '15107' || m.includes('maternidad') || m.includes('excedencia') || m.includes('sin goce') || m.includes('injustificada') || m.includes('falta') || m.includes('suspension') || costoBruto <= 0) {
-        return { tipo: 'SIN_COSTO', label: 'Sin Costo / ANSES' };
-      }
-      if (cod === '14051' || m.includes('14051') || m.includes('a cargo empresa') || m.includes('art empresa') || m.includes('empresa')) {
-        return { tipo: 'ART_EMPRESA', label: 'ART (Empresa - 14051)' };
-      }
-      if (m.includes('accidente') || m.includes('art')) {
-        return { tipo: 'ART_RECUPERABLE', label: 'ART (Recuperable)' };
-      }
-      return { tipo: 'INCULPABLE', label: 'Inculpable / Legal' };
-    }
-
-    function parseNum(val) {
-      if (!val) return 0;
-      let clean = val.toString().replace(/\./g, '').replace(',', '.').replace(/[^0-9.-]/g, '');
-      let num = parseFloat(clean);
-      return isNaN(num) ? 0 : num;
-    }
-
-    function formatPesos(monto) {
-      return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(monto);
-    }
-
-    function estandarizarPeriodo(str) {
-      if (!str) return '';
-      let clean = str.toString().trim().toLowerCase();
-
-      if (clean.includes('/')) {
-        let parts = clean.split('/');
-        if (parts.length === 3) {
-          let m = parts[1].padStart(2, '0');
-          let y = parts[2].length === 2 ? `20${parts[2]}` : parts[2];
-          return `${m}/${y}`;
-        } else if (parts.length === 2) {
-          let m = parts[0].padStart(2, '0');
-          let y = parts[1].length === 2 ? `20${parts[1]}` : parts[1];
-          return `${m}/${y}`;
-        }
-      }
-
-      if (clean.includes('-')) {
-        let parts = clean.split('-');
-        if (parts[0].length === 4) {
-          let y = parts[0];
-          let m = parts[1].padStart(2, '0');
-          return `${m}/${y}`;
-        } else if (parts.length >= 2) {
-          let m = parts[0].padStart(2, '0');
-          let y = parts[1].length === 2 ? `20${parts[1]}` : parts[1];
-          return `${m}/${y}`;
-        }
-      }
-
-      return clean;
-    }
-
-    function initAusentismo() {
-      Promise.all([
-        fetchCSV(URL_DATA_AUSENTISMO, true),
-        fetchCSV(URL_DOTACION_HORAS, false)
-      ]).then(([ausentismoData, dotacionData]) => {
-        rawAusentismo = ausentismoData;
-        
-        mapHorasPlanificadas = {};
-        dotacionData.forEach((rowArray, idx) => {
-          if (idx === 0) return;
-          if (rowArray && rowArray.length >= 3) {
-            const rawPer = rowArray[0];
-            const hs = parseNum(rowArray[2]);
-            const key = estandarizarPeriodo(rawPer);
-
-            if (hs > 0 && key) {
-              mapHorasPlanificadas[key] = (mapHorasPlanificadas[key] || 0) + hs;
+        function normalizarDepartamento(deptRaw) {
+            if (!deptRaw) return 'Sin Depto';
+            let d = deptRaw.trim();
+            let dLow = d.toLowerCase();
+            if (dLow.includes('lobby bar') || dLow.includes('las vaji') || dLow.includes('vajilla') || dLow.includes('vajillas')) {
+                return 'AA & BB';
             }
-          }
-        });
-
-        populateMultiSelectAusentismo(rawAusentismo);
-        applyFiltersAndRenderAusentismo();
-
-        ['chart-year-2025', 'chart-year-2026'].forEach(id => {
-          document.getElementById(id).addEventListener('change', () => {
-            renderChartComparativoAusentismo(rawAusentismo);
-          });
-        });
-
-        document.getElementById('tabla-filter-month').addEventListener('change', (e) => {
-          renderTablaAusentismo(currentFilteredData, e.target.value);
-        });
-
-      }).catch(err => console.error("Error al cargar ausentismo:", err));
-    }
-
-    function fetchCSV(url, headerBool) {
-      return new Promise((resolve, reject) => {
-        Papa.parse(url, {
-          download: true,
-          header: headerBool,
-          skipEmptyLines: true,
-          complete: (results) => resolve(results.data),
-          error: (err) => reject(err)
-        });
-      });
-    }
-
-    function populateMultiSelectAusentismo(data) {
-      const depts = new Set();
-      const motivos = new Set();
-      const years = new Set();
-      const months = new Set();
-      const periodosCompletos = new Set();
-
-      data.forEach(item => {
-        const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
-        const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
-        const periodo = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
-
-        if (dept) depts.add(dept);
-        if (motivo) motivos.add(motivo);
-
-        if (periodo && periodo.includes('/')) {
-          const [m, y] = periodo.split('/');
-          months.add(m);
-          years.add(y);
-          periodosCompletos.add(periodo);
-        }
-      });
-
-      renderCheckboxes('ddYearAus', Array.from(years).sort(), 'chkYearAus', 'applyFiltersAndRenderAusentismo()');
-      renderCheckboxes('ddMonthAus', Array.from(months).sort(), 'chkMonthAus', 'applyFiltersAndRenderAusentismo()', m => `Mes ${m}`);
-      renderCheckboxes('ddDeptAus', Array.from(depts).sort(), 'chkDeptAus', 'applyFiltersAndRenderAusentismo()');
-      renderCheckboxes('ddMotivoAus', Array.from(motivos).sort(), 'chkMotivoAus', 'applyFiltersAndRenderAusentismo()');
-
-      const selectTablaMonth = document.getElementById('tabla-filter-month');
-      selectTablaMonth.innerHTML = '<option value="ALL">Todos los Meses de la muestra</option>';
-      Array.from(periodosCompletos).sort().forEach(p => selectTablaMonth.add(new Option(`Período ${p}`, p)));
-    }
-
-    function renderCheckboxes(containerId, items, className, onChangeFn, labelTransform) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = `
-        <label class="flex items-center space-x-2 font-semibold text-indigo-400 cursor-pointer pb-1 border-b border-slate-800">
-          <input type="checkbox" onchange="toggleAllCheckboxes('${className}', this.checked); ${onChangeFn}" checked class="rounded bg-slate-950 border-slate-700 text-indigo-500">
-          <span>(Seleccionar Todos)</span>
-        </label>
-      ` + items.map(item => `
-        <label class="flex items-center space-x-2 cursor-pointer hover:bg-slate-800/50 p-1 rounded">
-          <input type="checkbox" value="${item}" checked onchange="${onChangeFn}" class="${className} rounded bg-slate-950 border-slate-700 text-indigo-500">
-          <span>${labelTransform ? labelTransform(item) : item}</span>
-        </label>
-      `).join('');
-    }
-
-    function toggleAllCheckboxes(className, isChecked) {
-      document.querySelectorAll(`.${className}`).forEach(cb => cb.checked = isChecked);
-    }
-
-    function getSelectedValues(className) {
-      return Array.from(document.querySelectorAll(`.${className}:checked`)).map(cb => cb.value);
-    }
-
-    function updateLabelText(labelId, selectedValues, totalText, singularText) {
-      const el = document.getElementById(labelId);
-      if (selectedValues.length === 0) el.textContent = "Ninguno seleccionado";
-      else if (selectedValues.length === 1) el.textContent = selectedValues[0];
-      else el.textContent = `${selectedValues.length} ${singularText} seleccionados`;
-    }
-
-    function limpiarFiltrosAusentismo() {
-      ['chkYearAus', 'chkMonthAus', 'chkDeptAus', 'chkMotivoAus'].forEach(cls => toggleAllCheckboxes(cls, true));
-      applyFiltersAndRenderAusentismo();
-    }
-
-    function applyFiltersAndRenderAusentismo() {
-      const selectedYears = getSelectedValues('chkYearAus');
-      const selectedMonths = getSelectedValues('chkMonthAus');
-      const selectedDepts = getSelectedValues('chkDeptAus');
-      const selectedMotivos = getSelectedValues('chkMotivoAus');
-
-      updateLabelText('labelYearAus', selectedYears, "Todos los Años", "Años");
-      updateLabelText('labelMonthAus', selectedMonths, "Todos los Meses", "Meses");
-      updateLabelText('labelDeptAus', selectedDepts, "Todos los Departamentos", "Deptos");
-      updateLabelText('labelMotivoAus', selectedMotivos, "Todos los Conceptos", "Conceptos");
-
-      currentFilteredData = rawAusentismo.filter(item => {
-        const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
-        const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
-        const periodo = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
-
-        if (!selectedDepts.includes(dept)) return false;
-        if (!selectedMotivos.includes(motivo)) return false;
-
-        if (periodo && periodo.includes('/')) {
-          const [m, y] = periodo.split('/');
-          if (!selectedYears.includes(y)) return false;
-          if (!selectedMonths.includes(m)) return false;
+            return d;
         }
 
-        return true;
-      });
-
-      renderDashboardAusentismo(currentFilteredData, selectedYears, selectedMonths);
-    }
-
-    function renderDashboardAusentismo(filtered, selectedYears, selectedMonths) {
-      let totalDiasLiquidados = 0;
-      let diasInculpable = 0, costoInculpable = 0;
-      let diasArtEmpresa = 0, costoArtEmpresa = 0;
-      let diasArtRecuperable = 0, costoArtRecuperable = 0;
-      let diasSinCosto = 0;
-
-      filtered.forEach(item => {
-        const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
-        const costoBruto = parseNum(getValAus(item, ['Importe', 'Monto', 'Bruto', 'Costo', 'Columna S']));
-        const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
-        const nroConcepto = getValAus(item, ['Nro. de concep', 'Nro. concepto', 'Concepto']);
-
-        const clasif = clasificarConcepto(motivo, nroConcepto, costoBruto);
-        totalDiasLiquidados += dias;
-
-        if (clasif.tipo === 'INCULPABLE') {
-          diasInculpable += dias;
-          costoInculpable += (costoBruto * FACTOR_CARGAS_SOCIALES);
-        } else if (clasif.tipo === 'ART_EMPRESA') {
-          diasArtEmpresa += dias;
-          costoArtEmpresa += (costoBruto * FACTOR_CARGAS_SOCIALES);
-        } else if (clasif.tipo === 'ART_RECUPERABLE') {
-          diasArtRecuperable += dias;
-          costoArtRecuperable += (costoBruto * FACTOR_CARGAS_SOCIALES);
-        } else if (clasif.tipo === 'SIN_COSTO') {
-          diasSinCosto += dias;
-        }
-      });
-
-      const totalHorasPerdidas = totalDiasLiquidados * HORAS_POR_DIA;
-
-      let horasPlanificadasDivisor = 0;
-      Object.keys(mapHorasPlanificadas).forEach(key => {
-        const [m, y] = key.split('/');
-        if (selectedYears.includes(y) && selectedMonths.includes(m)) {
-          horasPlanificadasDivisor += mapHorasPlanificadas[key];
-        }
-      });
-
-      if (horasPlanificadasDivisor > 0) {
-        const tasa = ((totalHorasPerdidas / horasPlanificadasDivisor) * 100).toFixed(2);
-        document.getElementById('kpi-tasa').textContent = `${tasa}%`;
-        document.getElementById('kpi-tasa-sub').textContent = `${totalHorasPerdidas.toLocaleString()} hs / ${horasPlanificadasDivisor.toLocaleString()} hs`;
-      } else {
-        document.getElementById('kpi-tasa').textContent = `-- %`;
-        document.getElementById('kpi-tasa-sub').textContent = `${totalHorasPerdidas.toLocaleString()} hs / Sin hs planificadas`;
-      }
-
-      document.getElementById('kpi-horas').textContent = `${totalHorasPerdidas.toLocaleString()} hs`;
-      document.getElementById('kpi-dias').textContent = `${totalDiasLiquidados.toLocaleString()} d`;
-
-      document.getElementById('kpi-costo-inculpable').textContent = formatPesos(costoInculpable);
-      document.getElementById('kpi-dias-inculpable').textContent = `${diasInculpable.toLocaleString()} días afectando masa salarial`;
-
-      document.getElementById('kpi-costo-art-empresa').textContent = formatPesos(costoArtEmpresa);
-      document.getElementById('kpi-dias-art-empresa').textContent = `${diasArtEmpresa.toLocaleString()} días a cargo empresa`;
-
-      document.getElementById('kpi-costo-art-recuperable').textContent = formatPesos(costoArtRecuperable);
-      document.getElementById('kpi-dias-art-recuperable').textContent = `${diasArtRecuperable.toLocaleString()} días a tramitar con ART`;
-
-      document.getElementById('kpi-dias-sincosto').textContent = `${diasSinCosto.toLocaleString()} días (Maternidad/Excedencia/Faltas)`;
-
-      renderTablaEvolucionAusentismo(filtered);
-      renderChartComparativoAusentismo(rawAusentismo);
-      renderChartDepartamentoAusentismo(rawAusentismo);
-      renderChartMotivoAusentismo(filtered);
-
-      const tablaMonthFilter = document.getElementById('tabla-filter-month').value;
-      renderTablaAusentismo(filtered, tablaMonthFilter);
-    }
-
-    function renderTablaEvolucionAusentismo(filteredData) {
-      const tbody = document.getElementById('tabla-evolucion-body');
-      tbody.innerHTML = '';
-
-      const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-      const hsPerdidas2025 = new Array(12).fill(0);
-      const hsPerdidas2026 = new Array(12).fill(0);
-
-      filteredData.forEach(item => {
-        const p = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
-        if (p && p.includes('/')) {
-          const [m, y] = p.split('/');
-          const mesIdx = parseInt(m, 10) - 1;
-          const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
-          const hs = dias * HORAS_POR_DIA;
-
-          if (mesIdx >= 0 && mesIdx < 12) {
-            if (y === '2025') hsPerdidas2025[mesIdx] += hs;
-            if (y === '2026') hsPerdidas2026[mesIdx] += hs;
-          }
-        }
-      });
-
-      let acumHs2025 = 0, acumPlan2025 = 0;
-      let acumHs2026 = 0, acumPlan2026 = 0;
-
-      mesesNombres.forEach((nombreMes, i) => {
-        const mKey = (i + 1).toString().padStart(2, '0');
-        const plan2025 = mapHorasPlanificadas[`${mKey}/2025`] || 0;
-        const plan2026 = mapHorasPlanificadas[`${mKey}/2026`] || 0;
-
-        const hs2025 = hsPerdidas2025[i];
-        const hs2026 = hsPerdidas2026[i];
-
-        const tasaMensual2025 = plan2025 > 0 ? ((hs2025 / plan2025) * 100) : 0;
-        const tasaMensual2026 = plan2026 > 0 ? ((hs2026 / plan2026) * 100) : 0;
-
-        acumHs2025 += hs2025;
-        acumPlan2025 += plan2025;
-
-        acumHs2026 += hs2026;
-        acumPlan2026 += plan2026;
-
-        const tasaAcum2025 = acumPlan2025 > 0 ? ((acumHs2025 / acumPlan2025) * 100) : 0;
-        const tasaAcum2026 = acumPlan2026 > 0 ? ((acumHs2026 / acumPlan2026) * 100) : 0;
-
-        const diff = tasaMensual2026 - tasaMensual2025;
-        let badgeDiff = `<span class="text-slate-500">-</span>`;
-        if (plan2026 > 0 && plan2025 > 0) {
-          if (diff > 0) {
-            badgeDiff = `<span class="bg-rose-950 text-rose-300 font-bold px-2 py-0.5 rounded border border-rose-800/50">+${diff.toFixed(2)}%</span>`;
-          } else if (diff < 0) {
-            badgeDiff = `<span class="bg-emerald-950 text-emerald-300 font-bold px-2 py-0.5 rounded border border-emerald-800/50">${diff.toFixed(2)}%</span>`;
-          } else {
-            badgeDiff = `<span class="bg-slate-800 text-slate-300 font-bold px-2 py-0.5 rounded">0.00%</span>`;
-          }
+        function toggleDropdown(id) {
+            const el = document.getElementById(id);
+            const isHidden = el.classList.contains('hidden');
+            document.querySelectorAll('[id^="dd"]').forEach(d => d.classList.add('hidden'));
+            if (isHidden) el.classList.remove('hidden');
         }
 
-        const tr = document.createElement('tr');
-        tr.className = "hover:bg-slate-800/50 transition-colors";
-        tr.innerHTML = `
-          <td class="px-4 py-3 font-bold text-slate-200">${nombreMes}</td>
-          <td class="px-4 py-3 text-center border-l border-slate-800 font-medium ${plan2025 > 0 ? 'text-slate-200' : 'text-slate-500'}">${plan2025 > 0 ? tasaMensual2025.toFixed(2) + '%' : '-'}</td>
-          <td class="px-4 py-3 text-center font-semibold text-emerald-400 bg-emerald-950/20">${acumPlan2025 > 0 ? tasaAcum2025.toFixed(2) + '%' : '-'}</td>
-          <td class="px-4 py-3 text-center border-l border-slate-800 font-medium ${plan2026 > 0 ? 'text-slate-200' : 'text-slate-500'}">${plan2026 > 0 ? tasaMensual2026.toFixed(2) + '%' : '-'}</td>
-          <td class="px-4 py-3 text-center font-semibold text-blue-400 bg-blue-950/20">${acumPlan2026 > 0 ? tasaAcum2026.toFixed(2) + '%' : '-'}</td>
-          <td class="px-4 py-3 text-center border-l border-slate-800">${badgeDiff}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function renderChartComparativoAusentismo(fullData) {
-      const ctx = document.getElementById('chart-comparativo').getContext('2d');
-      if (chartsAusentismo.comparativo) chartsAusentismo.comparativo.destroy();
-
-      const show2025 = document.getElementById('chart-year-2025').checked;
-      const show2026 = document.getElementById('chart-year-2026').checked;
-
-      const selectedDepts = getSelectedValues('chkDeptAus');
-      const selectedMotivos = getSelectedValues('chkMotivoAus');
-
-      const filteredForChart = fullData.filter(item => {
-        const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
-        const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
-
-        if (!selectedDepts.includes(dept)) return false;
-        if (!selectedMotivos.includes(motivo)) return false;
-        return true;
-      });
-
-      const mesesNombres = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-      const horas2025 = new Array(12).fill(0);
-      const horas2026 = new Array(12).fill(0);
-
-      filteredForChart.forEach(item => {
-        const p = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
-        if (p && p.includes('/')) {
-          const [m, y] = p.split('/');
-          const mesIdx = parseInt(m, 10) - 1;
-          const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
-          const hs = dias * HORAS_POR_DIA;
-
-          if (mesIdx >= 0 && mesIdx < 12) {
-            if (y === '2025') horas2025[mesIdx] += hs;
-            if (y === '2026') horas2026[mesIdx] += hs;
-          }
-        }
-      });
-
-      const datasets = [];
-      if (show2025) {
-        datasets.push({
-          label: '2025 (hs)',
-          data: horas2025,
-          borderColor: '#10b981',
-          backgroundColor: 'rgba(16, 185, 129, 0.15)',
-          fill: true,
-          tension: 0.3
-        });
-      }
-      if (show2026) {
-        datasets.push({
-          label: '2026 (hs)',
-          data: horas2026,
-          borderColor: '#3b82f6',
-          backgroundColor: 'rgba(59, 130, 246, 0.15)',
-          fill: true,
-          tension: 0.3
-        });
-      }
-
-      chartsAusentismo.comparativo = new Chart(ctx, {
-        type: 'line',
-        data: { labels: mesesNombres, datasets: datasets },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            datalabels: {
-              align: 'top',
-              anchor: 'end',
-              font: { weight: 'bold', size: 10 },
-              color: function(context) { return context.dataset.borderColor; },
-              formatter: function(value) { return value > 0 ? value.toLocaleString() : ''; }
-            },
-            legend: { labels: { color: '#cbd5e1' } }
-          },
-          scales: {
-            x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-            y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
-          }
-        }
-      });
-    }
-
-    function renderChartDepartamentoAusentismo(fullData) {
-      const ctx = document.getElementById('chart-departamento').getContext('2d');
-      if (chartsAusentismo.departamento) chartsAusentismo.departamento.destroy();
-
-      const selectedMotivos = getSelectedValues('chkMotivoAus');
-
-      const filtered = fullData.filter(item => {
-        const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
-        if (!selectedMotivos.includes(motivo)) return false;
-        return true;
-      });
-
-      const depts2025 = {};
-      const depts2026 = {};
-      const deptsTotales = {};
-
-      filtered.forEach(item => {
-        const d = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
-        const p = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
-        const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
-        const hs = dias * HORAS_POR_DIA;
-
-        deptsTotales[d] = (deptsTotales[d] || 0) + hs;
-
-        if (p && p.includes('/')) {
-          const [, y] = p.split('/');
-          if (y === '2025') depts2025[d] = (depts2025[d] || 0) + hs;
-          if (y === '2026') depts2026[d] = (depts2026[d] || 0) + hs;
-        }
-      });
-
-      const sortedDepts = Object.keys(deptsTotales).sort((a, b) => deptsTotales[b] - deptsTotales[a]);
-
-      chartsAusentismo.departamento = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: sortedDepts,
-          datasets: [
-            { label: '2025 (hs)', data: sortedDepts.map(d => depts2025[d] || 0), backgroundColor: '#10b981', borderRadius: 4 },
-            { label: '2026 (hs)', data: sortedDepts.map(d => depts2026[d] || 0), backgroundColor: '#3b82f6', borderRadius: 4 }
-          ]
-        },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            datalabels: {
-              anchor: 'end',
-              align: 'end',
-              font: { weight: 'bold', size: 10 },
-              color: '#e2e8f0',
-              formatter: function(value) { return value > 0 ? `${value.toLocaleString()} hs` : ''; }
-            },
-            legend: { labels: { color: '#cbd5e1' } }
-          },
-          scales: {
-            x: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-            y: { ticks: { font: { size: 11, weight: 'bold' }, color: '#cbd5e1' }, grid: { display: false } }
-          }
-        }
-      });
-    }
-
-    function renderChartMotivoAusentismo(data) {
-      const ctx = document.getElementById('chart-motivo').getContext('2d');
-      if (chartsAusentismo.motivo) chartsAusentismo.motivo.destroy();
-
-      const motivos = {};
-      let totalDias = 0;
-
-      data.forEach(item => {
-        const m = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']) || 'Sin Especificar';
-        const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
-        motivos[m] = (motivos[m] || 0) + dias;
-        totalDias += dias;
-      });
-
-      chartsAusentismo.motivo = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: Object.keys(motivos),
-          datasets: [{
-            data: Object.values(motivos),
-            backgroundColor: ['#f59e0b', '#ef4444', '#10b981', '#6366f1', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316']
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 15, usePointStyle: true, color: '#cbd5e1' } },
-            datalabels: {
-              color: '#ffffff',
-              font: { weight: 'bold', size: 11 },
-              formatter: function(value) {
-                if (value === 0) return '';
-                const pct = ((value / totalDias) * 100).toFixed(1);
-                return pct > 3 ? `${pct}%` : '';
-              }
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('.relative')) {
+                document.querySelectorAll('[id^="dd"]').forEach(d => d.classList.add('hidden'));
             }
-          }
-        }
-      });
-    }
-
-    function renderTablaAusentismo(data, monthFilter) {
-      const tbody = document.getElementById('tabla-body');
-      tbody.innerHTML = '';
-
-      let rowsToDisplay = data;
-      if (monthFilter && monthFilter !== 'ALL') {
-        rowsToDisplay = data.filter(item => {
-          const p = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
-          return p === monthFilter;
         });
-      }
 
-      if (rowsToDisplay.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="px-6 py-4 text-center text-slate-500">No hay registros para el mes seleccionado.</td></tr>`;
-        return;
-      }
+        function switchTab(tabName) {
+            const viewAus = document.getElementById('viewAusentismo');
+            const viewHis = document.getElementById('viewHistorial');
+            const viewHE = document.getElementById('viewHorasExtras');
 
-      rowsToDisplay.forEach(item => {
-        const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
-        const costoBruto = parseNum(getValAus(item, ['Importe', 'Monto', 'Bruto', 'Costo', 'Columna S']));
-        const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
-        const nroConcepto = getValAus(item, ['Nro. de concep', 'Nro. concepto', 'Concepto']);
-        
-        const clasif = clasificarConcepto(motivo, nroConcepto, costoBruto);
-        let costoTotalItem = clasif.tipo !== 'SIN_COSTO' ? (costoBruto * FACTOR_CARGAS_SOCIALES) : 0;
-        const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
+            const btnAus = document.getElementById('btnTabAusentismo');
+            const btnHis = document.getElementById('btnTabHistorial');
+            const btnHE = document.getElementById('btnTabHorasExtras');
 
-        let badgeClass = "bg-emerald-950 text-emerald-300 border border-emerald-800/50";
-        if (clasif.tipo === 'ART_EMPRESA') badgeClass = "bg-rose-950 text-rose-300 border border-rose-800/50";
-        if (clasif.tipo === 'ART_RECUPERABLE') badgeClass = "bg-amber-950 text-amber-300 border border-amber-800/50";
-        if (clasif.tipo === 'SIN_COSTO') badgeClass = "bg-slate-800 text-slate-400";
+            viewAus.classList.add('hidden');
+            viewHis.classList.add('hidden');
+            viewHE.classList.add('hidden');
 
-        const tr = document.createElement('tr');
-        tr.className = "hover:bg-slate-800/50 transition-colors";
-        tr.innerHTML = `
-          <td class="px-6 py-4 font-mono font-medium text-slate-200">${getValAus(item, ['Legajo']) || '-'}</td>
-          <td class="px-6 py-4 font-bold text-slate-100">${getValAus(item, ['Apellidos'])} ${getValAus(item, ['Nombre'])}</td>
-          <td class="px-6 py-4 text-slate-300">${dept}</td>
-          <td class="px-6 py-4 font-medium text-slate-200">${motivo || 'N/A'}</td>
-          <td class="px-6 py-4"><span class="${badgeClass} text-xs font-semibold px-2.5 py-1 rounded-md">${clasif.label}</span></td>
-          <td class="px-6 py-4 text-center font-medium text-slate-300">${getValAus(item, ['Período liqui', 'Período']) || '-'}</td>
-          <td class="px-6 py-4 text-center font-bold text-amber-400">${dias} d</td>
-          <td class="px-6 py-4 text-right font-bold ${clasif.tipo === 'SIN_COSTO' ? 'text-slate-500' : 'text-emerald-400'}">${formatPesos(costoTotalItem)}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
+            btnAus.classList.remove('tab-btn-active');
+            btnHis.classList.remove('tab-btn-active');
+            btnHE.classList.remove('tab-btn-active');
 
-    // =================================================================
-    // 2. LÓGICA DEL DASHBOARD DE HORAS EXTRAS
-    // =================================================================
-    const CSV_URL_HE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQd0US63CZO0OFQOYViC2KcNXmyf4C5rulRcmyl9CFnESVft76_fc_vD0lMSUDjMVc3wHi5fdOFaeOV/pub?gid=1153630442&single=true&output=csv';
-    const FACTOR_COSTO_EMPRESA = 1.45 * 1.33;
+            if (tabName === 'ausentismo') {
+                viewAus.classList.remove('hidden');
+                btnAus.classList.add('tab-btn-active');
+            } else if (tabName === 'historial') {
+                viewHis.classList.remove('hidden');
+                btnHis.classList.add('tab-btn-active');
+            } else {
+                viewHE.classList.remove('hidden');
+                btnHE.classList.add('tab-btn-active');
+            }
+        }
 
-    let allRawDataHE = [];
-    let currentFilteredRowsHE = [];
-    let chartEvolucionInstHE, chartDeptoInteranualInstHE, chartJornadaInstHE, chartRangoInstHE;
-    const MESES_NOMBRES_HE = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+        // =================================================================
+        // 1. LÓGICA DEL DASHBOARD DE AUSENTISMO
+        // =================================================================
+        const URL_DATA_AUSENTISMO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRsPAbz--SGf1aJFcFOyLLdqxXZqPhpFSMxKbN6Oz9Em7AZjQmThmcboOzMDeptewjsqh7qo6C6oh27/pub?gid=0&single=true&output=csv';
+        const URL_DOTACION_HORAS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRsPAbz--SGf1aJFcFOyLLdqxXZqPhpFSMxKbN6Oz9Em7AZjQmThmcboOzMDeptewjsqh7qo6C6oh27/pub?gid=847796593&single=true&output=csv';
+        const HORAS_POR_DIA = 9;
+        const FACTOR_CARGAS_SOCIALES = 1.33;
 
-    function parseMontoHE(val) {
-      if (!val) return 0;
-      if (typeof val === 'number') return val;
-      let str = String(val).trim();
-      if (!str) return 0;
-      if (str.charCodeAt(0) === 45) return 0;
-      if (str.includes(',') && str.includes('.')) str = str.replace(/,/g, '');
-      else if (str.includes(',')) str = str.replace(',', '.');
-      const num = parseFloat(str);
-      return isNaN(num) ? 0 : num;
-    }
+        let rawAusentismo = [];
+        let mapHorasPlanificadas = {};
+        let currentFilteredData = [];
+        let chartsAusentismo = {};
 
-    function mostrarStatusHE(msg) {
-      const alert = document.getElementById('statusAlertHE');
-      alert.classList.remove('hidden');
-      alert.innerText = msg;
-    }
+        function getValAus(row, candidates) {
+            for (let c of candidates) {
+                for (let key in row) {
+                    if (key.trim().toLowerCase().includes(c.toLowerCase())) {
+                        return row[key] ? row[key].toString().trim() : '';
+                    }
+                }
+            }
+            return '';
+        }
 
-    function initHorasExtras() {
-      document.getElementById('excelFileInput').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
+        function clasificarConcepto(motivoRaw, nroConcepto, costoBruto) {
+            const cod = nroConcepto ? nroConcepto.toString().trim() : '';
+            const m = motivoRaw ? motivoRaw.toLowerCase() : '';
 
-        mostrarStatusHE('Leyendo archivo local...');
-        const reader = new FileReader();
+            if (cod === '15102' || cod === '15107' || m.includes('maternidad') || m.includes('excedencia') || m.includes('sin goce') || m.includes('injustificada') || m.includes('falta') || m.includes('suspension') || costoBruto <= 0) {
+                return { tipo: 'SIN_COSTO', label: 'Sin Costo / ANSES' };
+            }
+            if (cod === '14051' || m.includes('14051') || m.includes('a cargo empresa') || m.includes('art empresa') || m.includes('empresa')) {
+                return { tipo: 'ART_EMPRESA', label: 'ART (Empresa - 14051)' };
+            }
+            if (m.includes('accidente') || m.includes('art')) {
+                return { tipo: 'ART_RECUPERABLE', label: 'ART (Recuperable)' };
+            }
+            return { tipo: 'INCULPABLE', label: 'Inculpable / Legal' };
+        }
 
-        if (file.name.endsWith('.csv')) {
-          reader.onload = e => {
-            Papa.parse(e.target.result, {
-              header: true,
-              skipEmptyLines: true,
-              complete: res => guardarYProcesarDataHE(res.data)
+        function parseNum(val) {
+            if (!val) return 0;
+            let clean = val.toString().replace(/\./g, '').replace(',', '.').replace(/[^0-9.-]/g, '');
+            let num = parseFloat(clean);
+            return isNaN(num) ? 0 : num;
+        }
+
+        function formatPesos(monto) {
+            return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(monto);
+        }
+
+        function estandarizarPeriodo(str) {
+            if (!str) return '';
+            let clean = str.toString().trim().toLowerCase();
+            if (clean.includes('/')) {
+                let parts = clean.split('/');
+                if (parts.length === 3) {
+                    let m = parts[1].padStart(2, '0');
+                    let y = parts[2].length === 2 ? `20${parts[2]}` : parts[2];
+                    return `${m}/${y}`;
+                } else if (parts.length === 2) {
+                    let m = parts[0].padStart(2, '0');
+                    let y = parts[1].length === 2 ? `20${parts[1]}` : parts[1];
+                    return `${m}/${y}`;
+                }
+            }
+            if (clean.includes('-')) {
+                let parts = clean.split('-');
+                if (parts[0].length === 4) {
+                    let y = parts[0];
+                    let m = parts[1].padStart(2, '0');
+                    return `${m}/${y}`;
+                } else if (parts.length >= 2) {
+                    let m = parts[0].padStart(2, '0');
+                    let y = parts[1].length === 2 ? `20${parts[1]}` : parts[1];
+                    return `${m}/${y}`;
+                }
+            }
+            return clean;
+        }
+
+        function initAusentismo() {
+            Promise.all([
+                fetchCSV(URL_DATA_AUSENTISMO, true),
+                fetchCSV(URL_DOTACION_HORAS, false)
+            ]).then(([ausentismoData, dotacionData]) => {
+                rawAusentismo = ausentismoData;
+                mapHorasPlanificadas = {};
+                dotacionData.forEach((rowArray, idx) => {
+                    if (idx === 0) return;
+                    if (rowArray && rowArray.length >= 3) {
+                        const rawPer = rowArray[0];
+                        const hs = parseNum(rowArray[2]);
+                        const key = estandarizarPeriodo(rawPer);
+                        if (hs > 0 && key) {
+                            mapHorasPlanificadas[key] = (mapHorasPlanificadas[key] || 0) + hs;
+                        }
+                    }
+                });
+
+                populateMultiSelectAusentismo(rawAusentismo);
+                applyFiltersAndRenderAusentismo();
+
+                ['chart-year-2025', 'chart-year-2026'].forEach(id => {
+                    document.getElementById(id).addEventListener('change', () => {
+                        renderChartComparativoAusentismo(rawAusentismo);
+                    });
+                });
+
+                document.getElementById('tabla-filter-month').addEventListener('change', (e) => {
+                    renderTablaAusentismo(currentFilteredData, e.target.value);
+                });
+            }).catch(err => console.error("Error al cargar ausentismo:", err));
+        }
+
+        function fetchCSV(url, headerBool) {
+            return new Promise((resolve, reject) => {
+                Papa.parse(url, {
+                    download: true,
+                    header: headerBool,
+                    skipEmptyLines: true,
+                    complete: (results) => resolve(results.data),
+                    error: (err) => reject(err)
+                });
             });
-          };
-          reader.readAsText(file);
-        } else {
-          reader.onload = e => {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, { type: 'array' });
-            const sheetName = workbook.SheetNames.find(s => s.trim().toUpperCase() === 'DATA') || workbook.SheetNames[0];
-            const rawData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-            guardarYProcesarDataHE(rawData);
-          };
-          reader.readAsArrayBuffer(file);
-        }
-      });
-
-      cargarHEDesdeURL();
-    }
-
-    function cargarHEDesdeURL() {
-      mostrarStatusHE('Cargando horas extras desde Google Sheets...');
-      Papa.parse(CSV_URL_HE, {
-        download: true,
-        header: true,
-        skipEmptyLines: true,
-        complete: function(results) {
-          mostrarStatusHE('Sincronizado exitosamente.');
-          guardarYProcesarDataHE(results.data);
-        },
-        error: function() {
-          mostrarStatusHE('Cargá un archivo localmente si la URL falla.');
-        }
-      });
-    }
-
-    function guardarYProcesarDataHE(data) {
-      allRawDataHE = data;
-      poblarMultiSelectHE(allRawDataHE);
-      aplicarFiltrosHE();
-    }
-
-    function poblarMultiSelectHE(rows) {
-      const aniosSet = new Set();
-      const deptosSet = new Set();
-      const mesesList = ['1','2','3','4','5','6','7','8','9','10','11','12'];
-
-      rows.forEach(row => {
-        const getVal = (keyNames) => {
-          for (let k of Object.keys(row)) {
-            if (keyNames.some(kn => k.trim().toLowerCase() === kn.toLowerCase())) return row[k];
-          }
-          return '';
-        };
-
-        const periodo = getVal(['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
-        if (periodo && String(periodo).includes('/')) {
-          const partes = String(periodo).split('/');
-          if (partes.length === 2) aniosSet.add(partes[1].trim());
         }
 
-        const depto = normalizarDepartamento(getVal(['Departamento', 'O']));
-        if (depto && depto !== 'Sin Depto') deptosSet.add(depto);
-      });
+        function populateMultiSelectAusentismo(data) {
+            const depts = new Set();
+            const motivos = new Set();
+            const years = new Set();
+            const months = new Set();
+            const periodosCompletos = new Set();
 
-      renderCheckboxes('ddAniosHE', Array.from(aniosSet).sort().reverse(), 'chkAnioHE', 'aplicarFiltrosHE()', a => `Año ${a}`);
-      renderCheckboxes('ddMesesHE', mesesList, 'chkMesHE', 'aplicarFiltrosHE()', m => MESES_NOMBRES_HE[parseInt(m)-1]);
-      renderCheckboxes('ddDeptoHE', Array.from(deptosSet).sort(), 'chkDeptoHE', 'aplicarFiltrosHE()');
+            data.forEach(item => {
+                const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
+                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
+                const periodo = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
 
-      const selectExcedidosAnio = document.getElementById('filterExcedidosAnio');
-      selectExcedidosAnio.innerHTML = '';
-      Array.from(aniosSet).sort().reverse().forEach(a => selectExcedidosAnio.innerHTML += `<option value="${a}">${a}</option>`);
+                if (dept) depts.add(dept);
+                if (motivo) motivos.add(motivo);
+                if (periodo && periodo.includes('/')) {
+                    const [m, y] = periodo.split('/');
+                    months.add(m);
+                    years.add(y);
+                    periodosCompletos.add(periodo);
+                }
+            });
 
-      const selectExcedidosDepto = document.getElementById('filterExcedidosDepto');
-      selectExcedidosDepto.innerHTML = '<option value="TODOS">Todos los Departamentos</option>';
-      Array.from(deptosSet).sort().forEach(d => selectExcedidosDepto.innerHTML += `<option value="${d}">${d}</option>`);
-    }
+            renderCheckboxes('ddYearAus', Array.from(years).sort(), 'chkYearAus', 'applyFiltersAndRenderAusentismo()');
+            renderCheckboxes('ddMonthAus', Array.from(months).sort(), 'chkMonthAus', 'applyFiltersAndRenderAusentismo()', m => `Mes ${m}`);
+            renderCheckboxes('ddDeptAus', Array.from(depts).sort(), 'chkDeptAus', 'applyFiltersAndRenderAusentismo()');
+            renderCheckboxes('ddMotivoAus', Array.from(motivos).sort(), 'chkMotivoAus', 'applyFiltersAndRenderAusentismo()');
 
-    function aplicarFiltrosHE() {
-      const selectedAnios = getSelectedValues('chkAnioHE');
-      const selectedMeses = getSelectedValues('chkMesHE');
-      const selectedDeptos = getSelectedValues('chkDeptoHE');
-
-      updateLabelText('labelAniosHE', selectedAnios, "Todos los Años", "Años");
-      updateLabelText('labelMesesHE', selectedMeses, "Todos los Meses", "Meses");
-      updateLabelText('labelDeptoHE', selectedDeptos, "Todos los Departamentos", "Deptos");
-
-      currentFilteredRowsHE = allRawDataHE.filter(row => {
-        const getVal = (keyNames) => {
-          for (let k of Object.keys(row)) {
-            if (keyNames.some(kn => k.trim().toLowerCase() === kn.toLowerCase())) return row[k];
-          }
-          return '';
-        };
-
-        const depto = normalizarDepartamento(getVal(['Departamento', 'O']));
-        if (!selectedDeptos.includes(depto)) return false;
-
-        const periodo = getVal(['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
-        if (periodo && String(periodo).includes('/')) {
-          const partes = String(periodo).split('/');
-          const mesRow = partes[0].trim();
-          const anioRow = partes[1].trim();
-
-          if (!selectedAnios.includes(anioRow)) return false;
-          if (!selectedMeses.includes(mesRow)) return false;
+            const selectTablaMonth = document.getElementById('tabla-filter-month');
+            selectTablaMonth.innerHTML = '<option value="ALL">Todos los Meses de la muestra</option>';
+            Array.from(periodosCompletos).sort().forEach(p => selectTablaMonth.add(new Option(`Período ${p}`, p)));
         }
 
-        return true;
-      });
-
-      procesarDatosHE(currentFilteredRowsHE);
-    }
-
-    function limpiarFiltrosHE() {
-      ['chkAnioHE', 'chkMesHE', 'chkDeptoHE'].forEach(cls => toggleAllCheckboxes(cls, true));
-      aplicarFiltrosHE();
-    }
-
-    function procesarDatosHE(rows) {
-      let totalHoras = 0;
-      let costoEmpresaTotal = 0;
-      const empleadosMap = {};
-      const deptosMap = {};
-      const jornadaMap = { Diurna: 0, Nocturna: 0, Otros: 0 };
-      const rangosEtarios = { '< 25': 0, '25-35': 0, '36-50': 0, '> 50': 0 };
-
-      const evolucionMensual = {
-        '2025': Array(12).fill(0),
-        '2026': Array(12).fill(0)
-      };
-
-      rows.forEach(row => {
-        const getVal = (keyNames) => {
-          for (let k of Object.keys(row)) {
-            if (keyNames.some(kn => k.trim().toLowerCase() === kn.toLowerCase())) return row[k];
-          }
-          return '';
-        };
-
-        const horas = parseMontoHE(getVal(['Cantidad liquidada', 'Cantidad', 'M']));
-        const importeBase = parseMontoHE(getVal(['Importe liquidado', 'Importe', 'J']));
-        const costoReal = importeBase * FACTOR_COSTO_EMPRESA;
-
-        const legajo = getVal(['Nro Legajo', 'Legajo', 'Numero de legajo', 'A']) || 'S/D';
-        const nombre = getVal(['Apellido Nombre', 'Nombre', 'B']) || 'Desconocido';
-        const depto = normalizarDepartamento(getVal(['Departamento', 'O']));
-        const descConcepto = String(getVal(['Desc. de concepto', 'Descripcion del concepto', 'I'])).toLowerCase();
-        const fechaNac = getVal(['Fecha de nacimiento', 'N']);
-        const periodo = getVal(['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
-
-        totalHoras += horas;
-        costoEmpresaTotal += costoReal;
-
-        if (periodo && String(periodo).includes('/')) {
-          const partes = String(periodo).split('/');
-          const m = parseInt(partes[0].trim(), 10) - 1;
-          const a = partes[1].trim();
-
-          if ((a === '2025' || a === '2026') && m >= 0 && m < 12) {
-            evolucionMensual[a][m] += horas;
-          }
+        function renderCheckboxes(containerId, items, className, onChangeFn, labelTransform) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `
+                <label class="flex items-center space-x-2 font-semibold text-indigo-400 cursor-pointer pb-1 border-b border-slate-800">
+                    <input type="checkbox" onchange="toggleAllCheckboxes('${className}', this.checked); ${onChangeFn}" checked class="rounded bg-slate-950 border-slate-700 text-indigo-500">
+                    <span>(Seleccionar Todos)</span>
+                </label>
+            ` + items.map(item => `
+                <label class="flex items-center space-x-2 cursor-pointer hover:bg-slate-800/50 p-1 rounded">
+                    <input type="checkbox" value="${item}" checked onchange="${onChangeFn}" class="${className} rounded bg-slate-950 border-slate-700 text-indigo-500">
+                    <span>${labelTransform ? labelTransform(item) : item}</span>
+                </label>
+            `).join('');
         }
 
-        if (!deptosMap[depto]) deptosMap[depto] = { horas: 0, costo: 0 };
-        deptosMap[depto].horas += horas;
-        deptosMap[depto].costo += costoReal;
-
-        if (!empleadosMap[legajo]) {
-          empleadosMap[legajo] = { legajo, nombre, depto, horas: 0, costo: 0 };
-        }
-        empleadosMap[legajo].horas += horas;
-        empleadosMap[legajo].costo += costoReal;
-
-        if (descConcepto.includes('masajista') || descConcepto.includes('diurno') || descConcepto.includes('diurna')) {
-          jornadaMap.Diurna += horas;
-        } else if (descConcepto.includes('nocturno') || descConcepto.includes('nocturna')) {
-          jornadaMap.Nocturna += horas;
-        } else {
-          jornadaMap.Otros += horas;
+        function toggleAllCheckboxes(className, isChecked) {
+            document.querySelectorAll(`.${className}`).forEach(cb => cb.checked = isChecked);
         }
 
-        if (fechaNac) {
-          const edad = calcularEdad(fechaNac);
-          if (edad > 0) {
-            if (edad < 25) rangosEtarios['< 25'] += horas;
-            else if (edad <= 35) rangosEtarios['25-35'] += horas;
-            else if (edad <= 50) rangosEtarios['36-50'] += horas;
-            else rangosEtarios['> 50'] += horas;
-          }
+        function getSelectedValues(className) {
+            return Array.from(document.querySelectorAll(`.${className}:checked`)).map(cb => cb.value);
         }
-      });
 
-      const vHE = document.getElementById('viewHorasExtras');
-      const cantEmpleados = Object.keys(empleadosMap).length;
-      vHE.querySelector('#kpiTotalHoras').innerText = totalHoras.toLocaleString('es-AR', { maximumFractionDigits: 1 }) + ' hs';
-      vHE.querySelector('#kpiCostoTotal').innerText = '$ ' + costoEmpresaTotal.toLocaleString('es-AR', { maximumFractionDigits: 0 });
-      vHE.querySelector('#kpiPromedioEmpleado').innerText = (cantEmpleados ? (totalHoras / cantEmpleados).toFixed(1) : 0) + ' hs';
-      
-      const deptoTop = Object.entries(deptosMap).sort((a,b) => b[1].horas - a[1].horas)[0];
-      vHE.querySelector('#kpiDeptoTop').innerText = deptoTop ? deptoTop[0] : '-';
-
-      renderChartsHE(evolucionMensual, deptosMap, jornadaMap, rangosEtarios);
-      renderChartDeptoMes();
-      renderTop10HE(empleadosMap);
-      renderTablaExcedidos();
-
-      setTimeout(renderHeatmap, 50);
-    }
-
-    function renderHeatmap() {
-      const deptoMesData = {};
-
-      allRawDataHE.forEach(row => {
-        const getVal = (keyNames) => {
-          for (let k of Object.keys(row)) {
-            if (keyNames.some(kn => k.trim().toLowerCase() === kn.toLowerCase())) return row[k];
-          }
-          return '';
-        };
-
-        const depto = normalizarDepartamento(getVal(['Departamento', 'O']));
-        const horas = parseMontoHE(getVal(['Cantidad liquidada', 'Cantidad', 'M']));
-        const periodo = getVal(['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
-
-        if (periodo && String(periodo).includes('/')) {
-          const partes = String(periodo).split('/');
-          const m = parseInt(partes[0].trim(), 10) - 1;
-          const a = partes[1].trim();
-
-          if (!deptoMesData[depto]) {
-            deptoMesData[depto] = { '2025': Array(12).fill(0), '2026': Array(12).fill(0) };
-          }
-          if ((a === '2025' || a === '2026') && m >= 0 && m < 12) {
-            deptoMesData[depto][a][m] += horas;
-          }
+        function updateLabelText(labelId, selectedValues, totalText, singularText) {
+            const el = document.getElementById(labelId);
+            if (selectedValues.length === 0) el.textContent = "Ninguno seleccionado";
+            else if (selectedValues.length === 1) el.textContent = selectedValues[0];
+            else el.textContent = `${selectedValues.length} ${singularText} seleccionados`;
         }
-      });
 
-      const tbody = document.getElementById('heatmapBody');
-      const deptos = Object.keys(deptoMesData).sort();
-
-      if (deptos.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="13" class="py-4 text-center text-slate-500">Sin datos suficientes.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = deptos.map(d => {
-        let cellsHtml = `<td class="py-3 px-3 text-left font-semibold text-slate-200">${d}</td>`;
-        for (let m = 0; m < 12; m++) {
-          const h2025 = deptoMesData[d]['2025'][m];
-          const h2026 = deptoMesData[d]['2026'][m];
-
-          if (h2025 === 0 && h2026 === 0) {
-            cellsHtml += `<td class="py-2 px-1 text-slate-600 bg-slate-950/40">-</td>`;
-          } else if (h2025 === 0 && h2026 > 0) {
-            cellsHtml += `<td class="py-2 px-1 bg-rose-950/80 text-rose-400 font-bold" title="2025: 0hs | 2026: ${h2026}hs">NUEVO</td>`;
-          } else {
-            const varPct = ((h2026 - h2025) / h2025) * 100;
-            let bgColor = 'bg-slate-900/60 text-slate-400';
-            if (varPct > 5) bgColor = 'bg-rose-950 text-rose-300 font-semibold border border-rose-900/40';
-            else if (varPct < -5) bgColor = 'bg-emerald-950 text-emerald-300 font-semibold border border-emerald-900/40';
-
-            const sign = varPct > 0 ? '+' : '';
-            cellsHtml += `<td class="py-2 px-1 ${bgColor}" title="2025: ${h2025.toFixed(0)}hs | 2026: ${h2026.toFixed(0)}hs">${sign}${varPct.toFixed(0)}%</td>`;
-          }
+        function limpiarFiltrosAusentismo() {
+            ['chkYearAus', 'chkMonthAus', 'chkDeptAus', 'chkMotivoAus'].forEach(cls => toggleAllCheckboxes(cls, true));
+            applyFiltersAndRenderAusentismo();
         }
-        return `<tr class="hover:bg-slate-800/40 transition-colors">${cellsHtml}</tr>`;
-      }).join('');
-    }
 
-    function renderTablaExcedidos() {
-      const anioSel = document.getElementById('filterExcedidosAnio').value;
-      const mesSel = document.getElementById('filterExcedidosMes').value;
-      const deptoSel = document.getElementById('filterExcedidosDepto').value;
+        function applyFiltersAndRenderAusentismo() {
+            const selectedYears = getSelectedValues('chkYearAus');
+            const selectedMonths = getSelectedValues('chkMonthAus');
+            const selectedDepts = getSelectedValues('chkDeptAus');
+            const selectedMotivos = getSelectedValues('chkMotivoAus');
 
-      const acumuladoEmp = {};
+            updateLabelText('labelYearAus', selectedYears, "Todos los Años", "Años");
+            updateLabelText('labelMonthAus', selectedMonths, "Todos los Meses", "Meses");
+            updateLabelText('labelDeptAus', selectedDepts, "Todos los Departamentos", "Deptos");
+            updateLabelText('labelMotivoAus', selectedMotivos, "Todos los Conceptos", "Conceptos");
 
-      allRawDataHE.forEach(row => {
-        const getVal = (keyNames) => {
-          for (let k of Object.keys(row)) {
-            if (keyNames.some(kn => k.trim().toLowerCase() === kn.toLowerCase())) return row[k];
-          }
-          return '';
-        };
+            currentFilteredData = rawAusentismo.filter(item => {
+                const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
+                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
+                const periodo = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
 
-        const periodo = getVal(['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
-        const depto = normalizarDepartamento(getVal(['Departamento', 'O']));
+                if (!selectedDepts.includes(dept)) return false;
+                if (!selectedMotivos.includes(motivo)) return false;
+                if (periodo && periodo.includes('/')) {
+                    const [m, y] = periodo.split('/');
+                    if (!selectedYears.includes(y)) return false;
+                    if (!selectedMonths.includes(m)) return false;
+                }
+                return true;
+            });
 
-        if (deptoSel !== 'TODOS' && depto.trim().toLowerCase() !== deptoSel.trim().toLowerCase()) return;
+            renderDashboardAusentismo(currentFilteredData, selectedYears, selectedMonths);
+        }
 
-        if (periodo && String(periodo).includes('/')) {
-          const partes = String(periodo).split('/');
-          const mesRow = partes[0].trim();
-          const anioRow = partes[1].trim();
+        function renderDashboardAusentismo(filtered, selectedYears, selectedMonths) {
+            let totalDiasLiquidados = 0;
+            let diasInculpable = 0, costoInculpable = 0;
+            let diasArtEmpresa = 0, costoArtEmpresa = 0;
+            let diasArtRecuperable = 0, costoArtRecuperable = 0;
+            let diasSinCosto = 0;
 
-          if (anioRow === anioSel && mesRow === mesSel) {
-            const legajo = getVal(['Nro Legajo', 'Legajo', 'Numero de legajo', 'A']) || 'S/D';
-            const nombre = getVal(['Apellido Nombre', 'Nombre', 'B']) || 'Desconocido';
-            const horas = parseMontoHE(getVal(['Cantidad liquidada', 'Cantidad', 'M']));
-            const importeBase = parseMontoHE(getVal(['Importe liquidado', 'Importe', 'J']));
+            filtered.forEach(item => {
+                const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
+                const costoBruto = parseNum(getValAus(item, ['Importe', 'Monto', 'Bruto', 'Costo', 'Columna S']));
+                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
+                const nroConcepto = getValAus(item, ['Nro. de concep', 'Nro. concepto', 'Concepto']);
+                const clasif = clasificarConcepto(motivo, nroConcepto, costoBruto);
 
-            if (!acumuladoEmp[legajo]) {
-              acumuladoEmp[legajo] = { legajo, nombre, depto, horas: 0, costo: 0 };
+                totalDiasLiquidados += dias;
+                if (clasif.tipo === 'INCULPABLE') {
+                    diasInculpable += dias;
+                    costoInculpable += (costoBruto * FACTOR_CARGAS_SOCIALES);
+                } else if (clasif.tipo === 'ART_EMPRESA') {
+                    diasArtEmpresa += dias;
+                    costoArtEmpresa += (costoBruto * FACTOR_CARGAS_SOCIALES);
+                } else if (clasif.tipo === 'ART_RECUPERABLE') {
+                    diasArtRecuperable += dias;
+                    costoArtRecuperable += (costoBruto * FACTOR_CARGAS_SOCIALES);
+                } else if (clasif.tipo === 'SIN_COSTO') {
+                    diasSinCosto += dias;
+                }
+            });
+
+            const totalHorasPerdidas = totalDiasLiquidados * HORAS_POR_DIA;
+            let horasPlanificadasDivisor = 0;
+            Object.keys(mapHorasPlanificadas).forEach(key => {
+                const [m, y] = key.split('/');
+                if (selectedYears.includes(y) && selectedMonths.includes(m)) {
+                    horasPlanificadasDivisor += mapHorasPlanificadas[key];
+                }
+            });
+
+            if (horasPlanificadasDivisor > 0) {
+                const tasa = ((totalHorasPerdidas / horasPlanificadasDivisor) * 100).toFixed(2);
+                document.getElementById('kpi-tasa').textContent = `${tasa}%`;
+                document.getElementById('kpi-tasa-sub').textContent = `${totalHorasPerdidas.toLocaleString()} hs / ${horasPlanificadasDivisor.toLocaleString()} hs`;
+            } else {
+                document.getElementById('kpi-tasa').textContent = `-- %`;
+                document.getElementById('kpi-tasa-sub').textContent = `${totalHorasPerdidas.toLocaleString()} hs / Sin hs planificadas`;
             }
-            acumuladoEmp[legajo].horas += horas;
-            acumuladoEmp[legajo].costo += (importeBase * FACTOR_COSTO_EMPRESA);
-          }
+
+            document.getElementById('kpi-horas').textContent = `${totalHorasPerdidas.toLocaleString()} hs`;
+            document.getElementById('kpi-dias').textContent = `${totalDiasLiquidados.toLocaleString()} d`;
+
+            document.getElementById('kpi-costo-inculpable').textContent = formatPesos(costoInculpable);
+            document.getElementById('kpi-dias-inculpable').textContent = `${diasInculpable.toLocaleString()} días afectando masa salarial`;
+
+            document.getElementById('kpi-costo-art-empresa').textContent = formatPesos(costoArtEmpresa);
+            document.getElementById('kpi-dias-art-empresa').textContent = `${diasArtEmpresa.toLocaleString()} días a cargo empresa`;
+
+            document.getElementById('kpi-costo-art-recuperable').textContent = formatPesos(costoArtRecuperable);
+            document.getElementById('kpi-dias-art-recuperable').textContent = `${diasArtRecuperable.toLocaleString()} días a tramitar con ART`;
+
+            document.getElementById('kpi-dias-sincosto').textContent = `${diasSinCosto.toLocaleString()} días (Maternidad/Excedencia/Faltas)`;
+
+            renderTablaEvolucionAusentismo(filtered);
+            renderChartComparativoAusentismo(rawAusentismo);
+            renderChartDepartamentoAusentismo(rawAusentismo);
+            renderChartMotivoAusentismo(filtered);
+            
+            const tablaMonthFilter = document.getElementById('tabla-filter-month').value;
+            renderTablaAusentismo(filtered, tablaMonthFilter);
         }
-      });
 
-      const excedidos = Object.values(acumuladoEmp).filter(e => e.horas > 100).sort((a, b) => b.horas - a.horas);
-      const tbody = document.getElementById('tablaExcedidos');
+        function renderTablaEvolucionAusentismo(filteredData) {
+            const tbody = document.getElementById('tabla-evolucion-body');
+            tbody.innerHTML = '';
 
-      if (excedidos.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400 bg-slate-950/60">✅ Ningún empleado superó las 100 horas en el período seleccionado.</td></tr>`;
-        return;
-      }
+            const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            const hsPerdidas2025 = new Array(12).fill(0);
+            const hsPerdidas2026 = new Array(12).fill(0);
 
-      tbody.innerHTML = excedidos.map((e, idx) => `
-        <tr class="hover:bg-red-950/30 transition-colors">
-          <td class="py-3 px-4 font-mono text-slate-500">${idx + 1}</td>
-          <td class="py-3 px-4 font-mono text-slate-300 font-semibold">${e.legajo}</td>
-          <td class="py-3 px-4 font-bold text-slate-100">${e.nombre}</td>
-          <td class="py-3 px-4 text-slate-300">${e.depto}</td>
-          <td class="py-3 px-4 font-black text-red-400 text-base">${e.horas.toFixed(1)} hs</td>
-          <td class="py-3 px-4 font-semibold text-red-500">+${(e.horas - 100).toFixed(1)} hs</td>
-          <td class="py-3 px-4 font-medium text-slate-200">$ ${e.costo.toLocaleString('es-AR', { maximumFractionDigits: 0 })}</td>
-        </tr>
-      `).join('');
-    }
+            filteredData.forEach(item => {
+                const p = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
+                if (p && p.includes('/')) {
+                    const [m, y] = p.split('/');
+                    const mesIdx = parseInt(m, 10) - 1;
+                    const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
+                    const hs = dias * HORAS_POR_DIA;
+                    if (mesIdx >= 0 && mesIdx < 12) {
+                        if (y === '2025') hsPerdidas2025[mesIdx] += hs;
+                        if (y === '2026') hsPerdidas2026[mesIdx] += hs;
+                    }
+                }
+            });
 
-    function renderChartDeptoMes() {
-      const vHE = document.getElementById('viewHorasExtras');
-      const mesElegido = vHE.querySelector('#selectMesDeptoChart').value;
-      const deptosMapMes = {};
+            let acumHs2025 = 0, acumPlan2025 = 0;
+            let acumHs2026 = 0, acumPlan2026 = 0;
 
-      allRawDataHE.forEach(row => {
-        const getVal = (keyNames) => {
-          for (let k of Object.keys(row)) {
-            if (keyNames.some(kn => k.trim().toLowerCase() === kn.toLowerCase())) return row[k];
-          }
-          return '';
+            mesesNombres.forEach((nombreMes, i) => {
+                const mKey = (i + 1).toString().padStart(2, '0');
+                const plan2025 = mapHorasPlanificadas[`${mKey}/2025`] || 0;
+                const plan2026 = mapHorasPlanificadas[`${mKey}/2026`] || 0;
+
+                const hs2025 = hsPerdidas2025[i];
+                const hs2026 = hsPerdidas2026[i];
+
+                const tasaMensual2025 = plan2025 > 0 ? ((hs2025 / plan2025) * 100) : 0;
+                const tasaMensual2026 = plan2026 > 0 ? ((hs2026 / plan2026) * 100) : 0;
+
+                acumHs2025 += hs2025; acumPlan2025 += plan2025;
+                acumHs2026 += hs2026; acumPlan2026 += plan2026;
+
+                const tasaAcum2025 = acumPlan2025 > 0 ? ((acumHs2025 / acumPlan2025) * 100) : 0;
+                const tasaAcum2026 = acumPlan2026 > 0 ? ((acumHs2026 / acumPlan2026) * 100) : 0;
+
+                const diff = tasaMensual2026 - tasaMensual2025;
+                let badgeDiff = `<span class="text-slate-500">-</span>`;
+                if (plan2026 > 0 && plan2025 > 0) {
+                    if (diff > 0) {
+                        badgeDiff = `<span class="bg-rose-950 text-rose-300 font-bold px-2 py-0.5 rounded border border-rose-800/50">+${diff.toFixed(2)}%</span>`;
+                    } else if (diff < 0) {
+                        badgeDiff = `<span class="bg-emerald-950 text-emerald-300 font-bold px-2 py-0.5 rounded border border-emerald-800/50">${diff.toFixed(2)}%</span>`;
+                    } else {
+                        badgeDiff = `<span class="bg-slate-800 text-slate-300 font-bold px-2 py-0.5 rounded">0.00%</span>`;
+                    }
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/50 transition-colors";
+                tr.innerHTML = `
+                    <td class="px-4 py-3 font-bold text-slate-200">${nombreMes}</td>
+                    <td class="px-4 py-3 text-center border-l border-slate-800 font-medium ${plan2025 > 0 ? 'text-slate-200' : 'text-slate-500'}">${plan2025 > 0 ? tasaMensual2025.toFixed(2) + '%' : '-'}</td>
+                    <td class="px-4 py-3 text-center font-semibold text-emerald-400 bg-emerald-950/20">${acumPlan2025 > 0 ? tasaAcum2025.toFixed(2) + '%' : '-'}</td>
+                    <td class="px-4 py-3 text-center border-l border-slate-800 font-medium ${plan2026 > 0 ? 'text-slate-200' : 'text-slate-500'}">${plan2026 > 0 ? tasaMensual2026.toFixed(2) + '%' : '-'}</td>
+                    <td class="px-4 py-3 text-center font-semibold text-blue-400 bg-blue-950/20">${acumPlan2026 > 0 ? tasaAcum2026.toFixed(2) + '%' : '-'}</td>
+                    <td class="px-4 py-3 text-center border-l border-slate-800">${badgeDiff}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderChartComparativoAusentismo(fullData) {
+            const ctx = document.getElementById('chart-comparativo').getContext('2d');
+            if (chartsAusentismo.comparativo) chartsAusentismo.comparativo.destroy();
+
+            const show2025 = document.getElementById('chart-year-2025').checked;
+            const show2026 = document.getElementById('chart-year-2026').checked;
+
+            const selectedDepts = getSelectedValues('chkDeptAus');
+            const selectedMotivos = getSelectedValues('chkMotivoAus');
+
+            const filteredForChart = fullData.filter(item => {
+                const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
+                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
+                if (!selectedDepts.includes(dept)) return false;
+                if (!selectedMotivos.includes(motivo)) return false;
+                return true;
+            });
+
+            const mesesNombres = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            const horas2025 = new Array(12).fill(0);
+            const horas2026 = new Array(12).fill(0);
+
+            filteredForChart.forEach(item => {
+                const p = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
+                if (p && p.includes('/')) {
+                    const [m, y] = p.split('/');
+                    const mesIdx = parseInt(m, 10) - 1;
+                    const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
+                    const hs = dias * HORAS_POR_DIA;
+                    if (mesIdx >= 0 && mesIdx < 12) {
+                        if (y === '2025') horas2025[mesIdx] += hs;
+                        if (y === '2026') horas2026[mesIdx] += hs;
+                    }
+                }
+            });
+
+            const datasets = [];
+            if (show2025) {
+                datasets.push({
+                    label: '2025 (hs)',
+                    data: horas2025,
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                    fill: true,
+                    tension: 0.3
+                });
+            }
+            if (show2026) {
+                datasets.push({
+                    label: '2026 (hs)',
+                    data: horas2026,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                    fill: true,
+                    tension: 0.3
+                });
+            }
+
+            chartsAusentismo.comparativo = new Chart(ctx, {
+                type: 'line',
+                data: { labels: mesesNombres, datasets: datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        datalabels: {
+                            align: 'top',
+                            anchor: 'end',
+                            font: { weight: 'bold', size: 10 },
+                            color: function(context) { return context.dataset.borderColor; },
+                            formatter: function(value) { return value > 0 ? value.toLocaleString() : ''; }
+                        },
+                        legend: { labels: { color: '#cbd5e1' } }
+                    },
+                    scales: {
+                        x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+                        y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
+                    }
+                }
+            });
+        }
+
+        function renderChartDepartamentoAusentismo(fullData) {
+            const ctx = document.getElementById('chart-departamento').getContext('2d');
+            if (chartsAusentismo.departamento) chartsAusentismo.departamento.destroy();
+
+            const selectedMotivos = getSelectedValues('chkMotivoAus');
+
+            const filtered = fullData.filter(item => {
+                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
+                if (!selectedMotivos.includes(motivo)) return false;
+                return true;
+            });
+
+            const depts2025 = {};
+            const depts2026 = {};
+            const deptsTotales = {};
+
+            filtered.forEach(item => {
+                const d = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
+                const p = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
+                const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
+                const hs = dias * HORAS_POR_DIA;
+
+                deptsTotales[d] = (deptsTotales[d] || 0) + hs;
+                if (p && p.includes('/')) {
+                    const [, y] = p.split('/');
+                    if (y === '2025') depts2025[d] = (depts2025[d] || 0) + hs;
+                    if (y === '2026') depts2026[d] = (depts2026[d] || 0) + hs;
+                }
+            });
+
+            const sortedDepts = Object.keys(deptsTotales).sort((a, b) => deptsTotales[b] - deptsTotales[a]);
+
+            chartsAusentismo.departamento = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sortedDepts,
+                    datasets: [
+                        { label: '2025 (hs)', data: sortedDepts.map(d => depts2025[d] || 0), backgroundColor: '#10b981', borderRadius: 4 },
+                        { label: '2026 (hs)', data: sortedDepts.map(d => depts2026[d] || 0), backgroundColor: '#3b82f6', borderRadius: 4 }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'end',
+                            font: { weight: 'bold', size: 10 },
+                            color: '#e2e8f0',
+                            formatter: function(value) { return value > 0 ? `${value.toLocaleString()} hs` : ''; }
+                        },
+                        legend: { labels: { color: '#cbd5e1' } }
+                    },
+                    scales: {
+                        x: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+                        y: { ticks: { font: { size: 11, weight: 'bold' }, color: '#cbd5e1' }, grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function renderChartMotivoAusentismo(data) {
+            const ctx = document.getElementById('chart-motivo').getContext('2d');
+            if (chartsAusentismo.motivo) chartsAusentismo.motivo.destroy();
+
+            const motivos = {};
+            let totalDias = 0;
+
+            data.forEach(item => {
+                const m = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']) || 'Sin Especificar';
+                const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
+                motivos[m] = (motivos[m] || 0) + dias;
+                totalDias += dias;
+            });
+
+            chartsAusentismo.motivo = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(motivos),
+                    datasets: [{
+                        data: Object.values(motivos),
+                        backgroundColor: ['#f59e0b', '#ef4444', '#10b981', '#6366f1', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 15, usePointStyle: true, color: '#cbd5e1' } },
+                        datalabels: {
+                            color: '#ffffff',
+                            font: { weight: 'bold', size: 11 },
+                            formatter: function(value) {
+                                if (value === 0) return '';
+                                const pct = ((value / totalDias) * 100).toFixed(1);
+                                return pct > 3 ? `${pct}%` : '';
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderTablaAusentismo(data, monthFilter) {
+            const tbody = document.getElementById('tabla-body');
+            tbody.innerHTML = '';
+
+            let rowsToDisplay = data;
+            if (monthFilter && monthFilter !== 'ALL') {
+                rowsToDisplay = data.filter(item => {
+                    const p = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
+                    return p === monthFilter;
+                });
+            }
+
+            if (rowsToDisplay.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="px-6 py-4 text-center text-slate-500">No hay registros para el mes seleccionado.</td></tr>`;
+                return;
+            }
+
+            rowsToDisplay.forEach(item => {
+                const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
+                const costoBruto = parseNum(getValAus(item, ['Importe', 'Monto', 'Bruto', 'Costo', 'Columna S']));
+                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
+                const nroConcepto = getValAus(item, ['Nro. de concep', 'Nro. concepto', 'Concepto']);
+                const clasif = clasificarConcepto(motivo, nroConcepto, costoBruto);
+                let costoTotalItem = clasif.tipo !== 'SIN_COSTO' ? (costoBruto * FACTOR_CARGAS_SOCIALES) : 0;
+
+                const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
+
+                let badgeClass = "bg-emerald-950 text-emerald-300 border border-emerald-800/50";
+                if (clasif.tipo === 'ART_EMPRESA') badgeClass = "bg-rose-950 text-rose-300 border border-rose-800/50";
+                if (clasif.tipo === 'ART_RECUPERABLE') badgeClass = "bg-amber-950 text-amber-300 border border-amber-800/50";
+                if (clasif.tipo === 'SIN_COSTO') badgeClass = "bg-slate-800 text-slate-400";
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/50 transition-colors";
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-mono font-medium text-slate-200">${getValAus(item, ['Legajo']) || '-'}</td>
+                    <td class="px-6 py-4 font-bold text-slate-100">${getValAus(item, ['Apellidos'])} ${getValAus(item, ['Nombre'])}</td>
+                    <td class="px-6 py-4 text-slate-300">${dept}</td>
+                    <td class="px-6 py-4 font-medium text-slate-200">${motivo || 'N/A'}</td>
+                    <td class="px-6 py-4"><span class="${badgeClass} text-xs font-semibold px-2.5 py-1 rounded-md">${clasif.label}</span></td>
+                    <td class="px-6 py-4 text-center font-medium text-slate-300">${getValAus(item, ['Período liqui', 'Período']) || '-'}</td>
+                    <td class="px-6 py-4 text-center font-bold text-amber-400">${dias} d</td>
+                    <td class="px-6 py-4 text-right font-bold ${clasif.tipo === 'SIN_COSTO' ? 'text-slate-500' : 'text-emerald-400'}">${formatPesos(costoTotalItem)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // =================================================================
+        // 2. LÓGICA DEL DASHBOARD DE HORAS EXTRAS
+        // =================================================================
+        const CSV_URL_HE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQd0US63CZO0OFQOYViC2KcNXmyf4C5rulRcmyl9CFnESVft76_fc_vD0lMSUDjMVc3wHi5fdOFaeOV/pub?gid=1153630442&single=true&output=csv';
+        const FACTOR_COSTO_EMPRESA = 1.45 * 1.33;
+
+        let allRawDataHE = [];
+        let currentFilteredRowsHE = [];
+        let chartEvolucionInstHE, chartDeptoInteranualInstHE, chartJornadaInstHE, chartRangoInstHE;
+        const MESES_NOMBRES_HE = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+        function parseMontoHE(val) {
+            if (!val) return 0;
+            if (typeof val === 'number') return val;
+            let str = String(val).trim();
+            if (!str) return 0;
+            if (str.charCodeAt(0) === 45) return 0;
+            if (str.includes(',') && str.includes('.')) str = str.replace(/,/g, '');
+            else if (str.includes(',')) str = str.replace(',', '.');
+            const num = parseFloat(str);
+            return isNaN(num) ? 0 : num;
+        }
+
+        function mostrarStatusHE(msg) {
+            const alert = document.getElementById('statusAlertHE');
+            alert.classList.remove('hidden');
+            alert.innerText = msg;
+        }
+
+        function initHorasExtras() {
+            document.getElementById('excelFileInput').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                mostrarStatusHE('Leyendo archivo local...');
+                const reader = new FileReader();
+                if (file.name.endsWith('.csv')) {
+                    reader.onload = e => {
+                        Papa.parse(e.target.result, { header: true, skipEmptyLines: true, complete: res => guardarYProcesarDataHE(res.data) });
+                    };
+                    reader.readAsText(file);
+                } else {
+                    reader.onload = e => {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        const sheetName = workbook.SheetNames.find(s => s.trim().toUpperCase() === 'DATA') || workbook.SheetNames[0];
+                        const rawData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+                        guardarYProcesarDataHE(rawData);
+                    };
+                    reader.readAsArrayBuffer(file);
+                }
+            });
+
+            cargarHEDesdeURL();
+        }
+
+        function cargarHEDesdeURL() {
+            mostrarStatusHE('Cargando horas extras desde Google Sheets...');
+            Papa.parse(CSV_URL_HE, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    mostrarStatusHE('Sincronizado exitosamente.');
+                    guardarYProcesarDataHE(results.data);
+                },
+                error: function() {
+                    mostrarStatusHE('Cargá un archivo localmente si la URL falla.');
+                }
+            });
+        }
+
+        function guardarYProcesarDataHE(data) {
+            allRawDataHE = data;
+            poblarMultiSelectHE(allRawDataHE);
+            aplicarFiltrosHE();
+        }
+
+        function poblarMultiSelectHE(rows) {
+            const aniosSet = new Set();
+            const deptosSet = new Set();
+            const mesesList = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+
+            rows.forEach(row => {
+                const getVal = (keyNames) => {
+                    for (let k of Object.keys(row)) {
+                        if (keyNames.some(kn => k.trim().toLowerCase() === kn.toLowerCase())) return row[k];
+                    }
+                    return '';
+                };
+
+                const periodo = getVal(['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
+                if (periodo && String(periodo).includes('/')) {
+                    const partes = String(periodo).split('/');
+                    if (partes.length === 2) aniosSet.add(partes[1].trim());
+                }
+
+                const depto = normalizarDepartamento(getVal(['Departamento', 'O']));
+                if (depto && depto !== 'Sin Depto') deptosSet.add(depto);
+            });
+
+            renderCheckboxes('ddAniosHE', Array.from(aniosSet).sort().reverse(), 'chkAnioHE', 'aplicarFiltrosHE()', a => `Año ${a}`);
+            renderCheckboxes('ddMesesHE', mesesList, 'chkMesHE', 'aplicarFiltrosHE()', m => MESES_NOMBRES_HE[parseInt(m)-1]);
+            renderCheckboxes('ddDeptoHE', Array.from(deptosSet).sort(), 'chkDeptoHE', 'aplicarFiltrosHE()');
+
+            const selectExcedidosAnio = document.getElementById('filterExcedidosAnio');
+            selectExcedidosAnio.innerHTML = '';
+            Array.from(aniosSet).sort().reverse().forEach(a => selectExcedidosAnio.innerHTML += `<option value="${a}">${a}</option>`);
+
+            const selectExcedidosDepto = document.getElementById('filterExcedidosDepto');
+            selectExcedidosDepto.innerHTML = '<option value="TODOS">Todos los Departamentos</option>';
+            Array.from(deptosSet).sort().forEach(d => selectExcedidosDepto.innerHTML += `<option value="${d}">${d}</option>`);
+        }
+
+        function aplicarFiltrosHE() {
+            const selectedAnios = getSelectedValues('chkAnioHE');
+            const selectedMeses = getSelectedValues('chkMesHE');
+            const selectedDeptos = getSelectedValues('chkDeptoHE');
+
+            updateLabelText('labelAniosHE', selectedAnios, "Todos los Años", "Años");
+            updateLabelText('labelMesesHE', selectedMeses, "Todos los Meses", "Meses");
+            updateLabelText('labelDeptoHE', selectedDeptos, "Todos los Departamentos", "Deptos");
+
+            currentFilteredRowsHE = allRawDataHE.filter(row => {
+                const getVal = (keyNames) => {
+                    for (let k of Object.keys(row)) {
+                        if (keyNames.some(kn => k.trim().toLowerCase() === kn.toLowerCase())) return row[k];
+                    }
+                    return '';
+                };
+
+                const depto = normalizarDepartamento(getVal(['Departamento', 'O']));
+                if (!selectedDeptos.includes(depto)) return false;
+
+                const periodo = getVal(['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
+                if (periodo && String(periodo).includes('/')) {
+                    const partes = String(periodo).split('/');
+                    const mesRow = partes[0].trim();
+                    const anioRow = partes[1].trim();
+                    if (!selectedAnios.includes(anioRow)) return false;
+                    if (!selectedMeses.includes(mesRow)) return false;
+                }
+                return true;
+            });
+
+            procesarDatosHE(currentFilteredRowsHE);
+        }
+
+        function limpiarFiltrosHE() {
+            ['chkAnioHE', 'chkMesHE', 'chkDeptoHE'].forEach(cls => toggleAllCheckboxes(cls, true));
+            aplicarFiltrosHE();
+        }
+
+        function procesarDatosHE(rows) {
+            let totalHoras = 0;
+            let costoEmpresaTotal = 0;
+            const empleadosMap = {};
+            const deptosMap = {};
+            const jornadaMap = { Diurna: 0, Nocturna: 0, Otros: 0 };
+            const rangosEtarios = { '< 25': 0, '25-35': 0, '36-50': 0, '> 50': 0 };
+            const evolucionMensual = { '2025': Array(12).fill(0), '2026': Array(12).fill(0) };
+
+            rows.forEach(row => {
+                const getVal = (keyNames) => {
+                    for (let k of Object.keys(row)) {
+                        if (keyNames.some(kn => k.trim().toLowerCase() === kn.toLowerCase())) return row[k];
+                    }
+                    return '';
+                };
+
+                const horas = parseMontoHE(getVal(['Cantidad liquidada', 'Cantidad', 'M']));
+                const importeBase = parseMontoHE(getVal(['Importe liquidado', 'Importe', 'J']));
+                const costoReal = importeBase * FACTOR_COSTO_EMPRESA;
+
+                const legajo = getVal(['Nro Legajo', 'Legajo', 'Numero de legajo', 'A']) || 'S/D';
+
+                // Lógica de obtención de Nombre y Apellido
+                const apellido = getVal(['Apellido', 'Apellidos']);
+                const nombreSolo = getVal(['Nombre', 'Nombres']);
+                const apellidoNombre = getVal(['Apellido Nombre', 'Apellido y Nombre', 'Nombre y Apellido']);
+
+                let nombreCompleto = 'Desconocido';
+                if (apellidoNombre) {
+                    nombreCompleto = apellidoNombre;
+                } else if (apellido || nombreSolo) {
+                    nombreCompleto = `${apellido} ${nombreSolo}`.trim();
+                }
+
+                const depto = normalizarDepartamento(getVal(['Departamento', 'O']));
+                const descConcepto = String(getVal(['Desc. de concepto', 'Descripcion del concepto', 'I'])).toLowerCase();
+                const fechaNac = getVal(['Fecha de nacimiento', 'N']);
+                const periodo = getVal(['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
+
+                totalHoras += horas;
+                costoEmpresaTotal += costoReal;
+
+                if (periodo && String(periodo).includes('/')) {
+                    const partes = String(periodo).split('/');
+                    const m = parseInt(partes[0].trim(), 10) - 1;
+                    const a = partes[1].trim();
+                    if ((a === '2025' || a === '2026') && m >= 0 && m < 12) {
+                        evolucionMensual[a][m] += horas;
+                    }
+                }
+
+                if (!deptosMap[depto]) deptosMap[depto] = { horas: 0, costo: 0 };
+                deptosMap[depto].horas += horas;
+                deptosMap[depto].costo += costoReal;
+
+                if (!empleadosMap[legajo]) {
+                    empleadosMap[legajo] = { legajo, nombre: nombreCompleto, depto, horas: 0, costo: 0 };
+                }
+                empleadosMap[legajo].horas += horas;
+                empleadosMap[legajo].costo += costoReal;
+
+                if (descConcepto.includes('masajista') || descConcepto.includes('diurno') || descConcepto.includes('diurna')) {
+                    jornadaMap.Diurna += horas;
+                } else if (descConcepto.includes('nocturno') || descConcepto.includes('nocturna')) {
+                    jornadaMap.Nocturna += horas;
+                } else {
+                    jornadaMap.Otros += horas;
+                }
+
+                if (fechaNac) {
+                    const edad = calcularEdad(fechaNac);
+                    if (edad > 0) {
+                        if (edad < 25) rangosEtarios['< 25'] += horas;
+                        else if (edad <= 35) rangosEtarios['25-35'] += horas;
+                        else if (edad <= 50) rangosEtarios['36-50'] += horas;
+                        else rangosEtarios['> 50'] += horas;
+                    }
+                }
+            });
+
+            const vHE = document.getElementById('viewHorasExtras');
+            const cantEmpleados = Object.keys(empleadosMap).length;
+
+            vHE.querySelector('#kpiTotalHoras').innerText = totalHoras.toLocaleString('es-AR', { maximumFractionDigits: 1 }) + ' hs';
+            vHE.querySelector('#kpiCostoTotal').innerText = '$ ' + costoEmpresaTotal.toLocaleString('es-AR', { maximumFractionDigits: 0 });
+            vHE.querySelector('#kpiPromedioEmpleado').innerText = (cantEmpleados ? (totalHoras / cantEmpleados).toFixed(1) : 0) + ' hs';
+
+            const deptoTop = Object.entries(deptosMap).sort((a,b) => b[1].horas - a[1].horas)[0];
+            vHE.querySelector('#kpiDeptoTop').innerText = deptoTop ? deptoTop[0] : '-';
+
+            renderChartsHE(evolucionMensual, deptosMap, jornadaMap, rangosEtarios);
+            renderChartDeptoMes();
+            renderTop10HE(empleadosMap);
+            renderTablaExcedidos();
+
+            setTimeout(renderHeatmap, 50);
+        }
+
+        function renderHeatmap() {
+            const deptoMesData = {};
+            allRawDataHE.forEach(row => {
+                const getVal = (keyNames) => {
+                    for (let k of Object.keys(row)) {
+                        if (keyNames.some(kn => k.trim().toLowerCase() === kn.toLowerCase())) return row[k];
+                    }
+                    return '';
+                };
+
+                const depto = normalizarDepartamento(getVal(['Departamento', 'O']));
+                const horas = parseMontoHE(getVal(['Cantidad liquidada', 'Cantidad', 'M']));
+                const periodo = getVal(['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
+
+                if (periodo && String(periodo).includes('/')) {
+                    const partes = String(periodo).split('/');
+                    const m = parseInt(partes[0].trim(), 10) - 1;
+                    const a = partes[1].trim();
+
+                    if (!deptoMesData[depto]) {
+                        deptoMesData[depto] = { '2025': Array(12).fill(0), '2026': Array(12).fill(0) };
+                    }
+                    if ((a === '2025' || a === '2026') && m >= 0 && m < 12) {
+                        deptoMesData[depto][a][m] += horas;
+                    }
+                }
+            });
+
+            const tbody = document.getElementById('heatmapBody');
+            const deptos = Object.keys(deptoMesData).sort();
+
+            if (deptos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="13" class="py-4 text-center text-slate-500">Sin datos suficientes.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = deptos.map(d => {
+                let cellsHtml = `<td class="py-3 px-3 text-left font-semibold text-slate-200">${d}</td>`;
+                for (let m = 0; m < 12; m++) {
+                    const h2025 = deptoMesData[d]['2025'][m];
+                    const h2026 = deptoMesData[d]['2026'][m];
+
+                    if (h2025 === 0 && h2026 === 0) {
+                        cellsHtml += `<td class="py-2 px-1 text-slate-600 bg-slate-950/40">-</td>`;
+                    } else if (h2025 === 0 && h2026 > 0) {
+                        cellsHtml += `<td class="py-2 px-1 bg-rose-950/80 text-rose-400 font-bold" title="2025: 0hs | 2026: ${h2026}hs">NUEVO</td>`;
+                    } else {
+                        const varPct = ((h2026 - h2025) / h2025) * 100;
+                        let bgColor = 'bg-slate-900/60 text-slate-400';
+                        if (varPct > 5) bgColor = 'bg-rose-950 text-rose-300 font-semibold border border-rose-900/40';
+                        else if (varPct < -5) bgColor = 'bg-emerald-950 text-emerald-300 font-semibold border border-emerald-900/40';
+
+                        const sign = varPct > 0 ? '+' : '';
+                        cellsHtml += `<td class="py-2 px-1 ${bgColor}" title="2025: ${h2025.toFixed(0)}hs | 2026: ${h2026.toFixed(0)}hs">${sign}${varPct.toFixed(0)}%</td>`;
+                    }
+                }
+                return `<tr class="hover:bg-slate-800/40 transition-colors">${cellsHtml}</tr>`;
+            }).join('');
+        }
+
+        function renderTablaExcedidos() {
+            const anioSel = document.getElementById('filterExcedidosAnio').value;
+            const mesSel = document.getElementById('filterExcedidosMes').value;
+            const deptoSel = document.getElementById('filterExcedidosDepto').value;
+
+            const acumuladoEmp = {};
+
+            allRawDataHE.forEach(row => {
+                const getVal = (keyNames) => {
+                    for (let k of Object.keys(row)) {
+                        if (keyNames.some(kn => k.trim().toLowerCase() === kn.toLowerCase())) return row[k];
+                    }
+                    return '';
+                };
+
+                const periodo = getVal(['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
+                const depto = normalizarDepartamento(getVal(['Departamento', 'O']));
+
+                if (deptoSel !== 'TODOS' && depto.trim().toLowerCase() !== deptoSel.trim().toLowerCase()) return;
+
+                if (periodo && String(periodo).includes('/')) {
+                    const partes = String(periodo).split('/');
+                    const mesRow = partes[0].trim();
+                    const anioRow = partes[1].trim();
+
+                    if (anioRow === anioSel && mesRow === mesSel) {
+                        const legajo = getVal(['Nro Legajo', 'Legajo', 'Numero de legajo', 'A']) || 'S/D';
+                        
+                        // Lógica de obtención de Nombre y Apellido
+                        const apellido = getVal(['Apellido', 'Apellidos']);
+                        const nombreSolo = getVal(['Nombre', 'Nombres']);
+                        const apellidoNombre = getVal(['Apellido Nombre', 'Apellido y Nombre', 'Nombre y Apellido']);
+
+                        let nombreCompleto = 'Desconocido';
+                        if (apellidoNombre) {
+                            nombreCompleto = apellidoNombre;
+                        } else if (apellido || nombreSolo) {
+                            nombreCompleto = `${apellido} ${nombreSolo}`.trim();
+                        }
+
+                        const horas = parseMontoHE(getVal(['Cantidad liquidada', 'Cantidad', 'M']));
+                        const importeBase = parseMontoHE(getVal(['Importe liquidado', 'Importe', 'J']));
+
+                        if (!acumuladoEmp[legajo]) {
+                            acumuladoEmp[legajo] = { legajo, nombre: nombreCompleto, depto, horas: 0, costo: 0 };
+                        }
+                        acumuladoEmp[legajo].horas += horas;
+                        acumuladoEmp[legajo].costo += (importeBase * FACTOR_COSTO_EMPRESA);
+                    }
+                }
+            });
+
+            const excedidos = Object.values(acumuladoEmp).filter(e => e.horas > 100).sort((a, b) => b.horas - a.horas);
+            const tbody = document.getElementById('tablaExcedidos');
+
+            if (excedidos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400 bg-slate-950/60">✅ Ningún empleado superó las 100 horas en el período seleccionado.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = excedidos.map((e, idx) => `
+                <tr class="hover:bg-red-950/30 transition-colors">
+                    <td class="py-3 px-4 font-mono text-slate-500">${idx + 1}</td>
+                    <td class="py-3 px-4 font-mono text-slate-300 font-semibold">${e.legajo}</td>
+                    <td class="py-3 px-4 font-bold text-slate-100">${e.nombre}</td>
+                    <td class="py-3 px-4 text-slate-300">${e.depto}</td>
+                    <td class="py-3 px-4 font-black text-red-400 text-base">${e.horas.toFixed(1)} hs</td>
+                    <td class="py-3 px-4 font-semibold text-red-500">+${(e.horas - 100).toFixed(1)} hs</td>
+                    <td class="py-3 px-4 font-medium text-slate-200">$ ${e.costo.toLocaleString('es-AR', { maximumFractionDigits: 0 })}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderChartDeptoMes() {
+            const vHE = document.getElementById('viewHorasExtras');
+            const mesElegido = vHE.querySelector('#selectMesDeptoChart').value;
+            const deptosMapMes = {};
+
+            allRawDataHE.forEach(row => {
+                const getVal = (keyNames) => {
+                    for (let k of Object.keys(row)) {
+                        if (keyNames.some(kn => k.trim().toLowerCase() === kn.toLowerCase())) return row[k];
+                    }
+                    return '';
+                };
+
+                const depto = normalizarDepartamento(getVal(['Departamento', 'O']));
+                const horas = parseMontoHE(getVal(['Cantidad liquidada', 'Cantidad', 'M']));
+                const periodo = getVal(['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
+
+                if (periodo && String(periodo).includes('/')) {
+                    const partes = String(periodo).split('/');
+                    const mesRow = partes[0].trim();
+                    const anioRow = partes[1].trim();
+
+                    if (mesElegido !== 'TODOS' && mesRow !== mesElegido) return;
+
+                    if (!deptosMapMes[depto]) {
+                        deptosMapMes[depto] = { '2025': 0, '2026': 0 };
+                    }
+                    if (anioRow === '2025' || anioRow === '2026') {
+                        deptosMapMes[depto][anioRow] += horas;
+                    }
+                }
+            });
+
+            const deptosOrdenados = Object.keys(deptosMapMes).sort((a, b) => {
+                return (deptosMapMes[b]['2025'] + deptosMapMes[b]['2026']) - (deptosMapMes[a]['2025'] + deptosMapMes[a]['2026']);
+            });
+
+            if (chartDeptoInteranualInstHE) chartDeptoInteranualInstHE.destroy();
+
+            chartDeptoInteranualInstHE = new Chart(vHE.querySelector('#chartDeptoInteranual'), {
+                type: 'bar',
+                data: {
+                    labels: deptosOrdenados,
+                    datasets: [
+                        { label: 'Año 2025 (hs)', data: deptosOrdenados.map(d => deptosMapMes[d]['2025']), backgroundColor: '#64748B' },
+                        { label: 'Año 2026 (hs)', data: deptosOrdenados.map(d => deptosMapMes[d]['2026']), backgroundColor: '#6366F1' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        datalabels: {
+                            display: true,
+                            anchor: 'end',
+                            align: 'top',
+                            color: '#CBD5E1',
+                            font: { weight: 'bold', size: 10 },
+                            formatter: val => val > 0 ? `${val.toLocaleString('es-AR', { maximumFractionDigits: 0 })} hs` : ''
+                        },
+                        legend: { position: 'top', labels: { color: '#CBD5E1' } }
+                    },
+                    scales: {
+                        x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+                        y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8' }, grace: '10%' }
+                    }
+                }
+            });
+        }
+
+        function calcularEdad(fechaStr) {
+            if (!fechaStr) return 0;
+            const birth = new Date(fechaStr);
+            if (isNaN(birth.getTime())) return 0;
+            return Math.abs(new Date(Date.now() - birth.getTime()).getUTCFullYear() - 1970);
+        }
+
+        function renderTop10HE(empleadosMap) {
+            const top10 = Object.values(empleadosMap).sort((a,b) => b.horas - a.horas).slice(0, 10);
+            const tbody = document.getElementById('tablaTop10');
+
+            if (top10.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-slate-500">No hay datos para los filtros seleccionados.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = top10.map((e, idx) => `
+                <tr class="hover:bg-slate-800/50 transition-colors">
+                    <td class="py-3 px-4 font-mono text-slate-500">${idx + 1}</td>
+                    <td class="py-3 px-4 font-mono text-slate-400">${e.legajo}</td>
+                    <td class="py-3 px-4 font-medium text-slate-100">${e.nombre}</td>
+                    <td class="py-3 px-4 text-slate-300">${e.depto}</td>
+                    <td class="py-3 px-4 font-bold text-indigo-400">${e.horas.toFixed(1)} hs</td>
+                    <td class="py-3 px-4 font-medium text-slate-200">$ ${e.costo.toLocaleString('es-AR', { maximumFractionDigits: 0 })}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderChartsHE(evolucionMensual, deptosMap, jornadaMap, rangosEtarios) {
+            const vHE = document.getElementById('viewHorasExtras');
+
+            if (chartEvolucionInstHE) chartEvolucionInstHE.destroy();
+            if (chartJornadaInstHE) chartJornadaInstHE.destroy();
+            if (chartRangoInstHE) chartRangoInstHE.destroy();
+
+            chartEvolucionInstHE = new Chart(vHE.querySelector('#chartEvolucionInteranual'), {
+                type: 'line',
+                data: {
+                    labels: MESES_NOMBRES_HE,
+                    datasets: [
+                        {
+                            label: 'Año 2025 (hs)',
+                            data: evolucionMensual['2025'],
+                            borderColor: '#64748B',
+                            backgroundColor: 'rgba(100, 116, 139, 0.15)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Año 2026 (hs)',
+                            data: evolucionMensual['2026'],
+                            borderColor: '#818CF8',
+                            backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                            borderWidth: 3,
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        datalabels: {
+                            display: true,
+                            align: 'top',
+                            color: '#E2E8F0',
+                            font: { weight: 'bold', size: 10 },
+                            formatter: val => val > 0 ? `${val.toLocaleString('es-AR', { maximumFractionDigits: 0 })}` : ''
+                        },
+                        legend: { position: 'top', labels: { color: '#CBD5E1' } }
+                    },
+                    scales: {
+                        x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+                        y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8' }, grace: '10%' }
+                    }
+                }
+            });
+
+            const datalabelsCircularConfig = {
+                color: '#FFFFFF',
+                font: { weight: 'bold', size: 12 },
+                formatter: (value, ctx) => {
+                    if (value === 0) return '';
+                    let total = 0;
+                    ctx.chart.data.datasets[0].data.forEach(val => total += val);
+                    const percentage = ((value / total) * 100).toFixed(1) + '%';
+                    return `${value.toLocaleString('es-AR', { maximumFractionDigits: 0 })} hs\n(${percentage})`;
+                },
+                textStrokeColor: 'rgba(15, 23, 42, 0.8)',
+                textStrokeWidth: 3
+            };
+
+            chartJornadaInstHE = new Chart(vHE.querySelector('#chartTipoJornada'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Diurna', 'Nocturna', 'Otros'],
+                    datasets: [{
+                        data: [jornadaMap.Diurna, jornadaMap.Nocturna, jornadaMap.Otros],
+                        backgroundColor: ['#38BDF8', '#4338CA', '#64748B']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { color: '#CBD5E1' } },
+                        datalabels: datalabelsCircularConfig
+                    }
+                }
+            });
+
+            chartRangoInstHE = new Chart(vHE.querySelector('#chartRangoEtario'), {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(rangosEtarios),
+                    datasets: [{
+                        data: Object.values(rangosEtarios),
+                        backgroundColor: ['#F59E0B', '#10B981', '#6366F1', '#EC4899']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { color: '#CBD5E1' } },
+                        datalabels: datalabelsCircularConfig
+                    }
+                }
+            });
+        }
+
+        // INICIALIZACIÓN
+        window.onload = function() {
+            initAusentismo();
+            initHorasExtras();
         };
-
-        const depto = normalizarDepartamento(getVal(['Departamento', 'O']));
-        const horas = parseMontoHE(getVal(['Cantidad liquidada', 'Cantidad', 'M']));
-        const periodo = getVal(['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
-
-        if (periodo && String(periodo).includes('/')) {
-          const partes = String(periodo).split('/');
-          const mesRow = partes[0].trim();
-          const anioRow = partes[1].trim();
-
-          if (mesElegido !== 'TODOS' && mesRow !== mesElegido) return;
-
-          if (!deptosMapMes[depto]) {
-            deptosMapMes[depto] = { '2025': 0, '2026': 0 };
-          }
-          if (anioRow === '2025' || anioRow === '2026') {
-            deptosMapMes[depto][anioRow] += horas;
-          }
-        }
-      });
-
-      const deptosOrdenados = Object.keys(deptosMapMes).sort((a, b) => {
-        return (deptosMapMes[b]['2025'] + deptosMapMes[b]['2026']) - (deptosMapMes[a]['2025'] + deptosMapMes[a]['2026']);
-      });
-
-      if (chartDeptoInteranualInstHE) chartDeptoInteranualInstHE.destroy();
-
-      chartDeptoInteranualInstHE = new Chart(vHE.querySelector('#chartDeptoInteranual'), {
-        type: 'bar',
-        data: {
-          labels: deptosOrdenados,
-          datasets: [
-            { label: 'Año 2025 (hs)', data: deptosOrdenados.map(d => deptosMapMes[d]['2025']), backgroundColor: '#64748B' },
-            { label: 'Año 2026 (hs)', data: deptosOrdenados.map(d => deptosMapMes[d]['2026']), backgroundColor: '#6366F1' }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            datalabels: {
-              display: true,
-              anchor: 'end',
-              align: 'top',
-              color: '#CBD5E1',
-              font: { weight: 'bold', size: 10 },
-              formatter: val => val > 0 ? `${val.toLocaleString('es-AR', { maximumFractionDigits: 0 })} hs` : ''
-            },
-            legend: { position: 'top', labels: { color: '#CBD5E1' } }
-          },
-          scales: {
-            x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-            y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8' }, grace: '10%' }
-          }
-        }
-      });
-    }
-
-    function calcularEdad(fechaStr) {
-      if (!fechaStr) return 0;
-      const birth = new Date(fechaStr);
-      if (isNaN(birth.getTime())) return 0;
-      return Math.abs(new Date(Date.now() - birth.getTime()).getUTCFullYear() - 1970);
-    }
-
-    function renderTop10HE(empleadosMap) {
-      const top10 = Object.values(empleadosMap).sort((a,b) => b.horas - a.horas).slice(0, 10);
-      const tbody = document.getElementById('tablaTop10');
-      
-      if (top10.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-slate-500">No hay datos para los filtros seleccionados.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = top10.map((e, idx) => `
-        <tr class="hover:bg-slate-800/50 transition-colors">
-          <td class="py-3 px-4 font-mono text-slate-500">${idx + 1}</td>
-          <td class="py-3 px-4 font-mono text-slate-400">${e.legajo}</td>
-          <td class="py-3 px-4 font-medium text-slate-100">${e.nombre}</td>
-          <td class="py-3 px-4 text-slate-300">${e.depto}</td>
-          <td class="py-3 px-4 font-bold text-indigo-400">${e.horas.toFixed(1)} hs</td>
-          <td class="py-3 px-4 font-medium text-slate-200">$ ${e.costo.toLocaleString('es-AR', { maximumFractionDigits: 0 })}</td>
-        </tr>
-      `).join('');
-    }
-
-    function renderChartsHE(evolucionMensual, deptosMap, jornadaMap, rangosEtarios) {
-      const vHE = document.getElementById('viewHorasExtras');
-
-      if (chartEvolucionInstHE) chartEvolucionInstHE.destroy();
-      if (chartJornadaInstHE) chartJornadaInstHE.destroy();
-      if (chartRangoInstHE) chartRangoInstHE.destroy();
-
-      chartEvolucionInstHE = new Chart(vHE.querySelector('#chartEvolucionInteranual'), {
-        type: 'line',
-        data: {
-          labels: MESES_NOMBRES_HE,
-          datasets: [
-            { label: 'Año 2025 (hs)', data: evolucionMensual['2025'], borderColor: '#64748B', backgroundColor: 'rgba(100, 116, 139, 0.15)', borderWidth: 2, tension: 0.3, fill: true },
-            { label: 'Año 2026 (hs)', data: evolucionMensual['2026'], borderColor: '#818CF8', backgroundColor: 'rgba(99, 102, 241, 0.2)', borderWidth: 3, tension: 0.3, fill: true }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            datalabels: {
-              display: true,
-              align: 'top',
-              color: '#E2E8F0',
-              font: { weight: 'bold', size: 10 },
-              formatter: val => val > 0 ? `${val.toLocaleString('es-AR', { maximumFractionDigits: 0 })}` : ''
-            },
-            legend: { position: 'top', labels: { color: '#CBD5E1' } }
-          },
-          scales: {
-            x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-            y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8' }, grace: '10%' }
-          }
-        }
-      });
-
-      const datalabelsCircularConfig = {
-        color: '#FFFFFF',
-        font: { weight: 'bold', size: 12 },
-        formatter: (value, ctx) => {
-          if (value === 0) return '';
-          let total = 0;
-          ctx.chart.data.datasets[0].data.forEach(val => total += val);
-          const percentage = ((value / total) * 100).toFixed(1) + '%';
-          return `${value.toLocaleString('es-AR', { maximumFractionDigits: 0 })} hs\n(${percentage})`;
-        },
-        textStrokeColor: 'rgba(15, 23, 42, 0.8)',
-        textStrokeWidth: 3
-      };
-
-      chartJornadaInstHE = new Chart(vHE.querySelector('#chartTipoJornada'), {
-        type: 'doughnut',
-        data: {
-          labels: ['Diurna', 'Nocturna', 'Otros'],
-          datasets: [{ data: [jornadaMap.Diurna, jornadaMap.Nocturna, jornadaMap.Otros], backgroundColor: ['#38BDF8', '#4338CA', '#64748B'] }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { position: 'top', labels: { color: '#CBD5E1' } }, datalabels: datalabelsCircularConfig }
-        }
-      });
-
-      chartRangoInstHE = new Chart(vHE.querySelector('#chartRangoEtario'), {
-        type: 'pie',
-        data: {
-          labels: Object.keys(rangosEtarios),
-          datasets: [{ data: Object.values(rangosEtarios), backgroundColor: ['#F59E0B', '#10B981', '#6366F1', '#EC4899'] }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { position: 'top', labels: { color: '#CBD5E1' } }, datalabels: datalabelsCircularConfig }
-        }
-      });
-    }
-
-    // INICIALIZACIÓN
-    window.onload = function() {
-      initAusentismo();
-      initHorasExtras();
-    };
-  </script>
+    </script>
 </body>
 </html>
