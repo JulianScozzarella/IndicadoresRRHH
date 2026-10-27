@@ -8,7 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Plugin para mostrar números directos en los gráficos -->
+  <!-- Plugin de etiquetas de datos -->
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <!-- PapaParse -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
@@ -58,7 +58,7 @@
       </div>
     </header>
 
-    <!-- SCORECARDS / KPIS (AHORA 3 PRINCIPALES) -->
+    <!-- SCORECARDS / KPIS -->
     <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
         <p class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Tasa de Ausentismo Real</p>
@@ -79,7 +79,7 @@
       </div>
     </section>
 
-    <!-- GRÁFICO 1: COMPARATIVO EVOLUCIÓN MENSUAL (ANCHO COMPLETO) -->
+    <!-- GRÁFICO 1: EVOLUCIÓN MENSUAL (ANCHO COMPLETO) -->
     <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
@@ -105,23 +105,23 @@
       </div>
     </section>
 
-    <!-- GRÁFICOS 2 Y 3: BARRAS VERTICALES Y TORTA (DOS COLUMNAS) -->
+    <!-- GRÁFICOS 2 Y 3 (FORMATO MEJORADO Y SIN AMONTONAMIENTO) -->
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       
-      <!-- BARRAS VERTICALES DEPARTAMENTO (7 COLUMNAS) -->
+      <!-- GRÁFICO 2: BARRAS HORIZONTALES POR DEPARTAMENTO -->
       <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
         <h3 class="text-lg font-bold text-gray-800 mb-1">2. Horas Perdidas por Departamento</h3>
-        <p class="text-xs text-gray-400 mb-6">Ordenado de mayor a menor ausentismo (Comparativo 2025 vs 2026)</p>
-        <div class="h-80">
+        <p class="text-xs text-gray-400 mb-6">Ordenado de mayor a menor ausentismo (Lobby Bar y Las Vajillas sumados en AA & BB)</p>
+        <div class="h-[420px]">
           <canvas id="chart-departamento"></canvas>
         </div>
       </div>
 
-      <!-- TORTA DE DISTRIBUCIÓN POR TIPO (5 COLUMNAS - MÁS GRANDE) -->
+      <!-- GRÁFICO 3: TORTA CON DISEÑO LIMPIO Y LEYENDA CLARA -->
       <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
         <h3 class="text-lg font-bold text-gray-800 mb-1">3. Distribución por Tipo de Ausencia</h3>
         <p class="text-xs text-gray-400 mb-4">Proporción de días perdidos por concepto</p>
-        <div class="h-80 flex items-center justify-center">
+        <div class="h-[420px] flex items-center justify-center">
           <canvas id="chart-motivo"></canvas>
         </div>
       </div>
@@ -156,7 +156,6 @@
   </div>
 
   <script>
-    // Registrar Plugin de etiquetas de datos para Chart.js
     Chart.register(ChartDataLabels);
 
     const URL_DATA_AUSENTISMO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRsPAbz--SGf1aJFcFOyLLdqxXZqPhpFSMxKbN6Oz9Em7AZjQmThmcboOzMDeptewjsqh7qo6C6oh27/pub?gid=0&single=true&output=csv';
@@ -179,6 +178,18 @@
         }
       }
       return '';
+    }
+
+    // NORMALIZACIÓN DE DEPARTAMENTO: "Lobby bar" y "Las vajias/vajillas" -> "AA & BB"
+    function normalizarDepartamento(deptRaw) {
+      if (!deptRaw) return 'Sin Depto';
+      let d = deptRaw.trim();
+      let dLow = d.toLowerCase();
+      
+      if (dLow.includes('lobby bar') || dLow.includes('las vaji') || dLow.includes('vajillas')) {
+        return 'AA & BB';
+      }
+      return d;
     }
 
     function parseNum(val) {
@@ -272,7 +283,7 @@
       const months = new Set();
 
       data.forEach(item => {
-        const dept = getVal(item, ['Departamento', 'Sector']);
+        const dept = normalizarDepartamento(getVal(item, ['Departamento', 'Sector']));
         const motivo = getVal(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
         const periodo = estandarizarPeriodo(getVal(item, ['Período liqui', 'Período', 'Periodo']));
 
@@ -299,7 +310,7 @@
       const selectedMotivo = document.getElementById('filter-motivo').value;
 
       const filtered = rawAusentismo.filter(item => {
-        const dept = getVal(item, ['Departamento', 'Sector']);
+        const dept = normalizarDepartamento(getVal(item, ['Departamento', 'Sector']));
         const motivo = getVal(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
         const periodo = estandarizarPeriodo(getVal(item, ['Período liqui', 'Período', 'Periodo']));
 
@@ -361,7 +372,7 @@
       renderTabla(filtered);
     }
 
-    // --- 1. GRÁFICO TENDENCIA COMPARATIVA CON NÚMEROS ---
+    // --- 1. EVOLUCIÓN MENSUAL ---
     function renderChartComparativo(fullData) {
       const ctx = document.getElementById('chart-comparativo').getContext('2d');
       if (charts.comparativo) charts.comparativo.destroy();
@@ -373,7 +384,7 @@
       const selectedMotivo = document.getElementById('filter-motivo').value;
 
       const filteredForChart = fullData.filter(item => {
-        const dept = getVal(item, ['Departamento', 'Sector']);
+        const dept = normalizarDepartamento(getVal(item, ['Departamento', 'Sector']));
         const motivo = getVal(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
 
         if (selectedDept !== 'ALL' && dept !== selectedDept) return false;
@@ -443,7 +454,7 @@
       });
     }
 
-    // --- 2. GRÁFICO BARRAS VERTICALES DEPARTAMENTO (ORDENADO + COMPARATIVO + DATOS VISIBLES) ---
+    // --- 2. BARRAS HORIZONTALES POR DEPARTAMENTO (SIN ENCIMAR) ---
     function renderChartDepartamento(fullData) {
       const ctx = document.getElementById('chart-departamento').getContext('2d');
       if (charts.departamento) charts.departamento.destroy();
@@ -461,7 +472,7 @@
       const deptsTotales = {};
 
       filtered.forEach(item => {
-        const d = getVal(item, ['Departamento', 'Sector']) || 'Sin Depto';
+        const d = normalizarDepartamento(getVal(item, ['Departamento', 'Sector']));
         const p = estandarizarPeriodo(getVal(item, ['Período liqui', 'Período', 'Periodo']));
         const dias = parseNum(getVal(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
         const hs = dias * HORAS_POR_DIA;
@@ -486,31 +497,32 @@
         data: {
           labels: sortedDepts,
           datasets: [
-            { label: '2025 (hs)', data: data2025, backgroundColor: '#10b981' },
-            { label: '2026 (hs)', data: data2026, backgroundColor: '#2563eb' }
+            { label: '2025 (hs)', data: data2025, backgroundColor: '#10b981', borderRadius: 4 },
+            { label: '2026 (hs)', data: data2026, backgroundColor: '#2563eb', borderRadius: 4 }
           ]
         },
         options: {
+          indexAxis: 'y', // Convertir a barras horizontales
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
             datalabels: {
               anchor: 'end',
-              align: 'start',
-              font: { weight: 'bold', size: 9 },
-              color: '#ffffff',
-              formatter: function(value) { return value > 0 ? value.toLocaleString() : ''; }
+              align: 'end',
+              font: { weight: 'bold', size: 10 },
+              color: '#374151',
+              formatter: function(value) { return value > 0 ? `${value.toLocaleString()} hs` : ''; }
             }
           },
           scales: {
-            x: { ticks: { font: { size: 10, weight: 'bold' } } },
-            y: { beginAtZero: true }
+            x: { beginAtZero: true, grid: { display: false } },
+            y: { ticks: { font: { size: 11, weight: 'bold' } } }
           }
         }
       });
     }
 
-    // --- 3. GRÁFICO TORTA TIPO DE AUSENCIA (GRANDE + CON PORCENTAJES/VALORES VISIBLES) ---
+    // --- 3. TORTA DE TIPO DE AUSENCIA (MÁS LIMPIA Y LEGIBLE) ---
     function renderChartMotivo(data) {
       const ctx = document.getElementById('chart-motivo').getContext('2d');
       if (charts.motivo) charts.motivo.destroy();
@@ -531,21 +543,24 @@
           labels: Object.keys(motivos),
           datasets: [{
             data: Object.values(motivos),
-            backgroundColor: ['#f59e0b', '#ef4444', '#10b981', '#6366f1', '#8b5cf6', '#ec4899', '#14b8a6']
+            backgroundColor: ['#f59e0b', '#ef4444', '#10b981', '#6366f1', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316']
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'bottom', labels: { font: { size: 11 } } },
+            legend: {
+              position: 'bottom',
+              labels: { font: { size: 11 }, padding: 15, usePointStyle: true }
+            },
             datalabels: {
               color: '#ffffff',
               font: { weight: 'bold', size: 11 },
               formatter: function(value) {
                 if (value === 0) return '';
                 const pct = ((value / totalDias) * 100).toFixed(1);
-                return `${value}d\n(${pct}%)`;
+                return pct > 3 ? `${pct}%` : ''; // Mostrar porcentaje solo si es mayor al 3% para no saturar
               }
             }
           }
@@ -565,13 +580,14 @@
       data.slice(0, 20).forEach(item => {
         const dias = parseNum(getVal(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
         const horas = dias * HORAS_POR_DIA;
+        const dept = normalizarDepartamento(getVal(item, ['Departamento', 'Sector']));
 
         const tr = document.createElement('tr');
         tr.className = "hover:bg-gray-50";
         tr.innerHTML = `
           <td class="px-6 py-4 font-medium text-gray-900">${getVal(item, ['Legajo']) || '-'}</td>
           <td class="px-6 py-4">${getVal(item, ['Apellidos'])} ${getVal(item, ['Nombre'])}</td>
-          <td class="px-6 py-4">${getVal(item, ['Departamento', 'Sector']) || '-'}</td>
+          <td class="px-6 py-4">${dept}</td>
           <td class="px-6 py-4"><span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">${getVal(item, ['Desc. de concep', 'Concepto']) || 'N/A'}</span></td>
           <td class="px-6 py-4 text-center">${getVal(item, ['Período liqui', 'Período']) || '-'}</td>
           <td class="px-6 py-4 text-center font-bold text-amber-600">${dias} d</td>
