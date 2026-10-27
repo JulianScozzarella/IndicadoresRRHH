@@ -55,40 +55,62 @@
   <!-- ================================================================= -->
   <main id="viewAusentismo" class="max-w-7xl mx-auto p-6 space-y-6">
     
-    <!-- BARRA DE FILTROS PRINCIPALES FIJA -->
+    <!-- BARRA DE FILTROS PRINCIPALES FIJA CON MULTI-SELECCIÓN -->
     <section class="bg-slate-900/95 backdrop-blur p-5 rounded-2xl border border-slate-800 shadow-2xl sticky top-16 z-40 space-y-3">
       <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-        <h2 class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Filtros Principales de Ausentismo</h2>
-        <span class="text-[10px] text-slate-500">Panel Fijo al Desplazarse</span>
+        <h2 class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Filtros Principales de Ausentismo (Multi-Selección)</h2>
+        <button onclick="limpiarFiltrosAusentismo()" class="text-xs font-semibold text-slate-400 hover:text-white bg-slate-800 px-3 py-1 rounded-lg border border-slate-700 transition-colors">
+          🧹 Limpiar Filtros
+        </button>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div>
-          <label for="filter-year" class="block text-xs font-medium text-slate-300 mb-1">Año Global:</label>
-          <select id="filter-year" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
-            <option value="ALL">Todos los Años</option>
-          </select>
+        <!-- Dropdown Año -->
+        <div class="relative">
+          <label class="block text-xs font-medium text-slate-300 mb-1">Año(s):</label>
+          <button type="button" onclick="toggleDropdown('ddYearAus')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
+            <span id="labelYearAus" class="truncate">Todos los Años</span>
+            <span class="text-xs text-slate-500">▼</span>
+          </button>
+          <div id="ddYearAus" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200">
+            <!-- Opciones JS -->
+          </div>
         </div>
 
-        <div>
-          <label for="filter-month" class="block text-xs font-medium text-slate-300 mb-1">Período / Mes:</label>
-          <select id="filter-month" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
-            <option value="ALL">Todos los Meses</option>
-          </select>
+        <!-- Dropdown Mes -->
+        <div class="relative">
+          <label class="block text-xs font-medium text-slate-300 mb-1">Período / Mes(es):</label>
+          <button type="button" onclick="toggleDropdown('ddMonthAus')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
+            <span id="labelMonthAus" class="truncate">Todos los Meses</span>
+            <span class="text-xs text-slate-500">▼</span>
+          </button>
+          <div id="ddMonthAus" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200">
+            <!-- Opciones JS -->
+          </div>
         </div>
 
-        <div>
-          <label for="filter-dept" class="block text-xs font-medium text-slate-300 mb-1">Departamento:</label>
-          <select id="filter-dept" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
-            <option value="ALL">Todos los Departamentos</option>
-          </select>
+        <!-- Dropdown Departamento -->
+        <div class="relative">
+          <label class="block text-xs font-medium text-slate-300 mb-1">Departamento(s):</label>
+          <button type="button" onclick="toggleDropdown('ddDeptAus')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
+            <span id="labelDeptAus" class="truncate">Todos los Departamentos</span>
+            <span class="text-xs text-slate-500">▼</span>
+          </button>
+          <div id="ddDeptAus" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200">
+            <!-- Opciones JS -->
+          </div>
         </div>
 
-        <div>
-          <label for="filter-motivo" class="block text-xs font-medium text-slate-300 mb-1">Tipo / Concepto:</label>
-          <select id="filter-motivo" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
-            <option value="ALL">Todos los Conceptos</option>
-          </select>
+        <!-- Dropdown Motivo -->
+        <div class="relative">
+          <label class="block text-xs font-medium text-slate-300 mb-1">Tipo / Concepto(s):</label>
+          <button type="button" onclick="toggleDropdown('ddMotivoAus')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
+            <span id="labelMotivoAus" class="truncate">Todos los Conceptos</span>
+            <span class="text-xs text-slate-500">▼</span>
+          </button>
+          <div id="ddMotivoAus" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200">
+            <!-- Opciones JS -->
+          </div>
         </div>
       </div>
     </section>
@@ -297,51 +319,50 @@
 
     <div id="statusAlertHE" class="hidden p-4 rounded-lg bg-indigo-950/80 border border-indigo-500/30 text-indigo-300 text-sm"></div>
 
-    <!-- Filtros Horas Extras Fijos -->
+    <!-- Filtros Horas Extras Fijos con Multi-Selección -->
     <section class="bg-slate-900/95 backdrop-blur p-5 rounded-2xl border border-slate-800 shadow-2xl sticky top-16 z-40 space-y-3">
       <div class="flex items-center justify-between border-b border-slate-800 pb-2">
         <h3 class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Filtros Principales de Horas Extras</h3>
-        <span class="text-[10px] text-slate-500">Panel Fijo al Desplazarse</span>
+        <button onclick="limpiarFiltrosHE()" class="text-xs font-semibold text-slate-400 hover:text-white bg-slate-800 px-3 py-1 rounded-lg border border-slate-700 transition-colors">
+          🧹 Limpiar Filtros
+        </button>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">Año(s)</label>
-          <div id="containerAnios" class="bg-slate-950 border border-slate-800 rounded-lg p-2 max-h-28 overflow-y-auto space-y-1 text-sm text-slate-300">
-            <span class="text-slate-500 text-xs">Cargando años...</span>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Dropdown Años HE -->
+        <div class="relative">
+          <label class="block text-xs font-medium text-slate-300 mb-1">Año(s):</label>
+          <button type="button" onclick="toggleDropdown('ddAniosHE')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
+            <span id="labelAniosHE" class="truncate">Todos los Años</span>
+            <span class="text-xs text-slate-500">▼</span>
+          </button>
+          <div id="ddAniosHE" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200">
+            <!-- JS -->
           </div>
         </div>
 
-        <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">Mes</label>
-          <select id="filterMes" onchange="aplicarFiltrosHE()" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
-            <option value="TODOS">Todos los Meses</option>
-            <option value="1">Enero (1)</option>
-            <option value="2">Febrero (2)</option>
-            <option value="3">Marzo (3)</option>
-            <option value="4">Abril (4)</option>
-            <option value="5">Mayo (5)</option>
-            <option value="6">Junio (6)</option>
-            <option value="7">Julio (7)</option>
-            <option value="8">Agosto (8)</option>
-            <option value="9">Septiembre (9)</option>
-            <option value="10">Octubre (10)</option>
-            <option value="11">Noviembre (11)</option>
-            <option value="12">Diciembre (12)</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">Departamento</label>
-          <select id="filterDepto" onchange="aplicarFiltrosHE()" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
-            <option value="TODOS">Todos los Departamentos</option>
-          </select>
-        </div>
-
-        <div class="flex items-end">
-          <button onclick="limpiarFiltrosHE()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium py-2.5 px-4 rounded-lg text-sm border border-slate-700 transition-colors">
-            🧹 Limpiar Filtros
+        <!-- Dropdown Meses HE -->
+        <div class="relative">
+          <label class="block text-xs font-medium text-slate-300 mb-1">Mes(es):</label>
+          <button type="button" onclick="toggleDropdown('ddMesesHE')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
+            <span id="labelMesesHE" class="truncate">Todos los Meses</span>
+            <span class="text-xs text-slate-500">▼</span>
           </button>
+          <div id="ddMesesHE" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200">
+            <!-- JS -->
+          </div>
+        </div>
+
+        <!-- Dropdown Departamento HE -->
+        <div class="relative">
+          <label class="block text-xs font-medium text-slate-300 mb-1">Departamento(s):</label>
+          <button type="button" onclick="toggleDropdown('ddDeptoHE')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
+            <span id="labelDeptoHE" class="truncate">Todos los Departamentos</span>
+            <span class="text-xs text-slate-500">▼</span>
+          </button>
+          <div id="ddDeptoHE" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200">
+            <!-- JS -->
+          </div>
         </div>
       </div>
     </section>
@@ -564,6 +585,21 @@
   <script>
     Chart.register(ChartDataLabels);
 
+    // CONTROL DE DROPDOWNS DESPLEGABLES
+    function toggleDropdown(id) {
+      const el = document.getElementById(id);
+      const isHidden = el.classList.contains('hidden');
+      document.querySelectorAll('[id^="dd"]').forEach(d => d.classList.add('hidden'));
+      if (isHidden) el.classList.remove('hidden');
+    }
+
+    // Cerrar dropdowns si se hace clic afuera
+    window.addEventListener('click', function(e) {
+      if (!e.target.closest('.relative')) {
+        document.querySelectorAll('[id^="dd"]').forEach(d => d.classList.add('hidden'));
+      }
+    });
+
     // NAVEGACIÓN
     function switchTab(tabName) {
       const viewAus = document.getElementById('viewAusentismo');
@@ -603,7 +639,6 @@
     const FACTOR_CARGAS_SOCIALES = 1.33;
 
     let rawAusentismo = [];
-    let rawDotacion = [];
     let mapHorasPlanificadas = {};
     let currentFilteredData = [];
     let chartsAusentismo = {};
@@ -656,35 +691,30 @@
       return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(monto);
     }
 
-    // NORMALIZACIÓN UNIVERSAL DE PERÍODOS (Soporta fechas de Sheets tipo "26/1/2026", "01/2026", "2026-01-01", etc.)
     function estandarizarPeriodo(str) {
       if (!str) return '';
       let clean = str.toString().trim().toLowerCase();
 
-      // Formato fecha tipo Google Sheets "26/1/2026" o "1/2026" o "01/2026"
       if (clean.includes('/')) {
         let parts = clean.split('/');
         if (parts.length === 3) {
-          // DD/MM/YYYY o MM/DD/YYYY
           let m = parts[1].padStart(2, '0');
           let y = parts[2].length === 2 ? `20${parts[2]}` : parts[2];
           return `${m}/${y}`;
         } else if (parts.length === 2) {
-          // MM/YYYY
           let m = parts[0].padStart(2, '0');
           let y = parts[1].length === 2 ? `20${parts[1]}` : parts[1];
           return `${m}/${y}`;
         }
       }
 
-      // Formato con guion "2026-01-26" o "2026-01" o "01-2026"
       if (clean.includes('-')) {
         let parts = clean.split('-');
-        if (parts[0].length === 4) { // YYYY-MM-DD o YYYY-MM
+        if (parts[0].length === 4) {
           let y = parts[0];
           let m = parts[1].padStart(2, '0');
           return `${m}/${y}`;
-        } else if (parts.length >= 2) { // MM-YYYY
+        } else if (parts.length >= 2) {
           let m = parts[0].padStart(2, '0');
           let y = parts[1].length === 2 ? `20${parts[1]}` : parts[1];
           return `${m}/${y}`;
@@ -697,15 +727,13 @@
     function initAusentismo() {
       Promise.all([
         fetchCSV(URL_DATA_AUSENTISMO, true),
-        fetchCSV(URL_DOTACION_HORAS, false) // Leemos la dotación como array de filas
+        fetchCSV(URL_DOTACION_HORAS, false)
       ]).then(([ausentismoData, dotacionData]) => {
         rawAusentismo = ausentismoData;
         
         mapHorasPlanificadas = {};
-        // Lectura directa por posición de columna en la hoja Dotacion_y_Horas:
-        // Columna A (índice 0) = Periodo, Columna C (índice 2) = Horas
         dotacionData.forEach((rowArray, idx) => {
-          if (idx === 0) return; // Omitir fila de encabezados
+          if (idx === 0) return;
           if (rowArray && rowArray.length >= 3) {
             const rawPer = rowArray[0];
             const hs = parseNum(rowArray[2]);
@@ -717,12 +745,8 @@
           }
         });
 
-        populateFilterOptionsAusentismo(rawAusentismo);
+        populateMultiSelectAusentismo(rawAusentismo);
         applyFiltersAndRenderAusentismo();
-
-        ['filter-year', 'filter-month', 'filter-dept', 'filter-motivo'].forEach(id => {
-          document.getElementById(id).addEventListener('change', applyFiltersAndRenderAusentismo);
-        });
 
         ['chart-year-2025', 'chart-year-2026'].forEach(id => {
           document.getElementById(id).addEventListener('change', () => {
@@ -749,13 +773,7 @@
       });
     }
 
-    function populateFilterOptionsAusentismo(data) {
-      const selectDept = document.getElementById('filter-dept');
-      const selectMotivo = document.getElementById('filter-motivo');
-      const selectYear = document.getElementById('filter-year');
-      const selectMonth = document.getElementById('filter-month');
-      const selectTablaMonth = document.getElementById('tabla-filter-month');
-
+    function populateMultiSelectAusentismo(data) {
       const depts = new Set();
       const motivos = new Set();
       const years = new Set();
@@ -778,44 +796,83 @@
         }
       });
 
-      Array.from(depts).sort().forEach(d => selectDept.add(new Option(d, d)));
-      Array.from(motivos).sort().forEach(m => selectMotivo.add(new Option(m, m)));
-      Array.from(years).sort().forEach(y => selectYear.add(new Option(y, y)));
-      Array.from(months).sort().forEach(m => selectMonth.add(new Option(`Mes ${m}`, m)));
+      renderCheckboxes('ddYearAus', Array.from(years).sort(), 'chkYearAus', 'applyFiltersAndRenderAusentismo()');
+      renderCheckboxes('ddMonthAus', Array.from(months).sort(), 'chkMonthAus', 'applyFiltersAndRenderAusentismo()', m => `Mes ${m}`);
+      renderCheckboxes('ddDeptAus', Array.from(depts).sort(), 'chkDeptAus', 'applyFiltersAndRenderAusentismo()');
+      renderCheckboxes('ddMotivoAus', Array.from(motivos).sort(), 'chkMotivoAus', 'applyFiltersAndRenderAusentismo()');
 
+      const selectTablaMonth = document.getElementById('tabla-filter-month');
       selectTablaMonth.innerHTML = '<option value="ALL">Todos los Meses de la muestra</option>';
-      Array.from(periodosCompletos).sort().forEach(p => {
-        selectTablaMonth.add(new Option(`Período ${p}`, p));
-      });
+      Array.from(periodosCompletos).sort().forEach(p => selectTablaMonth.add(new Option(`Período ${p}`, p)));
+    }
+
+    function renderCheckboxes(containerId, items, className, onChangeFn, labelTransform) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = `
+        <label class="flex items-center space-x-2 font-semibold text-indigo-400 cursor-pointer pb-1 border-b border-slate-800">
+          <input type="checkbox" onchange="toggleAllCheckboxes('${className}', this.checked); ${onChangeFn}" checked class="rounded bg-slate-950 border-slate-700 text-indigo-500">
+          <span>(Seleccionar Todos)</span>
+        </label>
+      ` + items.map(item => `
+        <label class="flex items-center space-x-2 cursor-pointer hover:bg-slate-800/50 p-1 rounded">
+          <input type="checkbox" value="${item}" checked onchange="${onChangeFn}" class="${className} rounded bg-slate-950 border-slate-700 text-indigo-500">
+          <span>${labelTransform ? labelTransform(item) : item}</span>
+        </label>
+      `).join('');
+    }
+
+    function toggleAllCheckboxes(className, isChecked) {
+      document.querySelectorAll(`.${className}`).forEach(cb => cb.checked = isChecked);
+    }
+
+    function getSelectedValues(className) {
+      return Array.from(document.querySelectorAll(`.${className}:checked`)).map(cb => cb.value);
+    }
+
+    function updateLabelText(labelId, selectedValues, totalText, singularText) {
+      const el = document.getElementById(labelId);
+      if (selectedValues.length === 0) el.textContent = "Ninguno seleccionado";
+      else if (selectedValues.length === 1) el.textContent = selectedValues[0];
+      else el.textContent = `${selectedValues.length} ${singularText} seleccionados`;
+    }
+
+    function limpiarFiltrosAusentismo() {
+      ['chkYearAus', 'chkMonthAus', 'chkDeptAus', 'chkMotivoAus'].forEach(cls => toggleAllCheckboxes(cls, true));
+      applyFiltersAndRenderAusentismo();
     }
 
     function applyFiltersAndRenderAusentismo() {
-      const selectedYear = document.getElementById('filter-year').value;
-      const selectedMonth = document.getElementById('filter-month').value;
-      const selectedDept = document.getElementById('filter-dept').value;
-      const selectedMotivo = document.getElementById('filter-motivo').value;
+      const selectedYears = getSelectedValues('chkYearAus');
+      const selectedMonths = getSelectedValues('chkMonthAus');
+      const selectedDepts = getSelectedValues('chkDeptAus');
+      const selectedMotivos = getSelectedValues('chkMotivoAus');
+
+      updateLabelText('labelYearAus', selectedYears, "Todos los Años", "Años");
+      updateLabelText('labelMonthAus', selectedMonths, "Todos los Meses", "Meses");
+      updateLabelText('labelDeptAus', selectedDepts, "Todos los Departamentos", "Deptos");
+      updateLabelText('labelMotivoAus', selectedMotivos, "Todos los Conceptos", "Conceptos");
 
       currentFilteredData = rawAusentismo.filter(item => {
         const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
         const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
         const periodo = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
 
-        if (selectedDept !== 'ALL' && dept !== selectedDept) return false;
-        if (selectedMotivo !== 'ALL' && motivo !== selectedMotivo) return false;
+        if (!selectedDepts.includes(dept)) return false;
+        if (!selectedMotivos.includes(motivo)) return false;
 
         if (periodo && periodo.includes('/')) {
           const [m, y] = periodo.split('/');
-          if (selectedYear !== 'ALL' && y !== selectedYear) return false;
-          if (selectedMonth !== 'ALL' && m !== selectedMonth.padStart(2, '0')) return false;
+          if (!selectedYears.includes(y)) return false;
+          if (!selectedMonths.includes(m)) return false;
         }
 
         return true;
       });
 
-      renderDashboardAusentismo(currentFilteredData, selectedYear, selectedMonth);
+      renderDashboardAusentismo(currentFilteredData, selectedYears, selectedMonths);
     }
 
-    function renderDashboardAusentismo(filtered, selectedYear, selectedMonth) {
+    function renderDashboardAusentismo(filtered, selectedYears, selectedMonths) {
       let totalDiasLiquidados = 0;
       let diasInculpable = 0, costoInculpable = 0;
       let diasArtEmpresa = 0, costoArtEmpresa = 0;
@@ -847,14 +904,10 @@
 
       const totalHorasPerdidas = totalDiasLiquidados * HORAS_POR_DIA;
 
-      // CÁLCULO DINÁMICO DE HORAS PLANIFICADAS
       let horasPlanificadasDivisor = 0;
       Object.keys(mapHorasPlanificadas).forEach(key => {
         const [m, y] = key.split('/');
-        const matchesYear = (selectedYear === 'ALL' || y === selectedYear);
-        const matchesMonth = (selectedMonth === 'ALL' || m === selectedMonth.padStart(2, '0'));
-
-        if (matchesYear && matchesMonth) {
+        if (selectedYears.includes(y) && selectedMonths.includes(m)) {
           horasPlanificadasDivisor += mapHorasPlanificadas[key];
         }
       });
@@ -891,7 +944,6 @@
       renderTablaAusentismo(filtered, tablaMonthFilter);
     }
 
-    // LÓGICA DE EVOLUCIÓN MENSUAL Y ACUMULADA INTERANUAL
     function renderTablaEvolucionAusentismo(filteredData) {
       const tbody = document.getElementById('tabla-evolucion-body');
       tbody.innerHTML = '';
@@ -971,15 +1023,15 @@
       const show2025 = document.getElementById('chart-year-2025').checked;
       const show2026 = document.getElementById('chart-year-2026').checked;
 
-      const selectedDept = document.getElementById('filter-dept').value;
-      const selectedMotivo = document.getElementById('filter-motivo').value;
+      const selectedDepts = getSelectedValues('chkDeptAus');
+      const selectedMotivos = getSelectedValues('chkMotivoAus');
 
       const filteredForChart = fullData.filter(item => {
         const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
         const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
 
-        if (selectedDept !== 'ALL' && dept !== selectedDept) return false;
-        if (selectedMotivo !== 'ALL' && motivo !== selectedMotivo) return false;
+        if (!selectedDepts.includes(dept)) return false;
+        if (!selectedMotivos.includes(motivo)) return false;
         return true;
       });
 
@@ -1052,11 +1104,11 @@
       const ctx = document.getElementById('chart-departamento').getContext('2d');
       if (chartsAusentismo.departamento) chartsAusentismo.departamento.destroy();
 
-      const selectedMotivo = document.getElementById('filter-motivo').value;
+      const selectedMotivos = getSelectedValues('chkMotivoAus');
 
       const filtered = fullData.filter(item => {
         const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
-        if (selectedMotivo !== 'ALL' && motivo !== selectedMotivo) return false;
+        if (!selectedMotivos.includes(motivo)) return false;
         return true;
       });
 
@@ -1281,13 +1333,14 @@
 
     function guardarYProcesarDataHE(data) {
       allRawDataHE = data;
-      poblarDesplegablesFiltroHE(allRawDataHE);
+      poblarMultiSelectHE(allRawDataHE);
       aplicarFiltrosHE();
     }
 
-    function poblarDesplegablesFiltroHE(rows) {
+    function poblarMultiSelectHE(rows) {
       const aniosSet = new Set();
       const deptosSet = new Set();
+      const mesesList = ['1','2','3','4','5','6','7','8','9','10','11','12'];
 
       rows.forEach(row => {
         const getVal = (keyNames) => {
@@ -1307,28 +1360,13 @@
         if (depto && depto.trim() !== '') deptosSet.add(depto.trim());
       });
 
-      const containerAnios = document.getElementById('containerAnios');
-      containerAnios.innerHTML = '';
-      const aniosOrdenados = Array.from(aniosSet).sort().reverse();
-
-      aniosOrdenados.forEach(anio => {
-        containerAnios.innerHTML += `
-          <label class="flex items-center space-x-2 text-xs font-medium text-slate-300 cursor-pointer">
-            <input type="checkbox" value="${anio}" checked onchange="aplicarFiltrosHE()" class="chkAnio rounded bg-slate-900 border-slate-800 text-indigo-500 focus:ring-indigo-500">
-            <span>Año ${anio}</span>
-          </label>
-        `;
-      });
-
-      const selectDepto = document.getElementById('viewHorasExtras').querySelector('#filterDepto');
-      selectDepto.innerHTML = '<option value="TODOS">Todos los Departamentos</option>';
-      Array.from(deptosSet).sort().forEach(d => {
-        selectDepto.innerHTML += `<option value="${d}">${d}</option>`;
-      });
+      renderCheckboxes('ddAniosHE', Array.from(aniosSet).sort().reverse(), 'chkAnioHE', 'aplicarFiltrosHE()', a => `Año ${a}`);
+      renderCheckboxes('ddMesesHE', mesesList, 'chkMesHE', 'aplicarFiltrosHE()', m => MESES_NOMBRES_HE[parseInt(m)-1]);
+      renderCheckboxes('ddDeptoHE', Array.from(deptosSet).sort(), 'chkDeptoHE', 'aplicarFiltrosHE()');
 
       const selectExcedidosAnio = document.getElementById('filterExcedidosAnio');
       selectExcedidosAnio.innerHTML = '';
-      aniosOrdenados.forEach(a => selectExcedidosAnio.innerHTML += `<option value="${a}">${a}</option>`);
+      Array.from(aniosSet).sort().reverse().forEach(a => selectExcedidosAnio.innerHTML += `<option value="${a}">${a}</option>`);
 
       const selectExcedidosDepto = document.getElementById('filterExcedidosDepto');
       selectExcedidosDepto.innerHTML = '<option value="TODOS">Todos los Departamentos</option>';
@@ -1336,12 +1374,13 @@
     }
 
     function aplicarFiltrosHE() {
-      const vHE = document.getElementById('viewHorasExtras');
-      const checkboxesAnio = vHE.querySelectorAll('.chkAnio:checked');
-      const aniosSeleccionados = Array.from(checkboxesAnio).map(cb => cb.value);
+      const selectedAnios = getSelectedValues('chkAnioHE');
+      const selectedMeses = getSelectedValues('chkMesHE');
+      const selectedDeptos = getSelectedValues('chkDeptoHE');
 
-      const mesSel = vHE.querySelector('#filterMes').value;
-      const deptoSel = vHE.querySelector('#filterDepto').value;
+      updateLabelText('labelAniosHE', selectedAnios, "Todos los Años", "Años");
+      updateLabelText('labelMesesHE', selectedMeses, "Todos los Meses", "Meses");
+      updateLabelText('labelDeptoHE', selectedDeptos, "Todos los Departamentos", "Deptos");
 
       currentFilteredRowsHE = allRawDataHE.filter(row => {
         const getVal = (keyNames) => {
@@ -1352,7 +1391,7 @@
         };
 
         const depto = getVal(['Departamento', 'O']) || 'Sin Sector';
-        if (deptoSel !== 'TODOS' && depto.trim().toLowerCase() !== deptoSel.trim().toLowerCase()) return false;
+        if (!selectedDeptos.includes(depto)) return false;
 
         const periodo = getVal(['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
         if (periodo && String(periodo).includes('/')) {
@@ -1360,8 +1399,8 @@
           const mesRow = partes[0].trim();
           const anioRow = partes[1].trim();
 
-          if (aniosSeleccionados.length > 0 && !aniosSeleccionados.includes(anioRow)) return false;
-          if (mesSel !== 'TODOS' && mesRow !== mesSel) return false;
+          if (!selectedAnios.includes(anioRow)) return false;
+          if (!selectedMeses.includes(mesRow)) return false;
         }
 
         return true;
@@ -1371,10 +1410,7 @@
     }
 
     function limpiarFiltrosHE() {
-      const vHE = document.getElementById('viewHorasExtras');
-      vHE.querySelectorAll('.chkAnio').forEach(cb => cb.checked = true);
-      vHE.querySelector('#filterMes').value = 'TODOS';
-      vHE.querySelector('#filterDepto').value = 'TODOS';
+      ['chkAnioHE', 'chkMesHE', 'chkDeptoHE'].forEach(cls => toggleAllCheckboxes(cls, true));
       aplicarFiltrosHE();
     }
 
