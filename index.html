@@ -22,7 +22,7 @@
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 class="text-2xl font-bold text-gray-900">Dashboard de Ausentismo & Costos</h1>
-          <p class="text-sm text-gray-500">Análisis Financiero por Tipo de Licencia (Inculpables, ART y Sin Costo)</p>
+          <p class="text-sm text-gray-500">Análisis Financiero por Tipo de Licencia (Incluye Desglose ART Empresa vs ART Recuperable)</p>
         </div>
       </div>
 
@@ -79,43 +79,53 @@
       </div>
     </section>
 
-    <!-- SECCIÓN DE DESGLOSE DE COSTOS FINANCIEROS -->
+    <!-- SECCIÓN DE DESGLOSE DE COSTOS FINANCIEROS (AHORA 4 CATEGORÍAS) -->
     <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-4">
       <div class="border-b border-gray-100 pb-3">
-        <h3 class="text-lg font-bold text-gray-800">Impacto Económico por Tipo de Licencia (+ 33% Cargas Sociales)</h3>
-        <p class="text-xs text-gray-400">Desglose según la responsabilidad financiera de la empresa</p>
+        <h3 class="text-lg font-bold text-gray-800">Impacto Económico por Criterio Financiero (+ 33% Cargas Sociales)</h3>
+        <p class="text-xs text-gray-400">Clasificación según recupero frente a ART y la masa salarial</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         <!-- COSTO INCULPABLES Y LEGALES -->
-        <div class="bg-emerald-50/60 border border-emerald-200 p-5 rounded-xl">
+        <div class="bg-emerald-50/60 border border-emerald-200 p-4 rounded-xl">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase text-emerald-800 tracking-wide">1. Inculpables & Legales</span>
-            <span class="text-xs font-semibold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full">Costo Directo</span>
+            <span class="text-xs font-bold uppercase text-emerald-800 tracking-wide">Inculpables & Legales</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full">Costo Directo</span>
           </div>
           <h3 id="kpi-costo-inculpable" class="text-2xl font-extrabold text-emerald-700 mt-2">$ --</h3>
           <p id="kpi-dias-inculpable" class="text-xs text-emerald-600 mt-1 font-medium">-- días afectando masa salarial</p>
         </div>
 
-        <!-- ACCIDENTES ART -->
-        <div class="bg-amber-50/60 border border-amber-200 p-5 rounded-xl">
+        <!-- ART EMPRESA (COSTO DIRECTO / EMPRESA) -->
+        <div class="bg-rose-50/60 border border-rose-200 p-4 rounded-xl">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase text-amber-800 tracking-wide">2. Accidentes Laborales (ART)</span>
-            <span class="text-xs font-semibold px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full">Cobertura ART</span>
+            <span class="text-xs font-bold uppercase text-rose-800 tracking-wide">ART Empresa</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 bg-rose-100 text-rose-800 rounded-full">Costo Asumido</span>
           </div>
-          <h3 id="kpi-costo-art" class="text-2xl font-extrabold text-amber-700 mt-2">$ --</h3>
-          <p id="kpi-dias-art" class="text-xs text-amber-600 mt-1 font-medium">-- días gestionados vía ART</p>
+          <h3 id="kpi-costo-art-empresa" class="text-2xl font-extrabold text-rose-700 mt-2">$ --</h3>
+          <p id="kpi-dias-art-empresa" class="text-xs text-rose-600 mt-1 font-medium">-- días a cargo de la empresa</p>
+        </div>
+
+        <!-- ART COMÚN (RECUPERABLE) -->
+        <div class="bg-amber-50/60 border border-amber-200 p-4 rounded-xl">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase text-amber-800 tracking-wide">ART Recuperable</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 bg-amber-100 text-amber-800 rounded-full">Reembolsable</span>
+          </div>
+          <h3 id="kpi-costo-art-recuperable" class="text-2xl font-extrabold text-amber-700 mt-2">$ --</h3>
+          <p id="kpi-dias-art-recuperable" class="text-xs text-amber-600 mt-1 font-medium">-- días a tramitar con ART</p>
         </div>
 
         <!-- NO JUSTIFICADAS / SIN COSTO -->
-        <div class="bg-gray-50 border border-gray-200 p-5 rounded-xl">
+        <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase text-gray-600 tracking-wide">3. Sin Costo / Descontadas</span>
-            <span class="text-xs font-semibold px-2 py-0.5 bg-gray-200 text-gray-700 rounded-full">Sin Costo Salarial</span>
+            <span class="text-xs font-bold uppercase text-gray-600 tracking-wide">Sin Costo / Descuentos</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 bg-gray-200 text-gray-700 rounded-full">No Abonado</span>
           </div>
           <h3 id="kpi-costo-sincosto" class="text-2xl font-extrabold text-gray-700 mt-2">$ 0</h3>
-          <p id="kpi-dias-sincosto" class="text-xs text-gray-500 mt-1 font-medium">-- días no abonados (solo costo hs perdidas)</p>
+          <p id="kpi-dias-sincosto" class="text-xs text-gray-500 mt-1 font-medium">-- días no abonados</p>
         </div>
 
       </div>
@@ -170,12 +180,12 @@
 
     </section>
 
-    <!-- TABLA DE DETALLE CON CLASIFICACIÓN Y COSTO -->
+    <!-- TABLA DE DETALLE -->
     <section class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
       <div class="p-5 border-b border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h3 class="text-base font-bold text-gray-800">Detalle de Registros de Licencias</h3>
-          <p class="text-xs text-gray-400">Listado por legajo con su grupo de clasificación y costo financiero</p>
+          <p class="text-xs text-gray-400">Listado por legajo con categoría financiera y costo estimado</p>
         </div>
 
         <div class="flex items-center gap-2">
@@ -247,22 +257,27 @@
       return d;
     }
 
-    // CLASIFICADOR FINANCIERO DE LICENCIAS
+    // CLASIFICADOR INDEPENDIENTE (INCLUYE DISTINCIÓN ART EMPRESA VS ART RECUPERABLE)
     function clasificarConcepto(motivoRaw) {
-      if (!motivoRaw) return { tipo: 'SIN_COSTO', label: 'Sin Costo / Injustificada', color: 'gray' };
+      if (!motivoRaw) return { tipo: 'SIN_COSTO', label: 'Sin Costo / Descuento', color: 'gray' };
       let m = motivoRaw.toLowerCase();
 
-      // 1. Accidentes ART
+      // 1. ART Empresa (Costo Asumido por la Empresa)
+      if (m.includes('art empresa') || m.includes('accidente empresa') || m.includes('art emp')) {
+        return { tipo: 'ART_EMPRESA', label: 'ART (Empresa)', color: 'rose' };
+      }
+
+      // 2. ART Recuperable (Aseguradora)
       if (m.includes('accidente') || m.includes('art')) {
-        return { tipo: 'ART', label: 'Accidente ART', color: 'amber' };
+        return { tipo: 'ART_RECUPERABLE', label: 'ART (Recuperable)', color: 'amber' };
       }
 
-      // 2. Sin Costo / No Justificadas / Sin Goce
+      // 3. Sin Costo / Descuentos
       if (m.includes('sin goce') || m.includes('injustificada') || m.includes('falta') || m.includes('suspension')) {
-        return { tipo: 'SIN_COSTO', label: 'Sin Costo / Injustificada', color: 'gray' };
+        return { tipo: 'SIN_COSTO', label: 'Sin Costo / Descuento', color: 'gray' };
       }
 
-      // 3. Inculpables y Legales (por defecto si se pagan)
+      // 4. Inculpables y Legales por defecto
       return { tipo: 'INCULPABLE', label: 'Inculpable / Legal', color: 'emerald' };
     }
 
@@ -423,7 +438,8 @@
       let totalDiasLiquidados = 0;
       
       let diasInculpable = 0, costoInculpable = 0;
-      let diasArt = 0, costoArt = 0;
+      let diasArtEmpresa = 0, costoArtEmpresa = 0;
+      let diasArtRecuperable = 0, costoArtRecuperable = 0;
       let diasSinCosto = 0;
 
       filtered.forEach(item => {
@@ -437,9 +453,12 @@
         if (clasif.tipo === 'INCULPABLE') {
           diasInculpable += dias;
           costoInculpable += (costoBruto * FACTOR_CARGAS_SOCIALES);
-        } else if (clasif.tipo === 'ART') {
-          diasArt += dias;
-          costoArt += (costoBruto * FACTOR_CARGAS_SOCIALES);
+        } else if (clasif.tipo === 'ART_EMPRESA') {
+          diasArtEmpresa += dias;
+          costoArtEmpresa += (costoBruto * FACTOR_CARGAS_SOCIALES);
+        } else if (clasif.tipo === 'ART_RECUPERABLE') {
+          diasArtRecuperable += dias;
+          costoArtRecuperable += (costoBruto * FACTOR_CARGAS_SOCIALES);
         } else if (clasif.tipo === 'SIN_COSTO') {
           diasSinCosto += dias;
         }
@@ -477,10 +496,13 @@
       document.getElementById('kpi-costo-inculpable').textContent = formatPesos(costoInculpable);
       document.getElementById('kpi-dias-inculpable').textContent = `${diasInculpable.toLocaleString()} días afectando masa salarial`;
 
-      document.getElementById('kpi-costo-art').textContent = formatPesos(costoArt);
-      document.getElementById('kpi-dias-art').textContent = `${diasArt.toLocaleString()} días gestionados vía ART`;
+      document.getElementById('kpi-costo-art-empresa').textContent = formatPesos(costoArtEmpresa);
+      document.getElementById('kpi-dias-art-empresa').textContent = `${diasArtEmpresa.toLocaleString()} días a cargo empresa`;
 
-      document.getElementById('kpi-dias-sincosto').textContent = `${diasSinCosto.toLocaleString()} días no abonados (solo hs perdidas)`;
+      document.getElementById('kpi-costo-art-recuperable').textContent = formatPesos(costoArtRecuperable);
+      document.getElementById('kpi-dias-art-recuperable').textContent = `${diasArtRecuperable.toLocaleString()} días a tramitar con ART`;
+
+      document.getElementById('kpi-dias-sincosto').textContent = `${diasSinCosto.toLocaleString()} días no abonados`;
 
       // RENDERIZAR GRÁFICOS Y TABLA
       renderChartComparativo(rawAusentismo);
@@ -686,7 +708,7 @@
       });
     }
 
-    // --- RENDER DE LA TABLA CON CATEGORÍA Y COSTO FINANCIERO ---
+    // --- RENDER DE LA TABLA ---
     function renderTabla(data, monthFilter) {
       const tbody = document.getElementById('tabla-body');
       tbody.innerHTML = '';
@@ -719,9 +741,10 @@
 
         const dept = normalizarDepartamento(getVal(item, ['Departamento', 'Sector']));
 
-        // Badges dinámicos según categoría
+        // Badges dinámicos
         let badgeClass = "bg-emerald-100 text-emerald-800";
-        if (clasif.tipo === 'ART') badgeClass = "bg-amber-100 text-amber-800";
+        if (clasif.tipo === 'ART_EMPRESA') badgeClass = "bg-rose-100 text-rose-800";
+        if (clasif.tipo === 'ART_RECUPERABLE') badgeClass = "bg-amber-100 text-amber-800";
         if (clasif.tipo === 'SIN_COSTO') badgeClass = "bg-gray-100 text-gray-700";
 
         const tr = document.createElement('tr');
