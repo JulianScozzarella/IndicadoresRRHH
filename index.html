@@ -22,7 +22,7 @@
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 class="text-2xl font-bold text-gray-900">Dashboard de Ausentismo & Costos</h1>
-          <p class="text-sm text-gray-500">Análisis Financiero & Cuadro de Evolución Interanual (Mensual vs. Acumulado)</p>
+          <p class="text-sm text-gray-500">Análisis Financiero & Cuadro de Evolución Interanual (Años 2025 y 2026 Independientes)</p>
         </div>
       </div>
 
@@ -131,11 +131,11 @@
       </div>
     </section>
 
-    <!-- TABLA DE EVOLUCIÓN MES A MES VS ACUMULADO (NUEVA) -->
+    <!-- TABLA DE EVOLUCIÓN MES A MES VS ACUMULADO (AÑOS INDEPENDIENTES) -->
     <section class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
       <div class="p-5 border-b border-gray-200">
         <h3 class="text-base font-bold text-gray-800">Evolución Mensual No Acumulada vs. Acumulado Interanual</h3>
-        <p class="text-xs text-gray-400">Comparación del % de ausentismo puntual de cada mes y su evolución acumulada (2025 vs 2026)</p>
+        <p class="text-xs text-gray-400">Cálculo del % de ausentismo con horas planificadas y perdidas separadas estrictamente por año</p>
       </div>
 
       <div class="overflow-x-auto">
@@ -261,7 +261,6 @@
     let rawAusentismo = [];
     let rawDotacion = [];
     let mapHorasPlanificadas = {};
-    let totalHorasPlanificadasGlobal = 0;
     let currentFilteredData = [];
     let charts = {};
 
@@ -348,7 +347,6 @@
       rawAusentismo = ausentismoData;
       rawDotacion = dotacionData;
 
-      totalHorasPlanificadasGlobal = 0;
       mapHorasPlanificadas = {};
 
       rawDotacion.forEach(row => {
@@ -356,9 +354,8 @@
         const hs = parseNum(getVal(row, ['Horas', 'Horas Planificadas']));
         const key = estandarizarPeriodo(rawPer);
 
-        if (hs > 0) {
-          totalHorasPlanificadasGlobal += hs;
-          if (key) mapHorasPlanificadas[key] = hs;
+        if (hs > 0 && key) {
+          mapHorasPlanificadas[key] = hs;
         }
       });
 
@@ -493,23 +490,20 @@
 
       const totalHorasPerdidas = totalDiasLiquidados * HORAS_POR_DIA;
 
+      // CÁLCULO ESTRICTO DE HORAS PLANIFICADAS FILTRADAS
       let horasPlanificadasDivisor = 0;
 
-      if (selectedYear === 'ALL' && selectedMonth === 'ALL') {
-        horasPlanificadasDivisor = totalHorasPlanificadasGlobal;
-      } else {
-        Object.keys(mapHorasPlanificadas).forEach(key => {
-          const [m, y] = key.split('/');
-          const matchesYear = (selectedYear === 'ALL' || y === selectedYear);
-          const matchesMonth = (selectedMonth === 'ALL' || m === selectedMonth.padStart(2, '0'));
+      Object.keys(mapHorasPlanificadas).forEach(key => {
+        const [m, y] = key.split('/');
+        const matchesYear = (selectedYear === 'ALL' || y === selectedYear);
+        const matchesMonth = (selectedMonth === 'ALL' || m === selectedMonth.padStart(2, '0'));
 
-          if (matchesYear && matchesMonth) {
-            horasPlanificadasDivisor += mapHorasPlanificadas[key];
-          }
-        });
-      }
+        if (matchesYear && matchesMonth) {
+          horasPlanificadasDivisor += mapHorasPlanificadas[key];
+        }
+      });
 
-      if (horasPlanificadasDivisor === 0) horasPlanificadasDivisor = totalHorasPlanificadasGlobal || 233280;
+      if (horasPlanificadasDivisor === 0) horasPlanificadasDivisor = 1;
 
       const tasa = ((totalHorasPerdidas / horasPlanificadasDivisor) * 100).toFixed(2);
 
@@ -531,7 +525,7 @@
 
       document.getElementById('kpi-dias-sincosto').textContent = `${diasSinCosto.toLocaleString()} días (Maternidad/Excedencia/Faltas)`;
 
-      // RENDERIZAR NUEVA TABLA DE EVOLUCIÓN ACUMULADA
+      // RENDERIZAR TABLA DE EVOLUCIÓN ESTRICTA POR AÑO
       renderTablaEvolucion(filtered);
 
       // RENDERIZAR GRÁFICOS Y TABLA DETALLE
@@ -543,7 +537,7 @@
       renderTabla(filtered, tablaMonthFilter);
     }
 
-    // --- NUEVA TABLA DE EVOLUCIÓN MES A MES VS ACUMULADO ---
+    // --- TABLA DE EVOLUCIÓN CON SEPARACIÓN ESTRICTA DE HORAS PLANIFICADAS 2025 Y 2026 ---
     function renderTablaEvolucion(filteredData) {
       const tbody = document.getElementById('tabla-evolucion-body');
       tbody.innerHTML = '';
@@ -573,17 +567,19 @@
 
       mesesNombres.forEach((nombreMes, i) => {
         const mKey = (i + 1).toString().padStart(2, '0');
-        const plan2025 = mapHorasPlanificadas[`${mKey}/2025`] || 19440;
-        const plan2026 = mapHorasPlanificadas[`${mKey}/2026`] || 19440;
+        
+        // Obtención de horas planificadas separadas unívocamente por año
+        const plan2025 = mapHorasPlanificadas[`${mKey}/2025`] || 0;
+        const plan2026 = mapHorasPlanificadas[`${mKey}/2026`] || 0;
 
         const hs2025 = hsPerdidas2025[i];
         const hs2026 = hsPerdidas2026[i];
 
-        // Tasas Mensuales Puntuadas
+        // Tasas Mensuales Puntuadas por año
         const tasaMensual2025 = plan2025 > 0 ? ((hs2025 / plan2025) * 100) : 0;
         const tasaMensual2026 = plan2026 > 0 ? ((hs2026 / plan2026) * 100) : 0;
 
-        // Acumulaciones
+        // Acumulaciones independientes
         acumHs2025 += hs2025;
         acumPlan2025 += plan2025;
 
@@ -593,10 +589,10 @@
         const tasaAcum2025 = acumPlan2025 > 0 ? ((acumHs2025 / acumPlan2025) * 100) : 0;
         const tasaAcum2026 = acumPlan2026 > 0 ? ((acumHs2026 / acumPlan2026) * 100) : 0;
 
-        // Variación
+        // Variación interanual (% 2026 - % 2025)
         const diff = tasaMensual2026 - tasaMensual2025;
         let badgeDiff = `<span class="text-gray-400">-</span>`;
-        if (hs2026 > 0 || hs2025 > 0) {
+        if (plan2026 > 0 && plan2025 > 0) {
           if (diff > 0) {
             badgeDiff = `<span class="bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded">+${diff.toFixed(2)}%</span>`;
           } else if (diff < 0) {
@@ -612,12 +608,12 @@
           <td class="px-4 py-3 font-bold text-gray-800">${nombreMes}</td>
           
           <!-- 2025 -->
-          <td class="px-4 py-3 text-center border-l border-gray-200 font-medium ${hs2025 > 0 ? 'text-gray-900' : 'text-gray-400'}">${tasaMensual2025.toFixed(2)}%</td>
-          <td class="px-4 py-3 text-center font-semibold text-emerald-700 bg-emerald-50/20">${tasaAcum2025.toFixed(2)}%</td>
+          <td class="px-4 py-3 text-center border-l border-gray-200 font-medium ${plan2025 > 0 ? 'text-gray-900' : 'text-gray-400'}">${plan2025 > 0 ? tasaMensual2025.toFixed(2) + '%' : '-'}</td>
+          <td class="px-4 py-3 text-center font-semibold text-emerald-700 bg-emerald-50/20">${acumPlan2025 > 0 ? tasaAcum2025.toFixed(2) + '%' : '-'}</td>
           
           <!-- 2026 -->
-          <td class="px-4 py-3 text-center border-l border-gray-200 font-medium ${hs2026 > 0 ? 'text-gray-900' : 'text-gray-400'}">${hs2026 > 0 ? tasaMensual2026.toFixed(2) + '%' : '-'}</td>
-          <td class="px-4 py-3 text-center font-semibold text-blue-700 bg-blue-50/20">${hs2026 > 0 ? tasaAcum2026.toFixed(2) + '%' : '-'}</td>
+          <td class="px-4 py-3 text-center border-l border-gray-200 font-medium ${plan2026 > 0 ? 'text-gray-900' : 'text-gray-400'}">${plan2026 > 0 ? tasaMensual2026.toFixed(2) + '%' : '-'}</td>
+          <td class="px-4 py-3 text-center font-semibold text-blue-700 bg-blue-50/20">${acumPlan2026 > 0 ? tasaAcum2026.toFixed(2) + '%' : '-'}</td>
           
           <!-- Variación -->
           <td class="px-4 py-3 text-center border-l border-gray-200">${badgeDiff}</td>
