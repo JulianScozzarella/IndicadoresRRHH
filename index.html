@@ -30,7 +30,7 @@
                 <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
                     <span>🏢</span> Portal de Control Operativo & Recursos Humanos
                 </h1>
-                <p class="text-xs text-slate-400">Análisis Interanual Unificado (Modo Oscuro)</p>
+                <p class="text-xs text-slate-400">Análisis Interanual Unificado (Modo Oscuro - Alto Contraste)</p>
             </div>
             
             <!-- NAVEGACIÓN ENTRE PESTAÑAS -->
@@ -67,7 +67,6 @@
                     </button>
                     <div id="ddYearAus" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200"></div>
                 </div>
-
                 <div class="relative">
                     <label class="block text-xs font-medium text-slate-300 mb-1">Período / Mes(es):</label>
                     <button type="button" onclick="toggleDropdown('ddMonthAus')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
@@ -76,7 +75,6 @@
                     </button>
                     <div id="ddMonthAus" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200"></div>
                 </div>
-
                 <div class="relative">
                     <label class="block text-xs font-medium text-slate-300 mb-1">Departamento(s):</label>
                     <button type="button" onclick="toggleDropdown('ddDeptAus')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
@@ -85,7 +83,6 @@
                     </button>
                     <div id="ddDeptAus" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-56 overflow-y-auto space-y-2 text-sm text-slate-200"></div>
                 </div>
-
                 <div class="relative">
                     <label class="block text-xs font-medium text-slate-300 mb-1">Tipo / Concepto(s):</label>
                     <button type="button" onclick="toggleDropdown('ddMotivoAus')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-sm rounded-lg p-2.5 text-left flex justify-between items-center">
@@ -100,7 +97,7 @@
         <section class="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-lg">
                 <p class="text-xs font-bold uppercase text-slate-400 tracking-wider">Tasa de Ausentismo Real</p>
-                <h3 id="kpi-tasa" class="text-3xl font-extrabold text-blue-400 mt-2">-- %</h3>
+                <h3 id="kpi-tasa" class="text-3xl font-extrabold text-cyan-400 mt-2">-- %</h3>
                 <p id="kpi-tasa-sub" class="text-xs text-slate-400 mt-1 font-medium">Horas Perdidas / Horas Planificadas</p>
             </div>
             <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-lg">
@@ -116,18 +113,33 @@
         </section>
 
         <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg space-y-4">
-            <div class="border-b border-slate-800 pb-3">
-                <h3 class="text-lg font-bold text-slate-100">Impacto Económico por Criterio Financiero (+33% Cargas Sociales)</h3>
-                <p class="text-xs text-slate-400">Desglose según la responsabilidad de pago del concepto de licencia</p>
+            <div class="border-b border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-100">Impacto Económico por Criterio Financiero (+33% Cargas Sociales)</h3>
+                    <p class="text-xs text-slate-400">Desglose auditado: Maternidad/Suspensión/Sin Goce/Injustificada = $0 | ART Recuperable vs ART Empresa (14051) | Inculpables con apertura por extensión</p>
+                </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-emerald-950/40 border border-emerald-800/50 p-4 rounded-xl">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold uppercase text-emerald-300">Inculpables & Legales</span>
-                        <span class="text-[10px] font-bold px-2 py-0.5 bg-emerald-900/80 text-emerald-300 rounded-full">Costo Directo</span>
+                <div class="bg-emerald-950/40 border border-emerald-800/50 p-4 rounded-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase text-emerald-300">Inculpables & Legales</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 bg-emerald-900/80 text-emerald-300 rounded-full">Costo Directo</span>
+                        </div>
+                        <h4 id="kpi-costo-inculpable" class="text-2xl font-extrabold text-emerald-400 mt-2">$ --</h4>
+                        <p id="kpi-dias-inculpable" class="text-xs text-emerald-300/70 mt-1">-- días afectando masa salarial</p>
                     </div>
-                    <h4 id="kpi-costo-inculpable" class="text-2xl font-extrabold text-emerald-400 mt-2">$ --</h4>
-                    <p id="kpi-dias-inculpable" class="text-xs text-emerald-300/70 mt-1">-- días afectando masa salarial</p>
+                    <!-- Apertura de Enfermedad Leve vs Extensa -->
+                    <div class="mt-3 pt-2.5 border-t border-emerald-800/40 text-[11px] space-y-1">
+                        <div class="flex justify-between text-amber-300">
+                            <span>🔸 Enf. Extensa (&gt;5d/mes):</span>
+                            <span id="kpi-enf-extensa" class="font-bold">-- d ($0)</span>
+                        </div>
+                        <div class="flex justify-between text-cyan-300">
+                            <span>🔹 Enf. Aislada/Leve (≤5d):</span>
+                            <span id="kpi-enf-leve" class="font-bold">-- d ($0)</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="bg-rose-950/40 border border-rose-800/50 p-4 rounded-xl">
                     <div class="flex items-center justify-between">
@@ -151,7 +163,7 @@
                         <span class="text-[10px] font-bold px-2 py-0.5 bg-slate-800 text-slate-300 rounded-full">No Abonado ($0)</span>
                     </div>
                     <h4 id="kpi-costo-sincosto" class="text-2xl font-extrabold text-slate-300 mt-2">$ 0</h4>
-                    <p id="kpi-dias-sincosto" class="text-xs text-slate-500 mt-1">-- días (Maternidad/Excedencia/Faltas)</p>
+                    <p id="kpi-dias-sincosto" class="text-xs text-slate-500 mt-1">-- días (Mat./Susp./Sin Goce/Injust.)</p>
                 </div>
             </div>
         </section>
@@ -166,15 +178,15 @@
                     <thead class="text-xs text-slate-300 uppercase bg-slate-950 border-b border-slate-800">
                         <tr>
                             <th class="px-4 py-3" rowspan="2">Mes</th>
-                            <th class="px-4 py-3 text-center border-l border-slate-800 bg-emerald-950/40 text-emerald-300" colspan="2">Año 2025</th>
-                            <th class="px-4 py-3 text-center border-l border-slate-800 bg-blue-950/40 text-blue-300" colspan="2">Año 2026</th>
+                            <th class="px-4 py-3 text-center border-l border-slate-800 bg-amber-950/40 text-amber-300" colspan="2">Año 2025</th>
+                            <th class="px-4 py-3 text-center border-l border-slate-800 bg-cyan-950/40 text-cyan-300" colspan="2">Año 2026</th>
                             <th class="px-4 py-3 text-center border-l border-slate-800" rowspan="2">Var. Mensual (26 vs 25)</th>
                         </tr>
                         <tr>
-                            <th class="px-4 py-2 text-center border-l border-slate-800 bg-emerald-950/20 text-emerald-400">% Mensual</th>
-                            <th class="px-4 py-2 text-center bg-emerald-950/20 text-emerald-400">% Acumulado</th>
-                            <th class="px-4 py-2 text-center border-l border-slate-800 bg-blue-950/20 text-blue-400">% Mensual</th>
-                            <th class="px-4 py-2 text-center bg-blue-950/20 text-blue-400">% Acumulado</th>
+                            <th class="px-4 py-2 text-center border-l border-slate-800 bg-amber-950/20 text-amber-400">% Mensual</th>
+                            <th class="px-4 py-2 text-center bg-amber-950/20 text-amber-400">% Acumulado</th>
+                            <th class="px-4 py-2 text-center border-l border-slate-800 bg-cyan-950/20 text-cyan-400">% Mensual</th>
+                            <th class="px-4 py-2 text-center bg-cyan-950/20 text-cyan-400">% Acumulado</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-evolucion-body" class="divide-y divide-slate-800 text-xs"></tbody>
@@ -186,17 +198,17 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
                 <div>
                     <h3 class="text-lg font-bold text-slate-100">1. Evolución Mensual Comparativa (Horas Perdidas)</h3>
-                    <p class="text-xs text-slate-400">Tendencia mensual superpuesta entre años</p>
+                    <p class="text-xs text-slate-400">Tendencia mensual superpuesta entre años (Colores de alto contraste)</p>
                 </div>
                 <div class="flex items-center gap-3 bg-slate-950 p-2 rounded-xl border border-slate-800">
                     <label class="flex items-center gap-1.5 text-xs font-semibold cursor-pointer text-slate-300">
-                        <input type="checkbox" id="chart-year-2025" checked class="rounded text-emerald-500 bg-slate-900 border-slate-700 w-4 h-4">
-                        <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> 2025
+                        <input type="checkbox" id="chart-year-2025" checked class="rounded text-amber-500 bg-slate-900 border-slate-700 w-4 h-4">
+                        <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span> 2025
                     </label>
                     <div class="h-4 w-px bg-slate-800"></div>
                     <label class="flex items-center gap-1.5 text-xs font-semibold cursor-pointer text-slate-300">
-                        <input type="checkbox" id="chart-year-2026" checked class="rounded text-blue-500 bg-slate-900 border-slate-700 w-4 h-4">
-                        <span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span> 2026
+                        <input type="checkbox" id="chart-year-2026" checked class="rounded text-cyan-400 bg-slate-900 border-slate-700 w-4 h-4">
+                        <span class="w-3 h-3 rounded-full bg-cyan-400 inline-block"></span> 2026
                     </label>
                 </div>
             </div>
@@ -208,14 +220,14 @@
         <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div class="lg:col-span-7 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
                 <h3 class="text-lg font-bold text-slate-100 mb-1">2. Horas Perdidas por Departamento</h3>
-                <p class="text-xs text-slate-400 mb-6">Ordenado de mayor a menor impacto (Lobby Bar y Las Vasijas/Vajillas unificados en AA & BB)</p>
+                <p class="text-xs text-slate-400 mb-6">Ordenado de mayor a menor impacto (2025 Ámbar vs 2026 Cian)</p>
                 <div class="h-[420px]">
                     <canvas id="chart-departamento"></canvas>
                 </div>
             </div>
             <div class="lg:col-span-5 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
                 <h3 class="text-lg font-bold text-slate-100 mb-1">3. Distribución por Tipo de Ausencia</h3>
-                <p class="text-xs text-slate-400 mb-4">Proporción de días perdidos por concepto</p>
+                <p class="text-xs text-slate-400 mb-4">Separa Enfermedad en Extensa (&gt;5d) vs Aislada/Leve (≤5d)</p>
                 <div class="h-[420px] flex items-center justify-center">
                     <canvas id="chart-motivo"></canvas>
                 </div>
@@ -226,30 +238,52 @@
     <!-- VISTA 2: HISTORIAL DE LICENCIAS -->
     <main id="viewHistorial" class="hidden max-w-7xl mx-auto p-6 space-y-6">
         <section class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
-            <div class="p-5 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h3 class="text-xl font-bold text-slate-100">📋 Historial Completo de Licencias Registradas</h3>
-                    <p class="text-xs text-slate-400">Listado detallado por legajo con categoría financiera y costo estimado</p>
+            <div class="p-5 border-b border-slate-800 space-y-4">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-100">📋 Historial Completo de Licencias Registradas</h3>
+                        <p class="text-xs text-slate-400">Listado detallado por legajo con clasificación de extensión (&gt;5 días/mes) y auditoría de costos</p>
+                    </div>
+                    <button onclick="limpiarFiltrosTablaHistorial()" class="self-start md:self-auto text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 transition-colors">
+                        🧹 Limpiar Filtros de Tabla
+                    </button>
                 </div>
-                <div class="flex items-center gap-2">
-                    <label for="tabla-filter-month" class="text-xs font-semibold uppercase text-slate-400 whitespace-nowrap">Filtrar Período:</label>
-                    <select id="tabla-filter-month" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="ALL">Todos los Meses de la muestra</option>
-                    </select>
+
+                <!-- NUEVOS FILTROS: PERÍODO, DEPARTAMENTO Y EMPLEADO -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-slate-800/80">
+                    <div>
+                        <label for="tabla-filter-month" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Filtrar Período:</label>
+                        <select id="tabla-filter-month" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="ALL">Todos los Meses de la muestra</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="tabla-filter-dept" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Filtrar Departamento:</label>
+                        <select id="tabla-filter-dept" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="ALL">Todos los Departamentos</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="tabla-filter-emp" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Buscar Empleado o Legajo:</label>
+                        <input type="text" id="tabla-filter-emp" list="datalist-empleados-aus" placeholder="Escribí nombre, apellido o legajo..." class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
+                        <datalist id="datalist-empleados-aus"></datalist>
+                    </div>
                 </div>
             </div>
+
             <div class="overflow-x-auto">
                 <table class="w-full text-sm text-left text-slate-300">
                     <thead class="text-xs text-slate-400 uppercase bg-slate-950 border-b border-slate-800">
                         <tr>
-                            <th class="px-6 py-3">Legajo</th>
-                            <th class="px-6 py-3">Empleado</th>
-                            <th class="px-6 py-3">Departamento</th>
-                            <th class="px-6 py-3">Concepto / Ausencia</th>
-                            <th class="px-6 py-3">Categoría Financiera</th>
-                            <th class="px-6 py-3 text-center">Período</th>
-                            <th class="px-6 py-3 text-center">Días</th>
-                            <th class="px-6 py-3 text-right">Costo Est. (+33% CS)</th>
+                            <th class="px-5 py-3">Legajo</th>
+                            <th class="px-5 py-3">Empleado</th>
+                            <th class="px-5 py-3">Departamento</th>
+                            <th class="px-5 py-3">Concepto / Ausencia</th>
+                            <th class="px-5 py-3">Extensión (Enf.)</th>
+                            <th class="px-5 py-3">Categoría Financiera</th>
+                            <th class="px-5 py-3 text-center">Período</th>
+                            <th class="px-5 py-3 text-center">Días</th>
+                            <th class="px-5 py-3 text-right">Costo Est. (+33% CS)</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-body" class="divide-y divide-slate-800"></tbody>
@@ -320,7 +354,7 @@
             </div>
             <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
                 <p class="text-sm font-medium text-slate-400">Costo Empresa Total</p>
-                <p id="kpiCostoTotal" class="text-3xl font-bold text-indigo-400 mt-1">$ 0</p>
+                <p id="kpiCostoTotal" class="text-3xl font-bold text-cyan-400 mt-1">$ 0</p>
                 <p class="text-xs text-slate-500 mt-1">Incluye +45% adic. y +33% costo emp.</p>
             </div>
             <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
@@ -329,7 +363,7 @@
             </div>
             <div class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
                 <p class="text-sm font-medium text-slate-400">Depto con Mayor Carga</p>
-                <p id="kpiDeptoTop" class="text-xl font-bold text-cyan-400 mt-1">-</p>
+                <p id="kpiDeptoTop" class="text-xl font-bold text-amber-400 mt-1">-</p>
             </div>
         </section>
 
@@ -337,7 +371,7 @@
             <div class="flex justify-between items-center mb-4">
                 <div>
                     <h3 class="text-xl font-bold text-slate-100">Evolución Mensual General (2025 vs 2026)</h3>
-                    <p class="text-xs text-slate-400">Total de horas extras consolidadas mes a mes</p>
+                    <p class="text-xs text-slate-400">Total de horas extras consolidadas mes a mes (2025 Ámbar vs 2026 Cian)</p>
                 </div>
             </div>
             <div class="relative w-full h-80">
@@ -375,25 +409,34 @@
             </div>
         </section>
 
+        <!-- REEMPLAZO DEL MAPA DE CALOR: TABLA LIMPIA PARA COPIAR Y PEGAR -->
         <section class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg space-y-4">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                 <div>
                     <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2">
-                        🔥 Mapa de Calor de Variación Interanual por Departamento (% 2026 vs 2025)
+                        📑 Tabla de Horas Extras por Sector y Mes (Lista para Copiar y Pegar)
                     </h3>
-                    <p class="text-xs text-slate-400">Matriz mensual de desvíos: identifica incrementos o reducciones de carga horaria por sector</p>
+                    <p class="text-xs text-slate-400">Horas totales puras por departamento y mes, diseñadas para pegar directamente en Excel o Google Sheets</p>
                 </div>
-                <div class="flex items-center space-x-3 text-xs">
-                    <span class="flex items-center gap-1 text-slate-300"><span class="w-3 h-3 rounded bg-emerald-600 inline-block"></span> Reducción (&lt;-5%)</span>
-                    <span class="flex items-center gap-1 text-slate-300"><span class="w-3 h-3 rounded bg-slate-800 inline-block"></span> Estable (-5% a 5%)</span>
-                    <span class="flex items-center gap-1 text-slate-300"><span class="w-3 h-3 rounded bg-rose-600 inline-block"></span> Incremento (&gt;5%)</span>
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="flex items-center gap-2">
+                        <label class="text-xs font-semibold text-slate-300">Año:</label>
+                        <select id="selectAnioTablaResumenHE" onchange="renderTablaResumenHorasHE()" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="2026">2026</option>
+                            <option value="2025">2025</option>
+                            <option value="TODOS">Consolidado (Todos)</option>
+                        </select>
+                    </div>
+                    <button onclick="copiarTablaHorasHE()" id="btnCopiarTablaHE" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-2 rounded-lg shadow transition-all flex items-center gap-1.5">
+                        📋 Copiar Tabla para Excel
+                    </button>
                 </div>
             </div>
-            <div class="overflow-x-auto">
-                <table class="min-w-full text-center text-xs text-slate-200 border-collapse">
+            <div class="overflow-x-auto border border-slate-800 rounded-lg">
+                <table id="tablaResumenHorasHE" class="min-w-full text-right text-xs text-slate-200 border-collapse">
                     <thead>
-                        <tr class="bg-slate-950 border-b border-slate-800 text-slate-400 font-semibold">
-                            <th class="py-3 px-3 text-left">Departamento</th>
+                        <tr class="bg-slate-950 border-b border-slate-800 text-slate-300 font-bold uppercase">
+                            <th class="py-3 px-3 text-left border-r border-slate-800">Sector / Departamento</th>
                             <th class="py-3 px-2">Ene</th>
                             <th class="py-3 px-2">Feb</th>
                             <th class="py-3 px-2">Mar</th>
@@ -406,11 +449,13 @@
                             <th class="py-3 px-2">Oct</th>
                             <th class="py-3 px-2">Nov</th>
                             <th class="py-3 px-2">Dic</th>
+                            <th class="py-3 px-3 bg-slate-900 border-l border-slate-800 text-cyan-400">Total</th>
                         </tr>
                     </thead>
-                    <tbody id="heatmapBody" class="divide-y divide-slate-800">
-                        <tr><td colspan="13" class="py-6 text-center text-slate-500">Cargando mapa de calor...</td></tr>
+                    <tbody id="tablaResumenHorasBody" class="divide-y divide-slate-800 font-mono">
+                        <tr><td colspan="14" class="py-6 text-center text-slate-500">Cargando tabla de horas...</td></tr>
                     </tbody>
+                    <tfoot id="tablaResumenHorasFoot" class="bg-slate-950 border-t-2 border-slate-700 font-mono font-bold text-slate-100"></tfoot>
                 </table>
             </div>
         </section>
@@ -514,12 +559,28 @@
     <script>
         Chart.register(ChartDataLabels);
 
+        // PALETA DE ALTO CONTRASTE PARA MODO OSCURO
+        const COLOR_2025 = '#f59e0b'; // Ámbar / Naranja brillante
+        const COLOR_2025_BG = 'rgba(245, 158, 11, 0.2)';
+        const COLOR_2026 = '#06b6d4'; // Cian eléctrico
+        const COLOR_2026_BG = 'rgba(6, 182, 212, 0.25)';
+        const PALETA_VIBRANTE = [
+            '#06b6d4', // Cian
+            '#f59e0b', // Ámbar
+            '#ec4899', // Fucsia / Rosa
+            '#10b981', // Esmeralda
+            '#8b5cf6', // Violeta
+            '#f43f5e', // Coral / Rojo
+            '#eab308', // Amarillo
+            '#3b82f6', // Azul brillante
+            '#14b8a6', // Teal
+            '#f97316'  // Naranja vivo
+        ];
+
         function normalizarDepartamento(deptRaw) {
             if (!deptRaw) return 'Sin Depto';
             let d = deptRaw.trim();
             let dLow = d.toLowerCase();
-            
-            // Unifica Lobby Bar, Las Vasijas / Las Vajillas en 'AA & BB'
             if (dLow.includes('lobby bar') || dLow.includes('las vaji') || dLow.includes('vajilla') || dLow.includes('vajillas') || dLow.includes('vasija') || dLow.includes('vasijas')) {
                 return 'AA & BB';
             }
@@ -543,7 +604,6 @@
             const viewAus = document.getElementById('viewAusentismo');
             const viewHis = document.getElementById('viewHistorial');
             const viewHE = document.getElementById('viewHorasExtras');
-
             const btnAus = document.getElementById('btnTabAusentismo');
             const btnHis = document.getElementById('btnTabHistorial');
             const btnHE = document.getElementById('btnTabHorasExtras');
@@ -569,7 +629,7 @@
         }
 
         // =================================================================
-        // 1. LÓGICA DEL DASHBOARD DE AUSENTISMO
+        // 1. LÓGICA DEL DASHBOARD DE AUSENTISMO & HISTORIAL
         // =================================================================
         const URL_DATA_AUSENTISMO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRsPAbz--SGf1aJFcFOyLLdqxXZqPhpFSMxKbN6Oz9Em7AZjQmThmcboOzMDeptewjsqh7qo6C6oh27/pub?gid=0&single=true&output=csv';
         const URL_DOTACION_HORAS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRsPAbz--SGf1aJFcFOyLLdqxXZqPhpFSMxKbN6Oz9Em7AZjQmThmcboOzMDeptewjsqh7qo6C6oh27/pub?gid=847796593&single=true&output=csv';
@@ -578,10 +638,19 @@
 
         let rawAusentismo = [];
         let mapHorasPlanificadas = {};
+        let mapDiasEnfermedadMes = {}; // Legajo|Periodo -> total días de enfermedad en ese mes
         let currentFilteredData = [];
         let chartsAusentismo = {};
 
+        // Prioriza coincidencia exacta antes que parcial para no mezclar 'Nro. de concepto' con 'Desc. de concepto'
         function getValAus(row, candidates) {
+            for (let c of candidates) {
+                for (let key in row) {
+                    if (key.trim().toLowerCase() === c.toLowerCase()) {
+                        return row[key] ? row[key].toString().trim() : '';
+                    }
+                }
+            }
             for (let c of candidates) {
                 for (let key in row) {
                     if (key.trim().toLowerCase().includes(c.toLowerCase())) {
@@ -592,20 +661,122 @@
             return '';
         }
 
+        // Identifica si el concepto corresponde a una licencia por enfermedad inculpable
+        function esConceptoEnfermedad(motivoRaw, nroConcepto) {
+            const m = (motivoRaw || '').toLowerCase();
+            const cod = (nroConcepto || '').toString().trim();
+            if (cod === '14051' || m.includes('art') || m.includes('accidente')) return false;
+            return m.includes('enfermedad') || m.includes('inculpable') || m.includes('certificado medico') || m.includes('certificado médico') || m.includes('lic. med') || m.includes('licencia med');
+        }
+
+        // AUDITORÍA FINANCIERA ESTRICTA DE CONCEPTOS DE LICENCIA
         function clasificarConcepto(motivoRaw, nroConcepto, costoBruto) {
             const cod = nroConcepto ? nroConcepto.toString().trim() : '';
-            const m = motivoRaw ? motivoRaw.toLowerCase() : '';
+            const m = motivoRaw ? motivoRaw.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : '';
 
-            if (cod === '15102' || cod === '15107' || m.includes('maternidad') || m.includes('excedencia') || m.includes('sin goce') || m.includes('injustificada') || m.includes('falta') || m.includes('suspension') || costoBruto <= 0) {
-                return { tipo: 'SIN_COSTO', label: 'Sin Costo / ANSES' };
+            // 1. SIN COSTO ($0 obligatorio): Maternidad (15102), Excedencia (15107), Suspensión, Sin goce de sueldo, Ausencia injustificada / Faltas
+            const esSinCosto =
+                cod === '15102' ||
+                cod === '15107' ||
+                m.includes('maternidad') ||
+                m.includes('excedencia') ||
+                m.includes('sin goce') ||
+                m.includes('s/goce') ||
+                m.includes('s/ goce') ||
+                m.includes('injustificad') ||
+                m.includes('ausencia injust') ||
+                m.includes('falta') ||
+                m.includes('suspension') ||
+                m.includes('suspensión') ||
+                m.includes('disciplinaria') ||
+                m.includes('reserva de puesto');
+
+            if (esSinCosto) {
+                return { tipo: 'SIN_COSTO', label: 'Sin Costo / ANSES ($0)', aplicaCosto: false };
             }
-            if (cod === '14051' || m.includes('14051') || m.includes('a cargo empresa') || m.includes('art empresa') || m.includes('empresa')) {
-                return { tipo: 'ART_EMPRESA', label: 'ART (Empresa - 14051)' };
+
+            // 2. ART EMPRESA (Concepto 14051 / Primeros días a cargo empresa): Implica costo directo asumido por la empresa
+            const esArtEmpresa =
+                cod === '14051' ||
+                m.includes('14051') ||
+                m.includes('a cargo empresa') ||
+                m.includes('art empresa') ||
+                (m.includes('accidente') && m.includes('empresa')) ||
+                (m.includes('art') && m.includes('empresa'));
+
+            if (esArtEmpresa) {
+                return { tipo: 'ART_EMPRESA', label: 'ART Empresa (14051)', aplicaCosto: true };
             }
-            if (m.includes('accidente') || m.includes('art')) {
-                return { tipo: 'ART_RECUPERABLE', label: 'ART (Recuperable)' };
+
+            // 3. ART RECUPERABLE: Resto de conceptos de ART / Accidente de trabajo / ILT
+            const esArtRecuperable =
+                m.includes('accidente') ||
+                m.includes('art') ||
+                m.includes('ilt') ||
+                m.includes('incapacidad laboral');
+
+            if (esArtRecuperable) {
+                return { tipo: 'ART_RECUPERABLE', label: 'ART Recuperable', aplicaCosto: true };
             }
-            return { tipo: 'INCULPABLE', label: 'Inculpable / Legal' };
+
+            // 4. Si no es ninguno de los anteriores pero tiene importe 0 en la nómina
+            if (costoBruto <= 0) {
+                return { tipo: 'SIN_COSTO', label: 'Sin Costo ($0)', aplicaCosto: false };
+            }
+
+            // 5. INCULPABLES & LEGALES: Enfermedad inculpable, licencias legales/convencionales pagas
+            return { tipo: 'INCULPABLE', label: 'Inculpable / Legal', aplicaCosto: true };
+        }
+
+        // Pre-calcula cuántos días de enfermedad acumuló cada empleado en cada mes
+        function recalcularMapaEnfermedadMensual(data) {
+            mapDiasEnfermedadMes = {};
+            data.forEach(item => {
+                const legajo = getValAus(item, ['Legajo', 'Nro. Legajo']) || 'S/D';
+                const periodo = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
+                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Motivo']);
+                const nroConcepto = getValAus(item, ['Nro. de concep', 'Nro. concepto', 'Código']);
+                const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
+
+                if (esConceptoEnfermedad(motivo, nroConcepto) && periodo) {
+                    const key = `${legajo}|${periodo}`;
+                    mapDiasEnfermedadMes[key] = (mapDiasEnfermedadMes[key] || 0) + dias;
+                }
+            });
+        }
+
+        // Devuelve clasificación de extensión para licencias por enfermedad (>5 días en el mes = Extensa)
+        function obtenerExtensionEnfermedad(item) {
+            const legajo = getValAus(item, ['Legajo', 'Nro. Legajo']) || 'S/D';
+            const periodo = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
+            const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Motivo']);
+            const nroConcepto = getValAus(item, ['Nro. de concep', 'Nro. concepto', 'Código']);
+            const diasFila = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
+
+            if (!esConceptoEnfermedad(motivo, nroConcepto)) {
+                return { esEnfermedad: false, tipoExt: 'NO_APLICA', label: 'No aplica', totalMes: diasFila };
+            }
+
+            const key = `${legajo}|${periodo}`;
+            const totalDiasMes = mapDiasEnfermedadMes[key] !== undefined ? mapDiasEnfermedadMes[key] : diasFila;
+
+            if (totalDiasMes > 5) {
+                return {
+                    esEnfermedad: true,
+                    tipoExt: 'EXTENSA',
+                    label: `Extensa (${totalDiasMes}d en el mes)`,
+                    shortLabel: 'Enfermedad Extensa (>5d)',
+                    totalMes: totalDiasMes
+                };
+            } else {
+                return {
+                    esEnfermedad: true,
+                    tipoExt: 'LEVE',
+                    label: `Aislada / Leve (${totalDiasMes}d en el mes)`,
+                    shortLabel: 'Enfermedad Aislada / Leve (≤5d)',
+                    totalMes: totalDiasMes
+                };
+            }
         }
 
         function parseNum(val) {
@@ -655,6 +826,8 @@
                 fetchCSV(URL_DOTACION_HORAS, false)
             ]).then(([ausentismoData, dotacionData]) => {
                 rawAusentismo = ausentismoData;
+                recalcularMapaEnfermedadMensual(rawAusentismo);
+
                 mapHorasPlanificadas = {};
                 dotacionData.forEach((rowArray, idx) => {
                     if (idx === 0) return;
@@ -677,9 +850,11 @@
                     });
                 });
 
-                document.getElementById('tabla-filter-month').addEventListener('change', (e) => {
-                    renderTablaAusentismo(currentFilteredData, e.target.value);
-                });
+                // Listeners de los 3 filtros del Historial de Licencias
+                document.getElementById('tabla-filter-month').addEventListener('change', () => renderTablaAusentismo(currentFilteredData));
+                document.getElementById('tabla-filter-dept').addEventListener('change', () => renderTablaAusentismo(currentFilteredData));
+                document.getElementById('tabla-filter-emp').addEventListener('input', () => renderTablaAusentismo(currentFilteredData));
+
             }).catch(err => console.error("Error al cargar ausentismo:", err));
         }
 
@@ -701,14 +876,18 @@
             const years = new Set();
             const months = new Set();
             const periodosCompletos = new Set();
+            const empleadosSet = new Set();
 
             data.forEach(item => {
                 const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
-                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
+                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Motivo']);
                 const periodo = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
+                const legajo = getValAus(item, ['Legajo', 'Nro. Legajo']);
+                const nombre = `${getValAus(item, ['Apellidos', 'Apellido'])} ${getValAus(item, ['Nombre', 'Nombres'])}`.trim();
 
                 if (dept) depts.add(dept);
                 if (motivo) motivos.add(motivo);
+                if (nombre) empleadosSet.add(`${nombre} (${legajo || 'S/L'})`);
                 if (periodo && periodo.includes('/')) {
                     const [m, y] = periodo.split('/');
                     months.add(m);
@@ -722,9 +901,24 @@
             renderCheckboxes('ddDeptAus', Array.from(depts).sort(), 'chkDeptAus', 'applyFiltersAndRenderAusentismo()');
             renderCheckboxes('ddMotivoAus', Array.from(motivos).sort(), 'chkMotivoAus', 'applyFiltersAndRenderAusentismo()');
 
+            // Poblar filtros del Historial de Licencias
             const selectTablaMonth = document.getElementById('tabla-filter-month');
             selectTablaMonth.innerHTML = '<option value="ALL">Todos los Meses de la muestra</option>';
             Array.from(periodosCompletos).sort().forEach(p => selectTablaMonth.add(new Option(`Período ${p}`, p)));
+
+            const selectTablaDept = document.getElementById('tabla-filter-dept');
+            selectTablaDept.innerHTML = '<option value="ALL">Todos los Departamentos</option>';
+            Array.from(depts).sort().forEach(d => selectTablaDept.add(new Option(d, d)));
+
+            const datalistEmp = document.getElementById('datalist-empleados-aus');
+            datalistEmp.innerHTML = Array.from(empleadosSet).sort().map(e => `<option value="${e}">`).join('');
+        }
+
+        function limpiarFiltrosTablaHistorial() {
+            document.getElementById('tabla-filter-month').value = 'ALL';
+            document.getElementById('tabla-filter-dept').value = 'ALL';
+            document.getElementById('tabla-filter-emp').value = '';
+            renderTablaAusentismo(currentFilteredData);
         }
 
         function renderCheckboxes(containerId, items, className, onChangeFn, labelTransform) {
@@ -775,7 +969,7 @@
 
             currentFilteredData = rawAusentismo.filter(item => {
                 const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
-                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
+                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Motivo']);
                 const periodo = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
 
                 if (!selectedDepts.includes(dept)) return false;
@@ -794,6 +988,8 @@
         function renderDashboardAusentismo(filtered, selectedYears, selectedMonths) {
             let totalDiasLiquidados = 0;
             let diasInculpable = 0, costoInculpable = 0;
+            let diasEnfExtensa = 0, costoEnfExtensa = 0;
+            let diasEnfLeve = 0, costoEnfLeve = 0;
             let diasArtEmpresa = 0, costoArtEmpresa = 0;
             let diasArtRecuperable = 0, costoArtRecuperable = 0;
             let diasSinCosto = 0;
@@ -801,20 +997,33 @@
             filtered.forEach(item => {
                 const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
                 const costoBruto = parseNum(getValAus(item, ['Importe', 'Monto', 'Bruto', 'Costo', 'Columna S']));
-                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
-                const nroConcepto = getValAus(item, ['Nro. de concep', 'Nro. concepto', 'Concepto']);
+                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Motivo']);
+                const nroConcepto = getValAus(item, ['Nro. de concep', 'Nro. concepto', 'Código']);
+
                 const clasif = clasificarConcepto(motivo, nroConcepto, costoBruto);
+                const extInfo = obtenerExtensionEnfermedad(item);
+                const costoConCargas = clasif.aplicaCosto ? (costoBruto * FACTOR_CARGAS_SOCIALES) : 0;
 
                 totalDiasLiquidados += dias;
+
                 if (clasif.tipo === 'INCULPABLE') {
                     diasInculpable += dias;
-                    costoInculpable += (costoBruto * FACTOR_CARGAS_SOCIALES);
+                    costoInculpable += costoConCargas;
+                    if (extInfo.esEnfermedad) {
+                        if (extInfo.tipoExt === 'EXTENSA') {
+                            diasEnfExtensa += dias;
+                            costoEnfExtensa += costoConCargas;
+                        } else {
+                            diasEnfLeve += dias;
+                            costoEnfLeve += costoConCargas;
+                        }
+                    }
                 } else if (clasif.tipo === 'ART_EMPRESA') {
                     diasArtEmpresa += dias;
-                    costoArtEmpresa += (costoBruto * FACTOR_CARGAS_SOCIALES);
+                    costoArtEmpresa += costoConCargas;
                 } else if (clasif.tipo === 'ART_RECUPERABLE') {
                     diasArtRecuperable += dias;
-                    costoArtRecuperable += (costoBruto * FACTOR_CARGAS_SOCIALES);
+                    costoArtRecuperable += costoConCargas;
                 } else if (clasif.tipo === 'SIN_COSTO') {
                     diasSinCosto += dias;
                 }
@@ -822,6 +1031,7 @@
 
             const totalHorasPerdidas = totalDiasLiquidados * HORAS_POR_DIA;
             let horasPlanificadasDivisor = 0;
+
             Object.keys(mapHorasPlanificadas).forEach(key => {
                 const [m, y] = key.split('/');
                 if (selectedYears.includes(y) && selectedMonths.includes(m)) {
@@ -843,6 +1053,8 @@
 
             document.getElementById('kpi-costo-inculpable').textContent = formatPesos(costoInculpable);
             document.getElementById('kpi-dias-inculpable').textContent = `${diasInculpable.toLocaleString()} días afectando masa salarial`;
+            document.getElementById('kpi-enf-extensa').textContent = `${diasEnfExtensa} d (${formatPesos(costoEnfExtensa)})`;
+            document.getElementById('kpi-enf-leve').textContent = `${diasEnfLeve} d (${formatPesos(costoEnfLeve)})`;
 
             document.getElementById('kpi-costo-art-empresa').textContent = formatPesos(costoArtEmpresa);
             document.getElementById('kpi-dias-art-empresa').textContent = `${diasArtEmpresa.toLocaleString()} días a cargo empresa`;
@@ -850,21 +1062,19 @@
             document.getElementById('kpi-costo-art-recuperable').textContent = formatPesos(costoArtRecuperable);
             document.getElementById('kpi-dias-art-recuperable').textContent = `${diasArtRecuperable.toLocaleString()} días a tramitar con ART`;
 
-            document.getElementById('kpi-dias-sincosto').textContent = `${diasSinCosto.toLocaleString()} días (Maternidad/Excedencia/Faltas)`;
+            document.getElementById('kpi-costo-sincosto').textContent = formatPesos(0);
+            document.getElementById('kpi-dias-sincosto').textContent = `${diasSinCosto.toLocaleString()} días (Mat./Susp./Sin Goce/Injust.)`;
 
             renderTablaEvolucionAusentismo(filtered);
             renderChartComparativoAusentismo(rawAusentismo);
             renderChartDepartamentoAusentismo(rawAusentismo);
             renderChartMotivoAusentismo(filtered);
-            
-            const tablaMonthFilter = document.getElementById('tabla-filter-month').value;
-            renderTablaAusentismo(filtered, tablaMonthFilter);
+            renderTablaAusentismo(filtered);
         }
 
         function renderTablaEvolucionAusentismo(filteredData) {
             const tbody = document.getElementById('tabla-evolucion-body');
             tbody.innerHTML = '';
-
             const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
             const hsPerdidas2025 = new Array(12).fill(0);
             const hsPerdidas2026 = new Array(12).fill(0);
@@ -890,7 +1100,6 @@
                 const mKey = (i + 1).toString().padStart(2, '0');
                 const plan2025 = mapHorasPlanificadas[`${mKey}/2025`] || 0;
                 const plan2026 = mapHorasPlanificadas[`${mKey}/2026`] || 0;
-
                 const hs2025 = hsPerdidas2025[i];
                 const hs2026 = hsPerdidas2026[i];
 
@@ -920,9 +1129,9 @@
                 tr.innerHTML = `
                     <td class="px-4 py-3 font-bold text-slate-200">${nombreMes}</td>
                     <td class="px-4 py-3 text-center border-l border-slate-800 font-medium ${plan2025 > 0 ? 'text-slate-200' : 'text-slate-500'}">${plan2025 > 0 ? tasaMensual2025.toFixed(2) + '%' : '-'}</td>
-                    <td class="px-4 py-3 text-center font-semibold text-emerald-400 bg-emerald-950/20">${acumPlan2025 > 0 ? tasaAcum2025.toFixed(2) + '%' : '-'}</td>
+                    <td class="px-4 py-3 text-center font-semibold text-amber-400 bg-amber-950/20">${acumPlan2025 > 0 ? tasaAcum2025.toFixed(2) + '%' : '-'}</td>
                     <td class="px-4 py-3 text-center border-l border-slate-800 font-medium ${plan2026 > 0 ? 'text-slate-200' : 'text-slate-500'}">${plan2026 > 0 ? tasaMensual2026.toFixed(2) + '%' : '-'}</td>
-                    <td class="px-4 py-3 text-center font-semibold text-blue-400 bg-blue-950/20">${acumPlan2026 > 0 ? tasaAcum2026.toFixed(2) + '%' : '-'}</td>
+                    <td class="px-4 py-3 text-center font-semibold text-cyan-400 bg-cyan-950/20">${acumPlan2026 > 0 ? tasaAcum2026.toFixed(2) + '%' : '-'}</td>
                     <td class="px-4 py-3 text-center border-l border-slate-800">${badgeDiff}</td>
                 `;
                 tbody.appendChild(tr);
@@ -935,13 +1144,12 @@
 
             const show2025 = document.getElementById('chart-year-2025').checked;
             const show2026 = document.getElementById('chart-year-2026').checked;
-
             const selectedDepts = getSelectedValues('chkDeptAus');
             const selectedMotivos = getSelectedValues('chkMotivoAus');
 
             const filteredForChart = fullData.filter(item => {
                 const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
-                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
+                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Motivo']);
                 if (!selectedDepts.includes(dept)) return false;
                 if (!selectedMotivos.includes(motivo)) return false;
                 return true;
@@ -970,8 +1178,10 @@
                 datasets.push({
                     label: '2025 (hs)',
                     data: horas2025,
-                    borderColor: '#10b981',
-                    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                    borderColor: COLOR_2025,
+                    backgroundColor: COLOR_2025_BG,
+                    borderWidth: 3,
+                    pointBackgroundColor: COLOR_2025,
                     fill: true,
                     tension: 0.3
                 });
@@ -980,8 +1190,10 @@
                 datasets.push({
                     label: '2026 (hs)',
                     data: horas2026,
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                    borderColor: COLOR_2026,
+                    backgroundColor: COLOR_2026_BG,
+                    borderWidth: 3,
+                    pointBackgroundColor: COLOR_2026,
                     fill: true,
                     tension: 0.3
                 });
@@ -1001,11 +1213,11 @@
                             color: function(context) { return context.dataset.borderColor; },
                             formatter: function(value) { return value > 0 ? value.toLocaleString() : ''; }
                         },
-                        legend: { labels: { color: '#cbd5e1' } }
+                        legend: { labels: { color: '#f1f5f9', font: { weight: 'bold' } } }
                     },
                     scales: {
-                        x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-                        y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
+                        x: { grid: { color: '#334155' }, ticks: { color: '#cbd5e1' } },
+                        y: { grid: { color: '#334155' }, ticks: { color: '#cbd5e1' }, grace: '10%' }
                     }
                 }
             });
@@ -1016,9 +1228,8 @@
             if (chartsAusentismo.departamento) chartsAusentismo.departamento.destroy();
 
             const selectedMotivos = getSelectedValues('chkMotivoAus');
-
             const filtered = fullData.filter(item => {
-                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
+                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Motivo']);
                 if (!selectedMotivos.includes(motivo)) return false;
                 return true;
             });
@@ -1048,8 +1259,8 @@
                 data: {
                     labels: sortedDepts,
                     datasets: [
-                        { label: '2025 (hs)', data: sortedDepts.map(d => depts2025[d] || 0), backgroundColor: '#10b981', borderRadius: 4 },
-                        { label: '2026 (hs)', data: sortedDepts.map(d => depts2026[d] || 0), backgroundColor: '#3b82f6', borderRadius: 4 }
+                        { label: '2025 (hs)', data: sortedDepts.map(d => depts2025[d] || 0), backgroundColor: COLOR_2025, borderRadius: 4 },
+                        { label: '2026 (hs)', data: sortedDepts.map(d => depts2026[d] || 0), backgroundColor: COLOR_2026, borderRadius: 4 }
                     ]
                 },
                 options: {
@@ -1061,14 +1272,14 @@
                             anchor: 'end',
                             align: 'end',
                             font: { weight: 'bold', size: 10 },
-                            color: '#e2e8f0',
+                            color: '#f8fafc',
                             formatter: function(value) { return value > 0 ? `${value.toLocaleString()} hs` : ''; }
                         },
-                        legend: { labels: { color: '#cbd5e1' } }
+                        legend: { labels: { color: '#f1f5f9', font: { weight: 'bold' } } }
                     },
                     scales: {
-                        x: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-                        y: { ticks: { font: { size: 11, weight: 'bold' }, color: '#cbd5e1' }, grid: { display: false } }
+                        x: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#cbd5e1' }, grace: '12%' },
+                        y: { ticks: { font: { size: 11, weight: 'bold' }, color: '#f1f5f9' }, grid: { display: false } }
                     }
                 }
             });
@@ -1082,9 +1293,14 @@
             let totalDias = 0;
 
             data.forEach(item => {
-                const m = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']) || 'Sin Especificar';
+                const rawM = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Motivo']) || 'Sin Especificar';
                 const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
-                motivos[m] = (motivos[m] || 0) + dias;
+                const extInfo = obtenerExtensionEnfermedad(item);
+
+                // Si es enfermedad, separamos visualmente en Extensa (>5d) vs Aislada/Leve (<=5d)
+                const labelMotivo = extInfo.esEnfermedad ? extInfo.shortLabel : rawM;
+
+                motivos[labelMotivo] = (motivos[labelMotivo] || 0) + dias;
                 totalDias += dias;
             });
 
@@ -1094,19 +1310,23 @@
                     labels: Object.keys(motivos),
                     datasets: [{
                         data: Object.values(motivos),
-                        backgroundColor: ['#f59e0b', '#ef4444', '#10b981', '#6366f1', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316']
+                        backgroundColor: PALETA_VIBRANTE,
+                        borderColor: '#0f172a',
+                        borderWidth: 2
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 15, usePointStyle: true, color: '#cbd5e1' } },
+                        legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 14, usePointStyle: true, color: '#e2e8f0' } },
                         datalabels: {
                             color: '#ffffff',
                             font: { weight: 'bold', size: 11 },
+                            textStrokeColor: 'rgba(15, 23, 42, 0.85)',
+                            textStrokeWidth: 3,
                             formatter: function(value) {
-                                if (value === 0) return '';
+                                if (value === 0 || totalDias === 0) return '';
                                 const pct = ((value / totalDias) * 100).toFixed(1);
                                 return pct > 3 ? `${pct}%` : '';
                             }
@@ -1116,31 +1336,42 @@
             });
         }
 
-        function renderTablaAusentismo(data, monthFilter) {
+        function renderTablaAusentismo(data) {
             const tbody = document.getElementById('tabla-body');
             tbody.innerHTML = '';
 
-            let rowsToDisplay = data;
-            if (monthFilter && monthFilter !== 'ALL') {
-                rowsToDisplay = data.filter(item => {
-                    const p = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
-                    return p === monthFilter;
-                });
-            }
+            const monthFilter = document.getElementById('tabla-filter-month').value;
+            const deptFilter = document.getElementById('tabla-filter-dept').value;
+            const empQuery = (document.getElementById('tabla-filter-emp').value || '').trim().toLowerCase();
+
+            let rowsToDisplay = data.filter(item => {
+                const p = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
+                const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
+                const legajo = (getValAus(item, ['Legajo', 'Nro. Legajo']) || '').toLowerCase();
+                const nombreCompleto = `${getValAus(item, ['Apellidos', 'Apellido'])} ${getValAus(item, ['Nombre', 'Nombres'])}`.trim().toLowerCase();
+                const comboEmp = `${nombreCompleto} (${legajo})`;
+
+                if (monthFilter && monthFilter !== 'ALL' && p !== monthFilter) return false;
+                if (deptFilter && deptFilter !== 'ALL' && dept !== deptFilter) return false;
+                if (empQuery && !nombreCompleto.includes(empQuery) && !legajo.includes(empQuery) && !comboEmp.includes(empQuery)) return false;
+
+                return true;
+            });
 
             if (rowsToDisplay.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="px-6 py-4 text-center text-slate-500">No hay registros para el mes seleccionado.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" class="px-6 py-6 text-center text-slate-500">No hay registros para los filtros seleccionados en el historial.</td></tr>`;
                 return;
             }
 
             rowsToDisplay.forEach(item => {
                 const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
                 const costoBruto = parseNum(getValAus(item, ['Importe', 'Monto', 'Bruto', 'Costo', 'Columna S']));
-                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Concepto', 'Motivo']);
-                const nroConcepto = getValAus(item, ['Nro. de concep', 'Nro. concepto', 'Concepto']);
-                const clasif = clasificarConcepto(motivo, nroConcepto, costoBruto);
-                let costoTotalItem = clasif.tipo !== 'SIN_COSTO' ? (costoBruto * FACTOR_CARGAS_SOCIALES) : 0;
+                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Motivo']);
+                const nroConcepto = getValAus(item, ['Nro. de concep', 'Nro. concepto', 'Código']);
 
+                const clasif = clasificarConcepto(motivo, nroConcepto, costoBruto);
+                const extInfo = obtenerExtensionEnfermedad(item);
+                const costoTotalItem = clasif.aplicaCosto ? (costoBruto * FACTOR_CARGAS_SOCIALES) : 0;
                 const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
 
                 let badgeClass = "bg-emerald-950 text-emerald-300 border border-emerald-800/50";
@@ -1148,17 +1379,27 @@
                 if (clasif.tipo === 'ART_RECUPERABLE') badgeClass = "bg-amber-950 text-amber-300 border border-amber-800/50";
                 if (clasif.tipo === 'SIN_COSTO') badgeClass = "bg-slate-800 text-slate-400";
 
+                let badgeExt = `<span class="text-slate-500 text-xs">-</span>`;
+                if (extInfo.esEnfermedad) {
+                    if (extInfo.tipoExt === 'EXTENSA') {
+                        badgeExt = `<span class="bg-amber-950 text-amber-300 border border-amber-700/60 text-xs font-bold px-2.5 py-1 rounded-md">🔸 ${extInfo.label}</span>`;
+                    } else {
+                        badgeExt = `<span class="bg-cyan-950 text-cyan-300 border border-cyan-700/60 text-xs font-semibold px-2.5 py-1 rounded-md">🔹 ${extInfo.label}</span>`;
+                    }
+                }
+
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-800/50 transition-colors";
                 tr.innerHTML = `
-                    <td class="px-6 py-4 font-mono font-medium text-slate-200">${getValAus(item, ['Legajo']) || '-'}</td>
-                    <td class="px-6 py-4 font-bold text-slate-100">${getValAus(item, ['Apellidos'])} ${getValAus(item, ['Nombre'])}</td>
-                    <td class="px-6 py-4 text-slate-300">${dept}</td>
-                    <td class="px-6 py-4 font-medium text-slate-200">${motivo || 'N/A'}</td>
-                    <td class="px-6 py-4"><span class="${badgeClass} text-xs font-semibold px-2.5 py-1 rounded-md">${clasif.label}</span></td>
-                    <td class="px-6 py-4 text-center font-medium text-slate-300">${getValAus(item, ['Período liqui', 'Período']) || '-'}</td>
-                    <td class="px-6 py-4 text-center font-bold text-amber-400">${dias} d</td>
-                    <td class="px-6 py-4 text-right font-bold ${clasif.tipo === 'SIN_COSTO' ? 'text-slate-500' : 'text-emerald-400'}">${formatPesos(costoTotalItem)}</td>
+                    <td class="px-5 py-3.5 font-mono font-medium text-slate-200">${getValAus(item, ['Legajo', 'Nro. Legajo']) || '-'}</td>
+                    <td class="px-5 py-3.5 font-bold text-slate-100">${getValAus(item, ['Apellidos', 'Apellido'])} ${getValAus(item, ['Nombre', 'Nombres'])}</td>
+                    <td class="px-5 py-3.5 text-slate-300">${dept}</td>
+                    <td class="px-5 py-3.5 font-medium text-slate-200">${motivo || 'N/A'}</td>
+                    <td class="px-5 py-3.5">${badgeExt}</td>
+                    <td class="px-5 py-3.5"><span class="${badgeClass} text-xs font-semibold px-2.5 py-1 rounded-md">${clasif.label}</span></td>
+                    <td class="px-5 py-3.5 text-center font-medium text-slate-300">${getValAus(item, ['Período liqui', 'Período', 'Periodo']) || '-'}</td>
+                    <td class="px-5 py-3.5 text-center font-bold text-amber-400">${dias} d</td>
+                    <td class="px-5 py-3.5 text-right font-bold ${!clasif.aplicaCosto ? 'text-slate-500' : 'text-emerald-400'}">${formatPesos(costoTotalItem)}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1215,7 +1456,6 @@
                     reader.readAsArrayBuffer(file);
                 }
             });
-
             cargarHEDesdeURL();
         }
 
@@ -1253,13 +1493,11 @@
                     }
                     return '';
                 };
-
                 const periodo = getVal(['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
                 if (periodo && String(periodo).includes('/')) {
                     const partes = String(periodo).split('/');
                     if (partes.length === 2) aniosSet.add(partes[1].trim());
                 }
-
                 const depto = normalizarDepartamento(getVal(['Departamento', 'O']));
                 if (depto && depto !== 'Sin Depto') deptosSet.add(depto);
             });
@@ -1293,7 +1531,6 @@
                     }
                     return '';
                 };
-
                 const depto = normalizarDepartamento(getVal(['Departamento', 'O']));
                 if (!selectedDeptos.includes(depto)) return false;
 
@@ -1336,14 +1573,11 @@
                 const horas = parseMontoHE(getVal(['Cantidad liquidada', 'Cantidad', 'M']));
                 const importeBase = parseMontoHE(getVal(['Importe liquidado', 'Importe', 'J']));
                 const costoReal = importeBase * FACTOR_COSTO_EMPRESA;
-
                 const legajo = getVal(['Nro Legajo', 'Legajo', 'Numero de legajo', 'A']) || 'S/D';
 
-                // Lógica de obtención de Nombre y Apellido
                 const apellido = getVal(['Apellido', 'Apellidos']);
                 const nombreSolo = getVal(['Nombre', 'Nombres']);
                 const apellidoNombre = getVal(['Apellido Nombre', 'Apellido y Nombre', 'Nombre y Apellido']);
-
                 let nombreCompleto = 'Desconocido';
                 if (apellidoNombre) {
                     nombreCompleto = apellidoNombre;
@@ -1411,12 +1645,16 @@
             renderChartDeptoMes();
             renderTop10HE(empleadosMap);
             renderTablaExcedidos();
-
-            setTimeout(renderHeatmap, 50);
+            renderTablaResumenHorasHE();
         }
 
-        function renderHeatmap() {
-            const deptoMesData = {};
+        // NUEVA TABLA RESUMEN DE HORAS EXTRAS POR SECTOR Y MES (PARA COPIAR Y PEGAR)
+        function renderTablaResumenHorasHE() {
+            const anioFiltro = document.getElementById('selectAnioTablaResumenHE').value;
+            const deptoMesHoras = {};
+            const totalesMes = Array(12).fill(0);
+            let granTotal = 0;
+
             allRawDataHE.forEach(row => {
                 const getVal = (keyNames) => {
                     for (let k of Object.keys(row)) {
@@ -1434,52 +1672,78 @@
                     const m = parseInt(partes[0].trim(), 10) - 1;
                     const a = partes[1].trim();
 
-                    if (!deptoMesData[depto]) {
-                        deptoMesData[depto] = { '2025': Array(12).fill(0), '2026': Array(12).fill(0) };
-                    }
-                    if ((a === '2025' || a === '2026') && m >= 0 && m < 12) {
-                        deptoMesData[depto][a][m] += horas;
+                    if (anioFiltro !== 'TODOS' && a !== anioFiltro) return;
+
+                    if (m >= 0 && m < 12) {
+                        if (!deptoMesHoras[depto]) deptoMesHoras[depto] = Array(12).fill(0);
+                        deptoMesHoras[depto][m] += horas;
+                        totalesMes[m] += horas;
+                        granTotal += horas;
                     }
                 }
             });
 
-            const tbody = document.getElementById('heatmapBody');
-            const deptos = Object.keys(deptoMesData).sort();
+            const tbody = document.getElementById('tablaResumenHorasBody');
+            const tfoot = document.getElementById('tablaResumenHorasFoot');
+            const deptos = Object.keys(deptoMesHoras).sort();
 
             if (deptos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="13" class="py-4 text-center text-slate-500">Sin datos suficientes.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="14" class="py-6 text-center text-slate-500">Sin datos registrados para el año seleccionado.</td></tr>`;
+                tfoot.innerHTML = '';
                 return;
             }
 
+            const fmtHora = (val) => val > 0 ? (Number.isInteger(val) ? val : val.toFixed(1).replace('.', ',')) : '0';
+
             tbody.innerHTML = deptos.map(d => {
-                let cellsHtml = `<td class="py-3 px-3 text-left font-semibold text-slate-200">${d}</td>`;
-                for (let m = 0; m < 12; m++) {
-                    const h2025 = deptoMesData[d]['2025'][m];
-                    const h2026 = deptoMesData[d]['2026'][m];
+                const filaMeses = deptoMesHoras[d];
+                const totalDepto = filaMeses.reduce((acc, v) => acc + v, 0);
+                const celdasMes = filaMeses.map(h => `<td class="py-2.5 px-2 ${h > 0 ? 'text-slate-100' : 'text-slate-600'}">${fmtHora(h)}</td>`).join('');
 
-                    if (h2025 === 0 && h2026 === 0) {
-                        cellsHtml += `<td class="py-2 px-1 text-slate-600 bg-slate-950/40">-</td>`;
-                    } else if (h2025 === 0 && h2026 > 0) {
-                        cellsHtml += `<td class="py-2 px-1 bg-rose-950/80 text-rose-400 font-bold" title="2025: 0hs | 2026: ${h2026}hs">NUEVO</td>`;
-                    } else {
-                        const varPct = ((h2026 - h2025) / h2025) * 100;
-                        let bgColor = 'bg-slate-900/60 text-slate-400';
-                        if (varPct > 5) bgColor = 'bg-rose-950 text-rose-300 font-semibold border border-rose-900/40';
-                        else if (varPct < -5) bgColor = 'bg-emerald-950 text-emerald-300 font-semibold border border-emerald-900/40';
-
-                        const sign = varPct > 0 ? '+' : '';
-                        cellsHtml += `<td class="py-2 px-1 ${bgColor}" title="2025: ${h2025.toFixed(0)}hs | 2026: ${h2026.toFixed(0)}hs">${sign}${varPct.toFixed(0)}%</td>`;
-                    }
-                }
-                return `<tr class="hover:bg-slate-800/40 transition-colors">${cellsHtml}</tr>`;
+                return `
+                    <tr class="hover:bg-slate-800/60 transition-colors">
+                        <td class="py-2.5 px-3 text-left font-sans font-semibold text-slate-200 border-r border-slate-800">${d}</td>
+                        ${celdasMes}
+                        <td class="py-2.5 px-3 font-bold text-cyan-400 bg-slate-950/50 border-l border-slate-800">${fmtHora(totalDepto)}</td>
+                    </tr>
+                `;
             }).join('');
+
+            const celdasTotalMes = totalesMes.map(t => `<td class="py-3 px-2 text-amber-400">${fmtHora(t)}</td>`).join('');
+            tfoot.innerHTML = `
+                <tr>
+                    <td class="py-3 px-3 text-left font-sans font-bold text-slate-200 border-r border-slate-800">TOTAL MENSUAL</td>
+                    ${celdasTotalMes}
+                    <td class="py-3 px-3 font-extrabold text-cyan-300 border-l border-slate-800">${fmtHora(granTotal)}</td>
+                </tr>
+            `;
+        }
+
+        // Copia la tabla en formato TSV (separado por tabulaciones) lista para pegar en Excel
+        function copiarTablaHorasHE() {
+            const table = document.getElementById('tablaResumenHorasHE');
+            const rows = Array.from(table.querySelectorAll('tr'));
+            const tsv = rows.map(row => {
+                const cells = Array.from(row.querySelectorAll('th, td'));
+                return cells.map(cell => cell.innerText.trim()).join('\t');
+            }).join('\n');
+
+            navigator.clipboard.writeText(tsv).then(() => {
+                const btn = document.getElementById('btnCopiarTablaHE');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ ¡Copiado al portapapeles!';
+                btn.classList.replace('bg-indigo-600', 'bg-emerald-600');
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.replace('bg-emerald-600', 'bg-indigo-600');
+                }, 2200);
+            });
         }
 
         function renderTablaExcedidos() {
             const anioSel = document.getElementById('filterExcedidosAnio').value;
             const mesSel = document.getElementById('filterExcedidosMes').value;
             const deptoSel = document.getElementById('filterExcedidosDepto').value;
-
             const acumuladoEmp = {};
 
             allRawDataHE.forEach(row => {
@@ -1502,12 +1766,9 @@
 
                     if (anioRow === anioSel && mesRow === mesSel) {
                         const legajo = getVal(['Nro Legajo', 'Legajo', 'Numero de legajo', 'A']) || 'S/D';
-                        
-                        // Lógica de obtención de Nombre y Apellido
                         const apellido = getVal(['Apellido', 'Apellidos']);
                         const nombreSolo = getVal(['Nombre', 'Nombres']);
                         const apellidoNombre = getVal(['Apellido Nombre', 'Apellido y Nombre', 'Nombre y Apellido']);
-
                         let nombreCompleto = 'Desconocido';
                         if (apellidoNombre) {
                             nombreCompleto = apellidoNombre;
@@ -1560,7 +1821,6 @@
                     }
                     return '';
                 };
-
                 const depto = normalizarDepartamento(getVal(['Departamento', 'O']));
                 const horas = parseMontoHE(getVal(['Cantidad liquidada', 'Cantidad', 'M']));
                 const periodo = getVal(['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
@@ -1569,9 +1829,7 @@
                     const partes = String(periodo).split('/');
                     const mesRow = partes[0].trim();
                     const anioRow = partes[1].trim();
-
                     if (mesElegido !== 'TODOS' && mesRow !== mesElegido) return;
-
                     if (!deptosMapMes[depto]) {
                         deptosMapMes[depto] = { '2025': 0, '2026': 0 };
                     }
@@ -1592,8 +1850,8 @@
                 data: {
                     labels: deptosOrdenados,
                     datasets: [
-                        { label: 'Año 2025 (hs)', data: deptosOrdenados.map(d => deptosMapMes[d]['2025']), backgroundColor: '#64748B' },
-                        { label: 'Año 2026 (hs)', data: deptosOrdenados.map(d => deptosMapMes[d]['2026']), backgroundColor: '#6366F1' }
+                        { label: 'Año 2025 (hs)', data: deptosOrdenados.map(d => deptosMapMes[d]['2025']), backgroundColor: COLOR_2025, borderRadius: 4 },
+                        { label: 'Año 2026 (hs)', data: deptosOrdenados.map(d => deptosMapMes[d]['2026']), backgroundColor: COLOR_2026, borderRadius: 4 }
                     ]
                 },
                 options: {
@@ -1604,15 +1862,15 @@
                             display: true,
                             anchor: 'end',
                             align: 'top',
-                            color: '#CBD5E1',
+                            color: '#f8fafc',
                             font: { weight: 'bold', size: 10 },
                             formatter: val => val > 0 ? `${val.toLocaleString('es-AR', { maximumFractionDigits: 0 })} hs` : ''
                         },
-                        legend: { position: 'top', labels: { color: '#CBD5E1' } }
+                        legend: { position: 'top', labels: { color: '#f1f5f9', font: { weight: 'bold' } } }
                     },
                     scales: {
-                        x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-                        y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8' }, grace: '10%' }
+                        x: { grid: { color: '#334155' }, ticks: { color: '#cbd5e1' } },
+                        y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#cbd5e1' }, grace: '12%' }
                     }
                 }
             });
@@ -1628,19 +1886,17 @@
         function renderTop10HE(empleadosMap) {
             const top10 = Object.values(empleadosMap).sort((a,b) => b.horas - a.horas).slice(0, 10);
             const tbody = document.getElementById('tablaTop10');
-
             if (top10.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-slate-500">No hay datos para los filtros seleccionados.</td></tr>`;
                 return;
             }
-
             tbody.innerHTML = top10.map((e, idx) => `
                 <tr class="hover:bg-slate-800/50 transition-colors">
                     <td class="py-3 px-4 font-mono text-slate-500">${idx + 1}</td>
                     <td class="py-3 px-4 font-mono text-slate-400">${e.legajo}</td>
                     <td class="py-3 px-4 font-medium text-slate-100">${e.nombre}</td>
                     <td class="py-3 px-4 text-slate-300">${e.depto}</td>
-                    <td class="py-3 px-4 font-bold text-indigo-400">${e.horas.toFixed(1)} hs</td>
+                    <td class="py-3 px-4 font-bold text-cyan-400">${e.horas.toFixed(1)} hs</td>
                     <td class="py-3 px-4 font-medium text-slate-200">$ ${e.costo.toLocaleString('es-AR', { maximumFractionDigits: 0 })}</td>
                 </tr>
             `).join('');
@@ -1648,7 +1904,6 @@
 
         function renderChartsHE(evolucionMensual, deptosMap, jornadaMap, rangosEtarios) {
             const vHE = document.getElementById('viewHorasExtras');
-
             if (chartEvolucionInstHE) chartEvolucionInstHE.destroy();
             if (chartJornadaInstHE) chartJornadaInstHE.destroy();
             if (chartRangoInstHE) chartRangoInstHE.destroy();
@@ -1661,17 +1916,19 @@
                         {
                             label: 'Año 2025 (hs)',
                             data: evolucionMensual['2025'],
-                            borderColor: '#64748B',
-                            backgroundColor: 'rgba(100, 116, 139, 0.15)',
-                            borderWidth: 2,
+                            borderColor: COLOR_2025,
+                            backgroundColor: COLOR_2025_BG,
+                            pointBackgroundColor: COLOR_2025,
+                            borderWidth: 3,
                             tension: 0.3,
                             fill: true
                         },
                         {
                             label: 'Año 2026 (hs)',
                             data: evolucionMensual['2026'],
-                            borderColor: '#818CF8',
-                            backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                            borderColor: COLOR_2026,
+                            backgroundColor: COLOR_2026_BG,
+                            pointBackgroundColor: COLOR_2026,
                             borderWidth: 3,
                             tension: 0.3,
                             fill: true
@@ -1685,15 +1942,15 @@
                         datalabels: {
                             display: true,
                             align: 'top',
-                            color: '#E2E8F0',
+                            color: function(ctx) { return ctx.dataset.borderColor; },
                             font: { weight: 'bold', size: 10 },
                             formatter: val => val > 0 ? `${val.toLocaleString('es-AR', { maximumFractionDigits: 0 })}` : ''
                         },
-                        legend: { position: 'top', labels: { color: '#CBD5E1' } }
+                        legend: { position: 'top', labels: { color: '#f1f5f9', font: { weight: 'bold' } } }
                     },
                     scales: {
-                        x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-                        y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8' }, grace: '10%' }
+                        x: { grid: { color: '#334155' }, ticks: { color: '#cbd5e1' } },
+                        y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#cbd5e1' }, grace: '12%' }
                     }
                 }
             });
@@ -1708,7 +1965,7 @@
                     const percentage = ((value / total) * 100).toFixed(1) + '%';
                     return `${value.toLocaleString('es-AR', { maximumFractionDigits: 0 })} hs\n(${percentage})`;
                 },
-                textStrokeColor: 'rgba(15, 23, 42, 0.8)',
+                textStrokeColor: 'rgba(15, 23, 42, 0.85)',
                 textStrokeWidth: 3
             };
 
@@ -1718,14 +1975,16 @@
                     labels: ['Diurna', 'Nocturna', 'Otros'],
                     datasets: [{
                         data: [jornadaMap.Diurna, jornadaMap.Nocturna, jornadaMap.Otros],
-                        backgroundColor: ['#38BDF8', '#4338CA', '#64748B']
+                        backgroundColor: ['#f59e0b', '#06b6d4', '#ec4899'],
+                        borderColor: '#0f172a',
+                        borderWidth: 2
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'top', labels: { color: '#CBD5E1' } },
+                        legend: { position: 'top', labels: { color: '#f1f5f9', font: { weight: 'bold' } } },
                         datalabels: datalabelsCircularConfig
                     }
                 }
@@ -1737,14 +1996,16 @@
                     labels: Object.keys(rangosEtarios),
                     datasets: [{
                         data: Object.values(rangosEtarios),
-                        backgroundColor: ['#F59E0B', '#10B981', '#6366F1', '#EC4899']
+                        backgroundColor: ['#06b6d4', '#10b981', '#f59e0b', '#ec4899'],
+                        borderColor: '#0f172a',
+                        borderWidth: 2
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'top', labels: { color: '#CBD5E1' } },
+                        legend: { position: 'top', labels: { color: '#f1f5f9', font: { weight: 'bold' } } },
                         datalabels: datalabelsCircularConfig
                     }
                 }
