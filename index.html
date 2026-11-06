@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Integral RH | Control Operativo</title>
+    <title>Portal Integral RH | Control Operativo & Eficiencia</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js + Plugin DataLabels -->
@@ -19,36 +19,61 @@
             font-weight: 700 !important;
             box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
         }
+        th.sortable-th {
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        th.sortable-th:hover {
+            background-color: rgba(79, 70, 229, 0.25) !important;
+            color: #ffffff !important;
+        }
+        .sort-icon {
+            display: inline-block;
+            margin-left: 4px;
+            font-size: 10px;
+            opacity: 0.55;
+        }
+        th.sortable-th.sorted-asc .sort-icon,
+        th.sortable-th.sorted-desc .sort-icon {
+            opacity: 1;
+            color: #22d3ee;
+        }
     </style>
 </head>
 <body class="bg-slate-950 font-sans text-slate-100 antialiased min-h-screen">
 
-    <!-- HEADER GLOBAL CON NAVEGACIÓN EN 3 PESTAÑAS -->
+    <!-- HEADER GLOBAL CON NAVEGACIÓN EN 4 PESTAÑAS -->
     <header class="bg-slate-900/90 backdrop-blur text-white sticky top-0 z-50 border-b border-slate-800 shadow-xl">
-        <div class="max-w-7xl mx-auto px-6 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="max-w-7xl mx-auto px-6 py-3.5 flex flex-col lg:flex-row items-center justify-between gap-4">
             <div>
                 <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
                     <span>🏢</span> Portal de Control Operativo & Recursos Humanos
                 </h1>
-                <p class="text-xs text-slate-400">Análisis Interanual Unificado (Modo Oscuro - Alto Contraste)</p>
+                <p class="text-xs text-slate-400">Análisis Interanual Unificado & Eficiencia Operativa (Haz clic en los encabezados de tabla para ordenar ▲▼)</p>
             </div>
             
             <!-- NAVEGACIÓN ENTRE PESTAÑAS -->
-            <nav class="flex items-center bg-slate-950 p-1.5 rounded-xl border border-slate-800 gap-1">
-                <button id="btnTabAusentismo" onclick="switchTab('ausentismo')" class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all tab-btn-active">
+            <nav class="flex flex-wrap items-center bg-slate-950 p-1.5 rounded-xl border border-slate-800 gap-1">
+                <button id="btnTabAusentismo" onclick="switchTab('ausentismo')" class="px-3.5 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all tab-btn-active">
                     📊 Ausentismo & Costos
                 </button>
-                <button id="btnTabHistorial" onclick="switchTab('historial')" class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all">
+                <button id="btnTabHistorial" onclick="switchTab('historial')" class="px-3.5 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all">
                     📋 Historial de Licencias
                 </button>
-                <button id="btnTabHorasExtras" onclick="switchTab('horasExtras')" class="px-4 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all">
+                <button id="btnTabHorasExtras" onclick="switchTab('horasExtras')" class="px-3.5 py-2 text-xs md:text-sm font-semibold rounded-lg text-slate-400 hover:text-white transition-all">
                     ⏱️ Horas Extras (Eventuales)
+                </button>
+                <button id="btnTabEficiencia" onclick="switchTab('eficiencia')" class="px-3.5 py-2 text-xs md:text-sm font-semibold rounded-lg text-emerald-400 hover:text-white transition-all">
+                    ⚡ Eficiencia & Productividad
                 </button>
             </nav>
         </div>
     </header>
 
-    <!-- VISTA 1: DASHBOARD DE AUSENTISMO & COSTOS -->
+    <!-- ================================================================= -->
+    <!-- VISTA 1: DASHBOARD DE AUSENTISMO & COSTOS                         -->
+    <!-- ================================================================= -->
     <main id="viewAusentismo" class="max-w-7xl mx-auto p-6 space-y-6">
         <section class="bg-slate-900/95 backdrop-blur p-5 rounded-2xl border border-slate-800 shadow-2xl sticky top-16 z-40 space-y-3">
             <div class="flex items-center justify-between border-b border-slate-800 pb-2">
@@ -129,7 +154,6 @@
                         <h4 id="kpi-costo-inculpable" class="text-2xl font-extrabold text-emerald-400 mt-2">$ --</h4>
                         <p id="kpi-dias-inculpable" class="text-xs text-emerald-300/70 mt-1">-- días afectando masa salarial</p>
                     </div>
-                    <!-- Apertura de Enfermedad Leve vs Extensa -->
                     <div class="mt-3 pt-2.5 border-t border-emerald-800/40 text-[11px] space-y-1">
                         <div class="flex justify-between text-amber-300">
                             <span>🔸 Enf. Extensa (&gt;5d/mes):</span>
@@ -171,10 +195,10 @@
         <section class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
             <div class="p-5 border-b border-slate-800">
                 <h3 class="text-base font-bold text-slate-100">Evolución Mensual No Acumulada vs. Acumulado Interanual</h3>
-                <p class="text-xs text-slate-400">Cálculo exacto del % de ausentismo con horas estipuladas independientes por año</p>
+                <p class="text-xs text-slate-400">Haz clic en cualquier columna para ordenar la tabla ▲▼</p>
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left text-slate-300">
+                <table id="tablaEvolucionAus" class="w-full text-sm text-left text-slate-300">
                     <thead class="text-xs text-slate-300 uppercase bg-slate-950 border-b border-slate-800">
                         <tr>
                             <th class="px-4 py-3" rowspan="2">Mes</th>
@@ -233,46 +257,100 @@
                 </div>
             </div>
         </section>
+
+        <!-- NUEVO PUNTO 1: RANKING DE EMPLEADOS CON MÁS LICENCIAS CORTAS (TOP 10 GENERAL O TODOS POR SECTOR) -->
+        <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg space-y-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-4">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                        🔹 Ranking de Empleados con Licencias Cortas / Aisladas (≤ 5 días en el mes)
+                    </h3>
+                    <p id="subtituloRankingCortas" class="text-xs text-cyan-400 font-medium">
+                        Mostrando Top 10 General — Seleccioná un sector específico para ver el listado completo de ese departamento
+                    </p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <label for="selectSectorLicCortas" class="text-xs font-semibold text-slate-300 whitespace-nowrap">Filtrar Sector:</label>
+                    <select id="selectSectorLicCortas" onchange="renderRankingLicenciasCortas()" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2.5 focus:ring-cyan-500 focus:border-cyan-500">
+                        <option value="TOP10_ALL">🏆 Top 10 General (Todos los Sectores)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table id="tablaRankingCortas" class="w-full text-sm text-left text-slate-300">
+                    <thead class="text-xs text-slate-400 uppercase bg-slate-950 border-b border-slate-800">
+                        <tr>
+                            <th class="py-3 px-4">#</th>
+                            <th class="py-3 px-4">Legajo</th>
+                            <th class="py-3 px-4">Empleado</th>
+                            <th class="py-3 px-4">Departamento</th>
+                            <th class="py-3 px-4 text-center">Episodios / Meses Cortos</th>
+                            <th class="py-3 px-4 text-center">Total Días Cortos</th>
+                            <th class="py-3 px-4 text-center">Total Horas</th>
+                            <th class="py-3 px-4 text-right">Costo Directo (+33% CS)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyRankingCortas" class="divide-y divide-slate-800"></tbody>
+                </table>
+            </div>
+        </section>
     </main>
 
-    <!-- VISTA 2: HISTORIAL DE LICENCIAS -->
+    <!-- ================================================================= -->
+    <!-- VISTA 2: HISTORIAL DE LICENCIAS (CON MULTI-CHECKBOXES)            -->
+    <!-- ================================================================= -->
     <main id="viewHistorial" class="hidden max-w-7xl mx-auto p-6 space-y-6">
-        <section class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
+        <section class="bg-slate-900 rounded-2xl border border-slate-800 overflow- visible shadow-lg">
             <div class="p-5 border-b border-slate-800 space-y-4">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
                     <div>
                         <h3 class="text-xl font-bold text-slate-100">📋 Historial Completo de Licencias Registradas</h3>
-                        <p class="text-xs text-slate-400">Listado detallado por legajo con clasificación de extensión (&gt;5 días/mes) y auditoría de costos</p>
+                        <p class="text-xs text-slate-400">Filtros multi-selección por período, departamentos y conceptos + ordenamiento en todas las columnas ▲▼</p>
                     </div>
                     <button onclick="limpiarFiltrosTablaHistorial()" class="self-start md:self-auto text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 transition-colors">
-                        🧹 Limpiar Filtros de Tabla
+                        🧹 Limpiar Filtros de Historial
                     </button>
                 </div>
 
-                <!-- NUEVOS FILTROS: PERÍODO, DEPARTAMENTO Y EMPLEADO -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-slate-800/80">
-                    <div>
-                        <label for="tabla-filter-month" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Filtrar Período:</label>
-                        <select id="tabla-filter-month" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
-                            <option value="ALL">Todos los Meses de la muestra</option>
-                        </select>
+                <!-- FILTROS MULTI-CHECKBOX EN HISTORIAL: PERÍODO, DEPARTAMENTOS, LICENCIAS Y BUSCADOR DE EMPLEADO -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2 border-t border-slate-800/80">
+                    <div class="relative">
+                        <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Período(s):</label>
+                        <button type="button" onclick="toggleDropdown('ddHistMonth')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2.5 text-left flex justify-between items-center">
+                            <span id="labelHistMonth" class="truncate">Todos los Períodos</span>
+                            <span class="text-xs text-slate-500">▼</span>
+                        </button>
+                        <div id="ddHistMonth" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-60 overflow-y-auto space-y-2 text-xs text-slate-200"></div>
                     </div>
-                    <div>
-                        <label for="tabla-filter-dept" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Filtrar Departamento:</label>
-                        <select id="tabla-filter-dept" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
-                            <option value="ALL">Todos los Departamentos</option>
-                        </select>
+
+                    <div class="relative">
+                        <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Departamento(s) / Sectores:</label>
+                        <button type="button" onclick="toggleDropdown('ddHistDept')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2.5 text-left flex justify-between items-center">
+                            <span id="labelHistDept" class="truncate">Todos los Departamentos</span>
+                            <span class="text-xs text-slate-500">▼</span>
+                        </button>
+                        <div id="ddHistDept" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-60 overflow-y-auto space-y-2 text-xs text-slate-200"></div>
                     </div>
+
+                    <div class="relative">
+                        <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Tipo de Licencia / Concepto(s):</label>
+                        <button type="button" onclick="toggleDropdown('ddHistLic')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2.5 text-left flex justify-between items-center">
+                            <span id="labelHistLic" class="truncate">Todas las Licencias</span>
+                            <span class="text-xs text-slate-500">▼</span>
+                        </button>
+                        <div id="ddHistLic" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-60 overflow-y-auto space-y-2 text-xs text-slate-200"></div>
+                    </div>
+
                     <div>
                         <label for="tabla-filter-emp" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Buscar Empleado o Legajo:</label>
-                        <input type="text" id="tabla-filter-emp" list="datalist-empleados-aus" placeholder="Escribí nombre, apellido o legajo..." class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
+                        <input type="text" id="tabla-filter-emp" list="datalist-empleados-aus" placeholder="Nombre, apellido o legajo..." class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
                         <datalist id="datalist-empleados-aus"></datalist>
                     </div>
                 </div>
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left text-slate-300">
+                <table id="tablaHistorialLicencias" class="w-full text-sm text-left text-slate-300">
                     <thead class="text-xs text-slate-400 uppercase bg-slate-950 border-b border-slate-800">
                         <tr>
                             <th class="px-5 py-3">Legajo</th>
@@ -292,12 +370,14 @@
         </section>
     </main>
 
-    <!-- VISTA 3: DASHBOARD DE HORAS EXTRAS -->
+    <!-- ================================================================= -->
+    <!-- VISTA 3: DASHBOARD DE HORAS EXTRAS                                -->
+    <!-- ================================================================= -->
     <main id="viewHorasExtras" class="hidden max-w-7xl mx-auto p-6 space-y-6">
         <div class="flex justify-between items-center border-b border-slate-800 pb-4">
             <div>
                 <h2 class="text-2xl font-bold text-white">Dashboard de Control de Personal Eventual & Horas Extras</h2>
-                <p class="text-indigo-400 text-sm">Monitoreo operativo, costos y sobrecarga de personal</p>
+                <p class="text-indigo-400 text-sm">Monitoreo operativo, comparativa interanual por mes y costos</p>
             </div>
             <div class="flex items-center space-x-3">
                 <label class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-semibold shadow-md cursor-pointer text-sm transition-all">
@@ -409,14 +489,65 @@
             </div>
         </section>
 
-        <!-- REEMPLAZO DEL MAPA DE CALOR: TABLA LIMPIA PARA COPIAR Y PEGAR -->
+        <!-- NUEVO PUNTO 4: TABLA RÁPIDA DE COMPARACIÓN MISMO MES (2025 VS 2026) Y % VARIACIÓN POR DEPARTAMENTO -->
+        <section class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg space-y-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                        📊 Comparativa Rápida Interanual por Mes y Sector (2025 vs 2026)
+                    </h3>
+                    <p class="text-xs text-slate-400">Compara el mismo mes entre 2025 y 2026 por departamento con diferencia en horas y % de variación (Ordenable ▲▼)</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="flex items-center gap-2">
+                        <label class="text-xs font-semibold text-slate-300">Elegir Mes a Comparar:</label>
+                        <select id="selectMesCompRapidaHE" onchange="renderTablaComparativaMensualHE()" class="bg-slate-950 border border-slate-800 text-cyan-300 font-bold text-xs rounded-lg p-2 focus:ring-cyan-500 focus:border-cyan-500">
+                            <option value="1">Enero (2025 vs 2026)</option>
+                            <option value="2">Febrero (2025 vs 2026)</option>
+                            <option value="3">Marzo (2025 vs 2026)</option>
+                            <option value="4">Abril (2025 vs 2026)</option>
+                            <option value="5">Mayo (2025 vs 2026)</option>
+                            <option value="6">Junio (2025 vs 2026)</option>
+                            <option value="7">Julio (2025 vs 2026)</option>
+                            <option value="8">Agosto (2025 vs 2026)</option>
+                            <option value="9">Septiembre (2025 vs 2026)</option>
+                            <option value="10">Octubre (2025 vs 2026)</option>
+                            <option value="11">Noviembre (2025 vs 2026)</option>
+                            <option value="12">Diciembre (2025 vs 2026)</option>
+                            <option value="TODOS">Total Acumulado Anual</option>
+                        </select>
+                    </div>
+                    <button onclick="copiarTablaGenerica('tablaCompMensualHE', 'btnCopiarCompHE')" id="btnCopiarCompHE" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3 py-2 rounded-lg border border-slate-700 transition-all">
+                        📋 Copiar Comparativa
+                    </button>
+                </div>
+            </div>
+            <div class="overflow-x-auto border border-slate-800 rounded-lg">
+                <table id="tablaCompMensualHE" class="min-w-full text-sm text-left text-slate-200">
+                    <thead class="bg-slate-950 border-b border-slate-800 text-xs uppercase text-slate-300">
+                        <tr>
+                            <th class="py-3 px-4">Departamento / Sector</th>
+                            <th class="py-3 px-4 text-center">Período Comparado</th>
+                            <th class="py-3 px-4 text-right text-amber-400">Horas 2025</th>
+                            <th class="py-3 px-4 text-right text-cyan-400">Horas 2026</th>
+                            <th class="py-3 px-4 text-right">Dif. Horas (26 - 25)</th>
+                            <th class="py-3 px-4 text-center">% Variación</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyCompMensualHE" class="divide-y divide-slate-800 font-mono text-xs"></tbody>
+                    <tfoot id="tfootCompMensualHE" class="bg-slate-950 border-t-2 border-slate-700 font-mono text-xs font-bold"></tfoot>
+                </table>
+            </div>
+        </section>
+
+        <!-- TABLA LIMPIA DE HORAS EXTRAS POR SECTOR Y MES PARA COPIAR Y PEGAR -->
         <section class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg space-y-4">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                 <div>
                     <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2">
                         📑 Tabla de Horas Extras por Sector y Mes (Lista para Copiar y Pegar)
                     </h3>
-                    <p class="text-xs text-slate-400">Horas totales puras por departamento y mes, diseñadas para pegar directamente en Excel o Google Sheets</p>
+                    <p class="text-xs text-slate-400">Horas totales puras por departamento y mes, diseñadas para pegar en Excel o Google Sheets (Ordenable ▲▼)</p>
                 </div>
                 <div class="flex flex-wrap items-center gap-3">
                     <div class="flex items-center gap-2">
@@ -427,7 +558,7 @@
                             <option value="TODOS">Consolidado (Todos)</option>
                         </select>
                     </div>
-                    <button onclick="copiarTablaHorasHE()" id="btnCopiarTablaHE" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-2 rounded-lg shadow transition-all flex items-center gap-1.5">
+                    <button onclick="copiarTablaGenerica('tablaResumenHorasHE', 'btnCopiarTablaHE')" id="btnCopiarTablaHE" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-2 rounded-lg shadow transition-all flex items-center gap-1.5">
                         📋 Copiar Tabla para Excel
                     </button>
                 </div>
@@ -452,9 +583,7 @@
                             <th class="py-3 px-3 bg-slate-900 border-l border-slate-800 text-cyan-400">Total</th>
                         </tr>
                     </thead>
-                    <tbody id="tablaResumenHorasBody" class="divide-y divide-slate-800 font-mono">
-                        <tr><td colspan="14" class="py-6 text-center text-slate-500">Cargando tabla de horas...</td></tr>
-                    </tbody>
+                    <tbody id="tablaResumenHorasBody" class="divide-y divide-slate-800 font-mono"></tbody>
                     <tfoot id="tablaResumenHorasFoot" class="bg-slate-950 border-t-2 border-slate-700 font-mono font-bold text-slate-100"></tfoot>
                 </table>
             </div>
@@ -478,7 +607,7 @@
         <section class="bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
             <h3 class="text-lg font-bold mb-4 text-slate-200">Top 10 Empleados con Mayor Horas Extras</h3>
             <div class="overflow-x-auto">
-                <table class="min-w-full text-left text-sm text-slate-300">
+                <table id="tablaTop10HE" class="min-w-full text-left text-sm text-slate-300">
                     <thead class="bg-slate-950 border-b border-slate-800 text-slate-400">
                         <tr>
                             <th class="py-3 px-4 font-semibold">#</th>
@@ -489,9 +618,7 @@
                             <th class="py-3 px-4 font-semibold">Costo Real Estimado</th>
                         </tr>
                     </thead>
-                    <tbody id="tablaTop10" class="divide-y divide-slate-800">
-                        <tr><td colspan="6" class="py-4 text-center text-slate-500">Cargando datos...</td></tr>
-                    </tbody>
+                    <tbody id="tablaTop10" class="divide-y divide-slate-800"></tbody>
                 </table>
             </div>
         </section>
@@ -535,7 +662,7 @@
                 </div>
             </div>
             <div class="bg-slate-950 rounded-lg border border-red-900/30 overflow-x-auto shadow-sm">
-                <table class="min-w-full text-left text-sm text-slate-300">
+                <table id="tablaExcedidosTable" class="min-w-full text-left text-sm text-slate-300">
                     <thead class="bg-red-950/60 border-b border-red-900/40 text-red-300">
                         <tr>
                             <th class="py-3 px-4 font-semibold">#</th>
@@ -547,15 +674,130 @@
                             <th class="py-3 px-4 font-semibold">Costo Estimado</th>
                         </tr>
                     </thead>
-                    <tbody id="tablaExcedidos" class="divide-y divide-slate-800">
-                        <tr><td colspan="7" class="py-4 text-center text-slate-500">Selecciona el período para auditar excedidos.</td></tr>
-                    </tbody>
+                    <tbody id="tablaExcedidos" class="divide-y divide-slate-800"></tbody>
                 </table>
             </div>
         </section>
     </main>
 
-    <!-- SCRIPTS Y LÓGICA COMPLETA DE FUNCIONAMIENTO -->
+    <!-- ================================================================= -->
+    <!-- VISTA 4: EFICIENCIA & PRODUCTIVIDAD HOTELERA (NUEVO MÓDULO)       -->
+    <!-- ================================================================= -->
+    <main id="viewEficiencia" class="hidden max-w-7xl mx-auto p-6 space-y-6">
+        <section class="bg-gradient-to-r from-slate-900 via-indigo-950/50 to-slate-900 p-6 rounded-2xl border border-indigo-800/40 shadow-xl">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                <div>
+                    <span class="text-[11px] font-bold uppercase tracking-widest px-2.5 py-1 bg-emerald-950 text-emerald-300 border border-emerald-700/50 rounded-full">Nuevo Módulo Estratégico</span>
+                    <h2 class="text-2xl font-bold text-white mt-2">⚡ Eficiencia de Personal & Productividad Operativa Hotelera</h2>
+                    <p class="text-xs text-slate-300 mt-1">
+                        Cruza automáticamente las <strong>Horas Eventuales</strong> y las <strong>Horas Perdidas por Ausentismo</strong> con las <strong>Horas Efectivas</strong> y el <strong>Volumen de Actividad del Hotel</strong> (Cubiertos, Habitaciones Ocupadas, Pax en Eventos).
+                    </p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3 bg-slate-950/90 p-3 rounded-xl border border-slate-800">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase text-slate-400">Año</label>
+                        <select id="eficAnioSelect" onchange="renderEficienciaOperativa()" class="bg-slate-900 border border-slate-700 text-cyan-300 text-xs font-bold rounded-lg p-2">
+                            <option value="2026">2026</option>
+                            <option value="2025">2025</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase text-slate-400">Mes</label>
+                        <select id="eficMesSelect" onchange="renderEficienciaOperativa()" class="bg-slate-900 border border-slate-700 text-amber-300 text-xs font-bold rounded-lg p-2">
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FÓRMULA VISUAL DEL MODELO DE EFICIENCIA -->
+        <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                <p class="text-xs font-bold uppercase text-slate-400">1. Horas Planta Efectiva</p>
+                <p id="kpiEficHsEfectivas" class="text-2xl font-extrabold text-slate-100 mt-1">0 hs</p>
+                <p class="text-[11px] text-slate-500 mt-1">Horas teóricas del personal fijo</p>
+            </div>
+            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                <p class="text-xs font-bold uppercase text-rose-400">2. (-) Horas Ausentismo</p>
+                <p id="kpiEficHsAusentismo" class="text-2xl font-extrabold text-rose-400 mt-1">0 hs</p>
+                <p class="text-[11px] text-slate-500 mt-1">Sincronizado de base Ausentismo</p>
+            </div>
+            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                <p class="text-xs font-bold uppercase text-cyan-400">3. (+) Horas Eventuales / Extras</p>
+                <p id="kpiEficHsEventuales" class="text-2xl font-extrabold text-cyan-400 mt-1">0 hs</p>
+                <p class="text-[11px] text-slate-500 mt-1">Sincronizado de base Horas Extras</p>
+            </div>
+            <div class="bg-emerald-950/30 p-4 rounded-xl border border-emerald-700/50">
+                <p class="text-xs font-bold uppercase text-emerald-300">= Horas Netas Operativas</p>
+                <p id="kpiEficHsNetas" class="text-2xl font-extrabold text-emerald-400 mt-1">0 hs</p>
+                <p class="text-[11px] text-emerald-300/70 mt-1">Efectivas - Ausentismo + Eventuales</p>
+            </div>
+        </section>
+
+        <!-- TABLA INTERACTIVA DE EFICIENCIA POR SECTOR (PERMITE SIMULAR DATOS DE ACTIVIDAD) -->
+        <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg space-y-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-slate-800 pb-3">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-100">Matriz de Productividad por Sector (Datos Reales + Simulador de Actividad)</h3>
+                    <p class="text-xs text-slate-400">
+                        Podés escribir directamente en las celdas de <strong>Dotación Efectiva</strong> y <strong>Volumen de Actividad</strong> (Cubiertos, Habitaciones, Pax) para calcular la eficiencia al instante.
+                    </p>
+                </div>
+                <button onclick="copiarTablaGenerica('tablaEficiencia', 'btnCopiarEfic')" id="btnCopiarEfic" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-2 rounded-lg transition-all">
+                    📋 Copiar Matriz
+                </button>
+            </div>
+
+            <div class="overflow-x-auto border border-slate-800 rounded-xl">
+                <table id="tablaEficiencia" class="min-w-full text-xs text-left text-slate-200">
+                    <thead class="bg-slate-950 border-b border-slate-800 text-slate-300 uppercase">
+                        <tr>
+                            <th class="py-3 px-3">Sector / Departamento</th>
+                            <th class="py-3 px-3">Driver de Actividad Sugerido</th>
+                            <th class="py-3 px-3 text-center bg-indigo-950/30 text-indigo-300">Dotación Fija (Cant. Emp.)</th>
+                            <th class="py-3 px-3 text-right">Hs Efectivas (Est. 200h)</th>
+                            <th class="py-3 px-3 text-right text-rose-400">(-) Hs Ausentismo</th>
+                            <th class="py-3 px-3 text-right text-cyan-400">(+) Hs Eventuales</th>
+                            <th class="py-3 px-3 text-right font-bold text-emerald-400">(=) Hs Netas Usadas</th>
+                            <th class="py-3 px-3 text-center bg-amber-950/30 text-amber-300">Volumen Actividad (Mes)</th>
+                            <th class="py-3 px-3 text-right font-bold text-cyan-300">Ratio: Hs / Unidad</th>
+                            <th class="py-3 px-3 text-right font-bold text-amber-300">Unidades / Hora</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyEficiencia" class="divide-y divide-slate-800 font-mono"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- GUÍA DE DATOS A CONECTAR PARA EL PRÓXIMO PASO -->
+        <section class="bg-slate-900/70 p-5 rounded-2xl border border-slate-800 text-xs text-slate-300 space-y-2">
+            <h4 class="font-bold text-sm text-indigo-400">📌 Estructura de la Hoja de "Actividad & Dotación" que podemos vincular desde Google Sheets:</h4>
+            <p class="text-slate-400">Cuando armes el Excel/Sheet de actividad hotelera, con estas 5 columnas ya queda 100% automatizado igual que Ausentismo y Horas Extras:</p>
+            <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 pt-2 font-mono text-[11px]">
+                <div class="bg-slate-950 p-2.5 rounded border border-slate-800"><strong class="text-cyan-400">1. Período:</strong> 01/2026</div>
+                <div class="bg-slate-950 p-2.5 rounded border border-slate-800"><strong class="text-cyan-400">2. Departamento:</strong> AA & BB, Banquetes, Pisos...</div>
+                <div class="bg-slate-950 p-2.5 rounded border border-slate-800"><strong class="text-cyan-400">3. Horas_Efectivos:</strong> Ej. 3.600 hs</div>
+                <div class="bg-slate-950 p-2.5 rounded border border-slate-800"><strong class="text-amber-400">4. Driver_Unidad:</strong> Cubiertos / Hab. Ocupadas / Pax</div>
+                <div class="bg-slate-950 p-2.5 rounded border border-slate-800"><strong class="text-amber-400">5. Cantidad_Actividad:</strong> Ej. 8.500 cubiertos</div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ================================================================= -->
+    <!-- SCRIPTS Y LÓGICA COMPLETA DE FUNCIONAMIENTO                       -->
+    <!-- ================================================================= -->
     <script>
         Chart.register(ChartDataLabels);
 
@@ -565,17 +807,12 @@
         const COLOR_2026 = '#06b6d4'; // Cian eléctrico
         const COLOR_2026_BG = 'rgba(6, 182, 212, 0.25)';
         const PALETA_VIBRANTE = [
-            '#06b6d4', // Cian
-            '#f59e0b', // Ámbar
-            '#ec4899', // Fucsia / Rosa
-            '#10b981', // Esmeralda
-            '#8b5cf6', // Violeta
-            '#f43f5e', // Coral / Rojo
-            '#eab308', // Amarillo
-            '#3b82f6', // Azul brillante
-            '#14b8a6', // Teal
-            '#f97316'  // Naranja vivo
+            '#06b6d4', '#f59e0b', '#ec4899', '#10b981', '#8b5cf6',
+            '#f43f5e', '#eab308', '#3b82f6', '#14b8a6', '#f97316'
         ];
+
+        const MESES_LARGO = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        const MESES_NOMBRES_HE = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
         function normalizarDepartamento(deptRaw) {
             if (!deptRaw) return 'Sin Depto';
@@ -601,31 +838,183 @@
         });
 
         function switchTab(tabName) {
-            const viewAus = document.getElementById('viewAusentismo');
-            const viewHis = document.getElementById('viewHistorial');
-            const viewHE = document.getElementById('viewHorasExtras');
-            const btnAus = document.getElementById('btnTabAusentismo');
-            const btnHis = document.getElementById('btnTabHistorial');
-            const btnHE = document.getElementById('btnTabHorasExtras');
+            const views = {
+                ausentismo: document.getElementById('viewAusentismo'),
+                historial: document.getElementById('viewHistorial'),
+                horasExtras: document.getElementById('viewHorasExtras'),
+                eficiencia: document.getElementById('viewEficiencia')
+            };
+            const btns = {
+                ausentismo: document.getElementById('btnTabAusentismo'),
+                historial: document.getElementById('btnTabHistorial'),
+                horasExtras: document.getElementById('btnTabHorasExtras'),
+                eficiencia: document.getElementById('btnTabEficiencia')
+            };
 
-            viewAus.classList.add('hidden');
-            viewHis.classList.add('hidden');
-            viewHE.classList.add('hidden');
+            Object.values(views).forEach(v => v.classList.add('hidden'));
+            Object.values(btns).forEach(b => b.classList.remove('tab-btn-active'));
 
-            btnAus.classList.remove('tab-btn-active');
-            btnHis.classList.remove('tab-btn-active');
-            btnHE.classList.remove('tab-btn-active');
+            if (views[tabName]) views[tabName].classList.remove('hidden');
+            if (btns[tabName]) btns[tabName].classList.add('tab-btn-active');
 
-            if (tabName === 'ausentismo') {
-                viewAus.classList.remove('hidden');
-                btnAus.classList.add('tab-btn-active');
-            } else if (tabName === 'historial') {
-                viewHis.classList.remove('hidden');
-                btnHis.classList.add('tab-btn-active');
-            } else {
-                viewHE.classList.remove('hidden');
-                btnHE.classList.add('tab-btn-active');
+            if (tabName === 'eficiencia') {
+                renderEficienciaOperativa();
             }
+        }
+
+        // =================================================================
+        // MOTOR UNIVERSAL DE ORDENAMIENTO DE TABLAS (A-Z y NUMÉRICO)
+        // =================================================================
+        const MESES_ORDEN_MAP = {
+            'enero': 1, 'febrero': 2, 'marzo': 3, 'abril': 4, 'mayo': 5, 'junio': 6,
+            'julio': 7, 'agosto': 8, 'septiembre': 9, 'octubre': 10, 'noviembre': 11, 'diciembre': 12
+        };
+
+        function parseSortableValue(text) {
+            if (!text) return { type: 'str', val: '' };
+            const clean = text.trim();
+            const lower = clean.toLowerCase();
+
+            if (MESES_ORDEN_MAP[lower]) {
+                return { type: 'num', val: MESES_ORDEN_MAP[lower] };
+            }
+            if (/^\d{2}\/\d{4}$/.test(clean)) {
+                const [m, y] = clean.split('/');
+                return { type: 'num', val: parseInt(y, 10) * 100 + parseInt(m, 10) };
+            }
+            if (clean === '-' || clean === 'N/A' || clean === 'S/D') {
+                return { type: 'num', val: -999999999 };
+            }
+            if (clean.toUpperCase() === 'NUEVO') {
+                return { type: 'num', val: 999999999 };
+            }
+
+            // Detectar números con formato moneda ($ 1.234.567), horas (123,5 hs), días (12 d) o porcentajes (+14.2%)
+            const numCandidate = clean
+                .replace(/\(.+?\)/g, '') // quita paréntesis accesorios
+                .replace(/[$%a-zA-ZáéíóúÁÉÍÓÚñÑ🔸🔹🏆✅⚠️]/g, '')
+                .trim();
+
+            if (/^[+-]?[\d.,]+$/.test(numCandidate)) {
+                let normalized = numCandidate;
+                if (normalized.includes('.') && normalized.includes(',')) {
+                    normalized = normalized.replace(/\./g, '').replace(',', '.');
+                } else if (normalized.includes(',')) {
+                    normalized = normalized.replace(',', '.');
+                } else if ((normalized.match(/\./g) || []).length > 1) {
+                    normalized = normalized.replace(/\./g, '');
+                }
+                const parsed = parseFloat(normalized);
+                if (!isNaN(parsed)) {
+                    return { type: 'num', val: parsed };
+                }
+            }
+
+            return { type: 'str', val: lower };
+        }
+
+        function enableAllTablesSorting() {
+            document.querySelectorAll('table').forEach(table => {
+                const thead = table.querySelector('thead');
+                const tbody = table.querySelector('tbody');
+                if (!thead || !tbody) return;
+
+                const headerRows = thead.querySelectorAll('tr');
+                if (headerRows.length === 0) return;
+
+                // Mapear columnas reales si hay encabezados de 2 niveles (como la tabla de evolución)
+                let clickableHeaders = [];
+                if (headerRows.length === 1) {
+                    clickableHeaders = Array.from(headerRows[0].querySelectorAll('th')).map((th, idx) => ({ th, colIdx: idx }));
+                } else if (headerRows.length === 2) {
+                    const row0 = Array.from(headerRows[0].querySelectorAll('th'));
+                    const row1 = Array.from(headerRows[1].querySelectorAll('th'));
+                    let colPointer = 0;
+                    let subPointer = 0;
+                    row0.forEach(th => {
+                        const colspan = parseInt(th.getAttribute('colspan') || '1', 10);
+                        const rowspan = parseInt(th.getAttribute('rowspan') || '1', 10);
+                        if (rowspan === 2) {
+                            clickableHeaders.push({ th, colIdx: colPointer });
+                            colPointer += colspan;
+                        } else {
+                            for (let c = 0; c < colspan; c++) {
+                                if (row1[subPointer]) {
+                                    clickableHeaders.push({ th: row1[subPointer], colIdx: colPointer });
+                                    subPointer++;
+                                }
+                                colPointer++;
+                            }
+                        }
+                    });
+                }
+
+                clickableHeaders.forEach(({ th, colIdx }) => {
+                    if (th.dataset.sortBound === 'true') return;
+                    th.dataset.sortBound = 'true';
+                    th.classList.add('sortable-th');
+
+                    const icon = document.createElement('span');
+                    icon.className = 'sort-icon';
+                    icon.textContent = '⇅';
+                    th.appendChild(icon);
+
+                    th.addEventListener('click', () => {
+                        const rows = Array.from(tbody.querySelectorAll('tr'));
+                        if (rows.length <= 1 && rows[0]?.querySelector('td[colspan]')) return;
+
+                        const currentDir = th.dataset.sortDir === 'asc' ? 'desc' : 'asc';
+                        clickableHeaders.forEach(h => {
+                            h.th.dataset.sortDir = '';
+                            h.th.classList.remove('sorted-asc', 'sorted-desc');
+                            const ic = h.th.querySelector('.sort-icon');
+                            if (ic) ic.textContent = '⇅';
+                        });
+
+                        th.dataset.sortDir = currentDir;
+                        th.classList.add(currentDir === 'asc' ? 'sorted-asc' : 'sorted-desc');
+                        icon.textContent = currentDir === 'asc' ? '▲' : '▼';
+
+                        rows.sort((rowA, rowB) => {
+                            const cellA = rowA.children[colIdx]?.innerText || '';
+                            const cellB = rowB.children[colIdx]?.innerText || '';
+                            const valA = parseSortableValue(cellA);
+                            const valB = parseSortableValue(cellB);
+
+                            let cmp = 0;
+                            if (valA.type === 'num' && valB.type === 'num') {
+                                cmp = valA.val - valB.val;
+                            } else {
+                                cmp = String(valA.val).localeCompare(String(valB.val), 'es', { numeric: true });
+                            }
+                            return currentDir === 'asc' ? cmp : -cmp;
+                        });
+
+                        rows.forEach(r => tbody.appendChild(r));
+                    });
+                });
+            });
+        }
+
+        // Función genérica para copiar cualquier tabla a Excel
+        function copiarTablaGenerica(tableId, btnId) {
+            const table = document.getElementById(tableId);
+            const rows = Array.from(table.querySelectorAll('tr'));
+            const tsv = rows.map(row => {
+                const cells = Array.from(row.querySelectorAll('th, td'));
+                return cells.map(cell => {
+                    const input = cell.querySelector('input');
+                    if (input) return input.value;
+                    return cell.innerText.replace(/[⇅▲▼]/g, '').trim();
+                }).join('\t');
+            }).join('\n');
+
+            navigator.clipboard.writeText(tsv).then(() => {
+                const btn = document.getElementById(btnId);
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ ¡Copiado!';
+                setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+            });
         }
 
         // =================================================================
@@ -638,11 +1027,10 @@
 
         let rawAusentismo = [];
         let mapHorasPlanificadas = {};
-        let mapDiasEnfermedadMes = {}; // Legajo|Periodo -> total días de enfermedad en ese mes
+        let mapDiasEnfermedadMes = {};
         let currentFilteredData = [];
         let chartsAusentismo = {};
 
-        // Prioriza coincidencia exacta antes que parcial para no mezclar 'Nro. de concepto' con 'Desc. de concepto'
         function getValAus(row, candidates) {
             for (let c of candidates) {
                 for (let key in row) {
@@ -661,7 +1049,6 @@
             return '';
         }
 
-        // Identifica si el concepto corresponde a una licencia por enfermedad inculpable
         function esConceptoEnfermedad(motivoRaw, nroConcepto) {
             const m = (motivoRaw || '').toLowerCase();
             const cod = (nroConcepto || '').toString().trim();
@@ -669,12 +1056,10 @@
             return m.includes('enfermedad') || m.includes('inculpable') || m.includes('certificado medico') || m.includes('certificado médico') || m.includes('lic. med') || m.includes('licencia med');
         }
 
-        // AUDITORÍA FINANCIERA ESTRICTA DE CONCEPTOS DE LICENCIA
         function clasificarConcepto(motivoRaw, nroConcepto, costoBruto) {
             const cod = nroConcepto ? nroConcepto.toString().trim() : '';
             const m = motivoRaw ? motivoRaw.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : '';
 
-            // 1. SIN COSTO ($0 obligatorio): Maternidad (15102), Excedencia (15107), Suspensión, Sin goce de sueldo, Ausencia injustificada / Faltas
             const esSinCosto =
                 cod === '15102' ||
                 cod === '15107' ||
@@ -695,7 +1080,6 @@
                 return { tipo: 'SIN_COSTO', label: 'Sin Costo / ANSES ($0)', aplicaCosto: false };
             }
 
-            // 2. ART EMPRESA (Concepto 14051 / Primeros días a cargo empresa): Implica costo directo asumido por la empresa
             const esArtEmpresa =
                 cod === '14051' ||
                 m.includes('14051') ||
@@ -708,7 +1092,6 @@
                 return { tipo: 'ART_EMPRESA', label: 'ART Empresa (14051)', aplicaCosto: true };
             }
 
-            // 3. ART RECUPERABLE: Resto de conceptos de ART / Accidente de trabajo / ILT
             const esArtRecuperable =
                 m.includes('accidente') ||
                 m.includes('art') ||
@@ -719,16 +1102,13 @@
                 return { tipo: 'ART_RECUPERABLE', label: 'ART Recuperable', aplicaCosto: true };
             }
 
-            // 4. Si no es ninguno de los anteriores pero tiene importe 0 en la nómina
             if (costoBruto <= 0) {
                 return { tipo: 'SIN_COSTO', label: 'Sin Costo ($0)', aplicaCosto: false };
             }
 
-            // 5. INCULPABLES & LEGALES: Enfermedad inculpable, licencias legales/convencionales pagas
             return { tipo: 'INCULPABLE', label: 'Inculpable / Legal', aplicaCosto: true };
         }
 
-        // Pre-calcula cuántos días de enfermedad acumuló cada empleado en cada mes
         function recalcularMapaEnfermedadMensual(data) {
             mapDiasEnfermedadMes = {};
             data.forEach(item => {
@@ -745,7 +1125,6 @@
             });
         }
 
-        // Devuelve clasificación de extensión para licencias por enfermedad (>5 días en el mes = Extensa)
         function obtenerExtensionEnfermedad(item) {
             const legajo = getValAus(item, ['Legajo', 'Nro. Legajo']) || 'S/D';
             const periodo = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
@@ -850,10 +1229,8 @@
                     });
                 });
 
-                // Listeners de los 3 filtros del Historial de Licencias
-                document.getElementById('tabla-filter-month').addEventListener('change', () => renderTablaAusentismo(currentFilteredData));
-                document.getElementById('tabla-filter-dept').addEventListener('change', () => renderTablaAusentismo(currentFilteredData));
                 document.getElementById('tabla-filter-emp').addEventListener('input', () => renderTablaAusentismo(currentFilteredData));
+                enableAllTablesSorting();
 
             }).catch(err => console.error("Error al cargar ausentismo:", err));
         }
@@ -896,27 +1273,32 @@
                 }
             });
 
+            const sortedDepts = Array.from(depts).sort();
+            const sortedMotivos = Array.from(motivos).sort();
+            const sortedPeriodos = Array.from(periodosCompletos).sort();
+
+            // Checkboxes del Dashboard Principal de Ausentismo
             renderCheckboxes('ddYearAus', Array.from(years).sort(), 'chkYearAus', 'applyFiltersAndRenderAusentismo()');
             renderCheckboxes('ddMonthAus', Array.from(months).sort(), 'chkMonthAus', 'applyFiltersAndRenderAusentismo()', m => `Mes ${m}`);
-            renderCheckboxes('ddDeptAus', Array.from(depts).sort(), 'chkDeptAus', 'applyFiltersAndRenderAusentismo()');
-            renderCheckboxes('ddMotivoAus', Array.from(motivos).sort(), 'chkMotivoAus', 'applyFiltersAndRenderAusentismo()');
+            renderCheckboxes('ddDeptAus', sortedDepts, 'chkDeptAus', 'applyFiltersAndRenderAusentismo()');
+            renderCheckboxes('ddMotivoAus', sortedMotivos, 'chkMotivoAus', 'applyFiltersAndRenderAusentismo()');
 
-            // Poblar filtros del Historial de Licencias
-            const selectTablaMonth = document.getElementById('tabla-filter-month');
-            selectTablaMonth.innerHTML = '<option value="ALL">Todos los Meses de la muestra</option>';
-            Array.from(periodosCompletos).sort().forEach(p => selectTablaMonth.add(new Option(`Período ${p}`, p)));
+            // Selector de Sector para Ranking de Licencias Cortas
+            const selectRankingSector = document.getElementById('selectSectorLicCortas');
+            selectRankingSector.innerHTML = '<option value="TOP10_ALL">🏆 Top 10 General (Todos los Sectores)</option>';
+            sortedDepts.forEach(d => selectRankingSector.add(new Option(`📂 Ver Todos de: ${d}`, d)));
 
-            const selectTablaDept = document.getElementById('tabla-filter-dept');
-            selectTablaDept.innerHTML = '<option value="ALL">Todos los Departamentos</option>';
-            Array.from(depts).sort().forEach(d => selectTablaDept.add(new Option(d, d)));
+            // Checkboxes Multi-Selección para el Historial de Licencias (Períodos, Sectores y Tipos de Licencia)
+            renderCheckboxes('ddHistMonth', sortedPeriodos, 'chkHistMonth', 'renderTablaAusentismo(currentFilteredData)', p => `Período ${p}`);
+            renderCheckboxes('ddHistDept', sortedDepts, 'chkHistDept', 'renderTablaAusentismo(currentFilteredData)');
+            renderCheckboxes('ddHistLic', sortedMotivos, 'chkHistLic', 'renderTablaAusentismo(currentFilteredData)');
 
             const datalistEmp = document.getElementById('datalist-empleados-aus');
             datalistEmp.innerHTML = Array.from(empleadosSet).sort().map(e => `<option value="${e}">`).join('');
         }
 
         function limpiarFiltrosTablaHistorial() {
-            document.getElementById('tabla-filter-month').value = 'ALL';
-            document.getElementById('tabla-filter-dept').value = 'ALL';
+            ['chkHistMonth', 'chkHistDept', 'chkHistLic'].forEach(cls => toggleAllCheckboxes(cls, true));
             document.getElementById('tabla-filter-emp').value = '';
             renderTablaAusentismo(currentFilteredData);
         }
@@ -946,6 +1328,7 @@
 
         function updateLabelText(labelId, selectedValues, totalText, singularText) {
             const el = document.getElementById(labelId);
+            if (!el) return;
             if (selectedValues.length === 0) el.textContent = "Ninguno seleccionado";
             else if (selectedValues.length === 1) el.textContent = selectedValues[0];
             else el.textContent = `${selectedValues.length} ${singularText} seleccionados`;
@@ -1069,13 +1452,81 @@
             renderChartComparativoAusentismo(rawAusentismo);
             renderChartDepartamentoAusentismo(rawAusentismo);
             renderChartMotivoAusentismo(filtered);
+            renderRankingLicenciasCortas();
             renderTablaAusentismo(filtered);
+        }
+
+        // PUNTO 1: RANKING DE EMPLEADOS CON MÁS LICENCIAS CORTAS (TOP 10 O TODOS POR SECTOR)
+        function renderRankingLicenciasCortas() {
+            const sectorElegido = document.getElementById('selectSectorLicCortas').value;
+            const subtitulo = document.getElementById('subtituloRankingCortas');
+            const tbody = document.getElementById('tbodyRankingCortas');
+
+            const mapaEmpCortas = {};
+
+            currentFilteredData.forEach(item => {
+                const extInfo = obtenerExtensionEnfermedad(item);
+                if (!extInfo.esEnfermedad || extInfo.tipoExt !== 'LEVE') return;
+
+                const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
+                if (sectorElegido !== 'TOP10_ALL' && dept !== sectorElegido) return;
+
+                const legajo = getValAus(item, ['Legajo', 'Nro. Legajo']) || 'S/D';
+                const nombre = `${getValAus(item, ['Apellidos', 'Apellido'])} ${getValAus(item, ['Nombre', 'Nombres'])}`.trim() || 'Sin Nombre';
+                const periodo = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
+                const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
+                const costoBruto = parseNum(getValAus(item, ['Importe', 'Monto', 'Bruto', 'Costo', 'Columna S']));
+                const costoFinal = costoBruto * FACTOR_CARGAS_SOCIALES;
+
+                if (!mapaEmpCortas[legajo]) {
+                    mapaEmpCortas[legajo] = {
+                        legajo,
+                        nombre,
+                        dept,
+                        periodosSet: new Set(),
+                        dias: 0,
+                        costo: 0
+                    };
+                }
+                if (periodo) mapaEmpCortas[legajo].periodosSet.add(periodo);
+                mapaEmpCortas[legajo].dias += dias;
+                mapaEmpCortas[legajo].costo += costoFinal;
+            });
+
+            let listaOrdenada = Object.values(mapaEmpCortas).sort((a, b) => {
+                if (b.dias !== a.dias) return b.dias - a.dias;
+                return b.periodosSet.size - a.periodosSet.size;
+            });
+
+            if (sectorElegido === 'TOP10_ALL') {
+                subtitulo.textContent = 'Mostrando Top 10 General de empleados con más días en licencias cortas (≤5d/mes)';
+                listaOrdenada = listaOrdenada.slice(0, 10);
+            } else {
+                subtitulo.textContent = `Mostrando TODOS los empleados del sector "${sectorElegido}" con licencias cortas (${listaOrdenada.length} empleados)`;
+            }
+
+            if (listaOrdenada.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-slate-500">No se registran licencias cortas (≤5 días) para la selección actual.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = listaOrdenada.map((e, idx) => `
+                <tr class="hover:bg-slate-800/50 transition-colors">
+                    <td class="py-3 px-4 font-mono text-slate-500">${idx + 1}</td>
+                    <td class="py-3 px-4 font-mono font-semibold text-slate-200">${e.legajo}</td>
+                    <td class="py-3 px-4 font-bold text-slate-100">${e.nombre}</td>
+                    <td class="py-3 px-4 text-slate-300">${e.dept}</td>
+                    <td class="py-3 px-4 text-center"><span class="bg-cyan-950 text-cyan-300 border border-cyan-800/60 px-2.5 py-0.5 rounded-full text-xs font-bold">${e.periodosSet.size} mes(es)</span></td>
+                    <td class="py-3 px-4 text-center font-extrabold text-amber-400">${e.dias} d</td>
+                    <td class="py-3 px-4 text-center font-mono text-rose-400">${e.dias * HORAS_POR_DIA} hs</td>
+                    <td class="py-3 px-4 text-right font-bold text-emerald-400">${formatPesos(e.costo)}</td>
+                </tr>
+            `).join('');
         }
 
         function renderTablaEvolucionAusentismo(filteredData) {
             const tbody = document.getElementById('tabla-evolucion-body');
             tbody.innerHTML = '';
-            const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
             const hsPerdidas2025 = new Array(12).fill(0);
             const hsPerdidas2026 = new Array(12).fill(0);
 
@@ -1096,7 +1547,7 @@
             let acumHs2025 = 0, acumPlan2025 = 0;
             let acumHs2026 = 0, acumPlan2026 = 0;
 
-            mesesNombres.forEach((nombreMes, i) => {
+            MESES_LARGO.forEach((nombreMes, i) => {
                 const mKey = (i + 1).toString().padStart(2, '0');
                 const plan2025 = mapHorasPlanificadas[`${mKey}/2025`] || 0;
                 const plan2026 = mapHorasPlanificadas[`${mKey}/2026`] || 0;
@@ -1155,7 +1606,6 @@
                 return true;
             });
 
-            const mesesNombres = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
             const horas2025 = new Array(12).fill(0);
             const horas2026 = new Array(12).fill(0);
 
@@ -1201,7 +1651,7 @@
 
             chartsAusentismo.comparativo = new Chart(ctx, {
                 type: 'line',
-                data: { labels: mesesNombres, datasets: datasets },
+                data: { labels: MESES_NOMBRES_HE, datasets: datasets },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -1296,8 +1746,6 @@
                 const rawM = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Motivo']) || 'Sin Especificar';
                 const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
                 const extInfo = obtenerExtensionEnfermedad(item);
-
-                // Si es enfermedad, separamos visualmente en Extensa (>5d) vs Aislada/Leve (<=5d)
                 const labelMotivo = extInfo.esEnfermedad ? extInfo.shortLabel : rawM;
 
                 motivos[labelMotivo] = (motivos[labelMotivo] || 0) + dias;
@@ -1336,23 +1784,31 @@
             });
         }
 
+        // PUNTO 3: HISTORIAL CON FILTROS MULTI-CHECKBOX (PERÍODO, SECTORES Y LICENCIAS)
         function renderTablaAusentismo(data) {
             const tbody = document.getElementById('tabla-body');
             tbody.innerHTML = '';
 
-            const monthFilter = document.getElementById('tabla-filter-month').value;
-            const deptFilter = document.getElementById('tabla-filter-dept').value;
+            const selectedHistMonths = getSelectedValues('chkHistMonth');
+            const selectedHistDepts = getSelectedValues('chkHistDept');
+            const selectedHistLics = getSelectedValues('chkHistLic');
             const empQuery = (document.getElementById('tabla-filter-emp').value || '').trim().toLowerCase();
+
+            updateLabelText('labelHistMonth', selectedHistMonths, "Todos los Períodos", "Períodos");
+            updateLabelText('labelHistDept', selectedHistDepts, "Todos los Departamentos", "Deptos");
+            updateLabelText('labelHistLic', selectedHistLics, "Todas las Licencias", "Licencias");
 
             let rowsToDisplay = data.filter(item => {
                 const p = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
                 const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
+                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Motivo']);
                 const legajo = (getValAus(item, ['Legajo', 'Nro. Legajo']) || '').toLowerCase();
                 const nombreCompleto = `${getValAus(item, ['Apellidos', 'Apellido'])} ${getValAus(item, ['Nombre', 'Nombres'])}`.trim().toLowerCase();
                 const comboEmp = `${nombreCompleto} (${legajo})`;
 
-                if (monthFilter && monthFilter !== 'ALL' && p !== monthFilter) return false;
-                if (deptFilter && deptFilter !== 'ALL' && dept !== deptFilter) return false;
+                if (p && !selectedHistMonths.includes(p)) return false;
+                if (!selectedHistDepts.includes(dept)) return false;
+                if (!selectedHistLics.includes(motivo)) return false;
                 if (empQuery && !nombreCompleto.includes(empQuery) && !legajo.includes(empQuery) && !comboEmp.includes(empQuery)) return false;
 
                 return true;
@@ -1414,7 +1870,6 @@
         let allRawDataHE = [];
         let currentFilteredRowsHE = [];
         let chartEvolucionInstHE, chartDeptoInteranualInstHE, chartJornadaInstHE, chartRangoInstHE;
-        const MESES_NOMBRES_HE = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
         function parseMontoHE(val) {
             if (!val) return 0;
@@ -1479,6 +1934,7 @@
             allRawDataHE = data;
             poblarMultiSelectHE(allRawDataHE);
             aplicarFiltrosHE();
+            enableAllTablesSorting();
         }
 
         function poblarMultiSelectHE(rows) {
@@ -1537,7 +1993,7 @@
                 const periodo = getVal(['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
                 if (periodo && String(periodo).includes('/')) {
                     const partes = String(periodo).split('/');
-                    const mesRow = partes[0].trim();
+                    const mesRow = String(parseInt(partes[0].trim(), 10));
                     const anioRow = partes[1].trim();
                     if (!selectedAnios.includes(anioRow)) return false;
                     if (!selectedMeses.includes(mesRow)) return false;
@@ -1643,12 +2099,105 @@
 
             renderChartsHE(evolucionMensual, deptosMap, jornadaMap, rangosEtarios);
             renderChartDeptoMes();
+            renderTablaComparativaMensualHE();
+            renderTablaResumenHorasHE();
             renderTop10HE(empleadosMap);
             renderTablaExcedidos();
-            renderTablaResumenHorasHE();
         }
 
-        // NUEVA TABLA RESUMEN DE HORAS EXTRAS POR SECTOR Y MES (PARA COPIAR Y PEGAR)
+        // PUNTO 4: TABLA COMPARATIVA RÁPIDA MISMO MES (2025 VS 2026) Y % VARIACIÓN POR DEPARTAMENTO
+        function renderTablaComparativaMensualHE() {
+            const mesSel = document.getElementById('selectMesCompRapidaHE').value;
+            const nombrePeriodo = mesSel === 'TODOS' ? 'Consolidado Anual' : MESES_LARGO[parseInt(mesSel, 10) - 1];
+            const mapDeptoComp = {};
+            let sum2025 = 0, sum2026 = 0;
+
+            allRawDataHE.forEach(row => {
+                const getVal = (keyNames) => {
+                    for (let k of Object.keys(row)) {
+                        if (keyNames.some(kn => k.trim().toLowerCase() === kn.toLowerCase())) return row[k];
+                    }
+                    return '';
+                };
+                const depto = normalizarDepartamento(getVal(['Departamento', 'O']));
+                const horas = parseMontoHE(getVal(['Cantidad liquidada', 'Cantidad', 'M']));
+                const periodo = getVal(['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
+
+                if (periodo && String(periodo).includes('/')) {
+                    const partes = String(periodo).split('/');
+                    const mesRow = String(parseInt(partes[0].trim(), 10));
+                    const anioRow = partes[1].trim();
+
+                    if (mesSel !== 'TODOS' && mesRow !== mesSel) return;
+
+                    if (!mapDeptoComp[depto]) mapDeptoComp[depto] = { '2025': 0, '2026': 0 };
+                    if (anioRow === '2025') {
+                        mapDeptoComp[depto]['2025'] += horas;
+                        sum2025 += horas;
+                    } else if (anioRow === '2026') {
+                        mapDeptoComp[depto]['2026'] += horas;
+                        sum2026 += horas;
+                    }
+                }
+            });
+
+            const tbody = document.getElementById('tbodyCompMensualHE');
+            const tfoot = document.getElementById('tfootCompMensualHE');
+            const deptos = Object.keys(mapDeptoComp).sort((a, b) => (mapDeptoComp[b]['2026'] + mapDeptoComp[b]['2025']) - (mapDeptoComp[a]['2026'] + mapDeptoComp[a]['2025']));
+
+            if (deptos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-500">Sin horas registradas para el mes seleccionado.</td></tr>`;
+                tfoot.innerHTML = '';
+                return;
+            }
+
+            const fmtH = v => v.toLocaleString('es-AR', { maximumFractionDigits: 1 }) + ' hs';
+
+            tbody.innerHTML = deptos.map(d => {
+                const h25 = mapDeptoComp[d]['2025'];
+                const h26 = mapDeptoComp[d]['2026'];
+                const diff = h26 - h25;
+                const signDiff = diff > 0 ? '+' : '';
+
+                let badgePct = `<span class="text-slate-500">0.0%</span>`;
+                if (h25 === 0 && h26 > 0) {
+                    badgePct = `<span class="bg-rose-950 text-rose-300 border border-rose-800/50 px-2 py-0.5 rounded font-bold">NUEVO (+100%)</span>`;
+                } else if (h25 > 0) {
+                    const pct = ((h26 - h25) / h25) * 100;
+                    const signPct = pct > 0 ? '+' : '';
+                    if (pct > 0) {
+                        badgePct = `<span class="bg-rose-950 text-rose-300 border border-rose-800/50 px-2 py-0.5 rounded font-bold">${signPct}${pct.toFixed(1)}%</span>`;
+                    } else if (pct < 0) {
+                        badgePct = `<span class="bg-emerald-950 text-emerald-300 border border-emerald-800/50 px-2 py-0.5 rounded font-bold">${pct.toFixed(1)}%</span>`;
+                    }
+                }
+
+                return `
+                    <tr class="hover:bg-slate-800/50 transition-colors">
+                        <td class="py-3 px-4 font-sans font-bold text-slate-100">${d}</td>
+                        <td class="py-3 px-4 text-center font-sans text-slate-400">${nombrePeriodo}</td>
+                        <td class="py-3 px-4 text-right font-semibold text-amber-300">${fmtH(h25)}</td>
+                        <td class="py-3 px-4 text-right font-semibold text-cyan-300">${fmtH(h26)}</td>
+                        <td class="py-3 px-4 text-right font-bold ${diff > 0 ? 'text-rose-400' : diff < 0 ? 'text-emerald-400' : 'text-slate-400'}">${signDiff}${fmtH(diff)}</td>
+                        <td class="py-3 px-4 text-center">${badgePct}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            const totalDiff = sum2026 - sum2025;
+            const totalPct = sum2025 > 0 ? (((sum2026 - sum2025) / sum2025) * 100).toFixed(1) + '%' : '-';
+            tfoot.innerHTML = `
+                <tr>
+                    <td class="py-3 px-4 font-sans font-bold text-white">TOTAL GENERAL</td>
+                    <td class="py-3 px-4 text-center font-sans text-slate-400">${nombrePeriodo}</td>
+                    <td class="py-3 px-4 text-right text-amber-400">${fmtH(sum2025)}</td>
+                    <td class="py-3 px-4 text-right text-cyan-400">${fmtH(sum2026)}</td>
+                    <td class="py-3 px-4 text-right ${totalDiff > 0 ? 'text-rose-400' : 'text-emerald-400'}">${totalDiff > 0 ? '+' : ''}${fmtH(totalDiff)}</td>
+                    <td class="py-3 px-4 text-center text-white">${totalDiff > 0 && sum2025 > 0 ? '+' : ''}${totalPct}</td>
+                </tr>
+            `;
+        }
+
         function renderTablaResumenHorasHE() {
             const anioFiltro = document.getElementById('selectAnioTablaResumenHE').value;
             const deptoMesHoras = {};
@@ -1719,27 +2268,6 @@
             `;
         }
 
-        // Copia la tabla en formato TSV (separado por tabulaciones) lista para pegar en Excel
-        function copiarTablaHorasHE() {
-            const table = document.getElementById('tablaResumenHorasHE');
-            const rows = Array.from(table.querySelectorAll('tr'));
-            const tsv = rows.map(row => {
-                const cells = Array.from(row.querySelectorAll('th, td'));
-                return cells.map(cell => cell.innerText.trim()).join('\t');
-            }).join('\n');
-
-            navigator.clipboard.writeText(tsv).then(() => {
-                const btn = document.getElementById('btnCopiarTablaHE');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '✅ ¡Copiado al portapapeles!';
-                btn.classList.replace('bg-indigo-600', 'bg-emerald-600');
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.classList.replace('bg-emerald-600', 'bg-indigo-600');
-                }, 2200);
-            });
-        }
-
         function renderTablaExcedidos() {
             const anioSel = document.getElementById('filterExcedidosAnio').value;
             const mesSel = document.getElementById('filterExcedidosMes').value;
@@ -1761,7 +2289,7 @@
 
                 if (periodo && String(periodo).includes('/')) {
                     const partes = String(periodo).split('/');
-                    const mesRow = partes[0].trim();
+                    const mesRow = String(parseInt(partes[0].trim(), 10));
                     const anioRow = partes[1].trim();
 
                     if (anioRow === anioSel && mesRow === mesSel) {
@@ -1827,7 +2355,7 @@
 
                 if (periodo && String(periodo).includes('/')) {
                     const partes = String(periodo).split('/');
-                    const mesRow = partes[0].trim();
+                    const mesRow = String(parseInt(partes[0].trim(), 10));
                     const anioRow = partes[1].trim();
                     if (mesElegido !== 'TODOS' && mesRow !== mesElegido) return;
                     if (!deptosMapMes[depto]) {
@@ -2012,10 +2540,141 @@
             });
         }
 
+        // =================================================================
+        // 3. LÓGICA DE LA PESTAÑA 4: EFICIENCIA & PRODUCTIVIDAD HOTELERA
+        // =================================================================
+        const estadoSimuladorEficiencia = {};
+
+        function obtenerDriverSugerido(depto) {
+            const d = depto.toLowerCase();
+            if (d.includes('aa & bb') || d.includes('cocina') || d.includes('rest') || d.includes('bar')) return { driver: '🍽️ Cubiertos Vendidos', defaultEmp: 18, defaultAct: 4200 };
+            if (d.includes('banquete') || d.includes('evento') || d.includes('convencion')) return { driver: '🥂 Pax en Eventos', defaultEmp: 8, defaultAct: 1800 };
+            if (d.includes('ama de llaves') || d.includes('pisos') || d.includes('housekeeping') || d.includes('limpieza') || d.includes('lavander')) return { driver: '🛏️ Habitaciones Ocupadas', defaultEmp: 22, defaultAct: 3100 };
+            if (d.includes('recepcion') || d.includes('front') || d.includes('reserva') || d.includes('conserj')) return { driver: '🛎️ Check-ins / Hab. Ocup.', defaultEmp: 10, defaultAct: 3100 };
+            if (d.includes('spa') || d.includes('recreacion') || d.includes('wellness')) return { driver: '💆 Servicios / Tratamientos', defaultEmp: 6, defaultAct: 650 };
+            if (d.includes('mantenimiento') || d.includes('ingenieria')) return { driver: '🔧 Hab. Disponibles / OT', defaultEmp: 8, defaultAct: 4000 };
+            return { driver: '📈 Unidades Operativas', defaultEmp: 6, defaultAct: 1000 };
+        }
+
+        function renderEficienciaOperativa() {
+            const anio = document.getElementById('eficAnioSelect').value;
+            const mes = document.getElementById('eficMesSelect').value;
+            const mesPad = mes.padStart(2, '0');
+            const periodoKey = `${mesPad}/${anio}`;
+
+            const hsAusPorDepto = {};
+            const hsEvPorDepto = {};
+            const todosDeptos = new Set();
+
+            // 1. Sumar Horas de Ausentismo reales del período
+            rawAusentismo.forEach(item => {
+                const p = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
+                if (p === periodoKey) {
+                    const d = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
+                    const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
+                    hsAusPorDepto[d] = (hsAusPorDepto[d] || 0) + (dias * HORAS_POR_DIA);
+                    todosDeptos.add(d);
+                }
+            });
+
+            // 2. Sumar Horas Extras Eventuales reales del período
+            allRawDataHE.forEach(row => {
+                const getVal = (keyNames) => {
+                    for (let k of Object.keys(row)) {
+                        if (keyNames.some(kn => k.trim().toLowerCase() === kn.toLowerCase())) return row[k];
+                    }
+                    return '';
+                };
+                const periodo = getVal(['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
+                if (periodo && String(periodo).includes('/')) {
+                    const partes = String(periodo).split('/');
+                    const mRow = String(parseInt(partes[0].trim(), 10));
+                    const aRow = partes[1].trim();
+                    if (aRow === anio && mRow === mes) {
+                        const d = normalizarDepartamento(getVal(['Departamento', 'O']));
+                        const hs = parseMontoHE(getVal(['Cantidad liquidada', 'Cantidad', 'M']));
+                        hsEvPorDepto[d] = (hsEvPorDepto[d] || 0) + hs;
+                        todosDeptos.add(d);
+                    }
+                }
+            });
+
+            // Si el mes aún no tiene datos en ambas bases, mostrar todos los sectores conocidos
+            if (todosDeptos.size === 0) {
+                ['AA & BB', 'Banquetes', 'Ama de Llaves', 'Cocina', 'Recepción', 'Spa', 'Mantenimiento'].forEach(d => todosDeptos.add(d));
+            }
+
+            const tbody = document.getElementById('tbodyEficiencia');
+            let totalEfectivas = 0, totalAus = 0, totalEv = 0, totalNetas = 0;
+
+            const deptosOrdenados = Array.from(todosDeptos).sort();
+
+            tbody.innerHTML = deptosOrdenados.map((d, idx) => {
+                const sugerencia = obtenerDriverSugerido(d);
+                const stateKey = `${periodoKey}|${d}`;
+                if (!estadoSimuladorEficiencia[stateKey]) {
+                    estadoSimuladorEficiencia[stateKey] = {
+                        emp: sugerencia.defaultEmp,
+                        act: sugerencia.defaultAct
+                    };
+                }
+
+                const cantEmp = estadoSimuladorEficiencia[stateKey].emp;
+                const volAct = estadoSimuladorEficiencia[stateKey].act;
+                const hsEfectivas = cantEmp * 200; // 200 hs mensuales promedio por efectivo
+                const hsAus = hsAusPorDepto[d] || 0;
+                const hsEv = hsEvPorDepto[d] || 0;
+                const hsNetas = Math.max(0, hsEfectivas - hsAus + hsEv);
+
+                totalEfectivas += hsEfectivas;
+                totalAus += hsAus;
+                totalEv += hsEv;
+                totalNetas += hsNetas;
+
+                const ratioHsPorUnidad = volAct > 0 ? (hsNetas / volAct).toFixed(2) : '-';
+                const ratioUnidadesPorHora = hsNetas > 0 ? (volAct / hsNetas).toFixed(2) : '-';
+
+                return `
+                    <tr class="hover:bg-slate-800/40 transition-colors">
+                        <td class="py-3 px-3 font-sans font-bold text-slate-100">${d}</td>
+                        <td class="py-3 px-3 font-sans text-slate-300">${sugerencia.driver}</td>
+                        <td class="py-2 px-3 text-center bg-indigo-950/20">
+                            <input type="number" min="0" value="${cantEmp}"
+                                onchange="actualizarSimuladorEfic('${stateKey}', 'emp', this.value)"
+                                class="w-16 bg-slate-950 border border-indigo-700/60 rounded px-2 py-1 text-center font-bold text-indigo-300">
+                        </td>
+                        <td class="py-3 px-3 text-right text-slate-300">${hsEfectivas.toLocaleString('es-AR')} hs</td>
+                        <td class="py-3 px-3 text-right text-rose-400">-${hsAus.toLocaleString('es-AR', { maximumFractionDigits: 1 })} hs</td>
+                        <td class="py-3 px-3 text-right text-cyan-400">+${hsEv.toLocaleString('es-AR', { maximumFractionDigits: 1 })} hs</td>
+                        <td class="py-3 px-3 text-right font-extrabold text-emerald-400 bg-emerald-950/15">${hsNetas.toLocaleString('es-AR', { maximumFractionDigits: 1 })} hs</td>
+                        <td class="py-2 px-3 text-center bg-amber-950/20">
+                            <input type="number" min="0" value="${volAct}"
+                                onchange="actualizarSimuladorEfic('${stateKey}', 'act', this.value)"
+                                class="w-24 bg-slate-950 border border-amber-700/60 rounded px-2 py-1 text-center font-bold text-amber-300">
+                        </td>
+                        <td class="py-3 px-3 text-right font-bold text-cyan-300">${ratioHsPorUnidad} hs/u</td>
+                        <td class="py-3 px-3 text-right font-bold text-amber-300">${ratioUnidadesPorHora} u/hs</td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('kpiEficHsEfectivas').textContent = `${totalEfectivas.toLocaleString('es-AR')} hs`;
+            document.getElementById('kpiEficHsAusentismo').textContent = `-${totalAus.toLocaleString('es-AR', { maximumFractionDigits: 1 })} hs`;
+            document.getElementById('kpiEficHsEventuales').textContent = `+${totalEv.toLocaleString('es-AR', { maximumFractionDigits: 1 })} hs`;
+            document.getElementById('kpiEficHsNetas').textContent = `${totalNetas.toLocaleString('es-AR', { maximumFractionDigits: 1 })} hs`;
+        }
+
+        function actualizarSimuladorEfic(stateKey, field, val) {
+            if (!estadoSimuladorEficiencia[stateKey]) return;
+            estadoSimuladorEficiencia[stateKey][field] = Math.max(0, parseFloat(val) || 0);
+            renderEficienciaOperativa();
+        }
+
         // INICIALIZACIÓN
         window.onload = function() {
             initAusentismo();
             initHorasExtras();
+            enableAllTablesSorting();
         };
     </script>
 </body>
