@@ -683,7 +683,7 @@
     </main>
 
     <!-- ================================================================= -->
-    <!-- VISTA 4: NÓMINA ACTIVA & MASA SALARIAL (NUEVA SECCIÓN)            -->
+    <!-- VISTA 4: NÓMINA ACTIVA & MASA SALARIAL                            -->
     <!-- ================================================================= -->
     <main id="viewNomina" class="hidden max-w-7xl mx-auto p-6 space-y-6">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-800 pb-4 gap-4">
@@ -698,7 +698,7 @@
                     📁 Subir Excel / CSV de Nómina
                     <input type="file" id="nominaFileInput" accept=".xlsx, .xls, .csv" class="hidden">
                 </label>
-                <button onclick="cargarNominaDesdeURL()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-lg text-sm font-semibold border border-slate-700 transition-all">
+                <button onclick="cargarNominaDesdeURL(false)" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-lg text-sm font-semibold border border-slate-700 transition-all">
                     🔄 Sincronizar Google Sheet
                 </button>
             </div>
@@ -734,12 +734,12 @@
                 </div>
 
                 <div class="relative">
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Categoría / Puesto / Sindicato:</label>
-                    <button type="button" onclick="toggleDropdown('ddCatNom')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2.5 text-left flex justify-between items-center">
-                        <span id="labelCatNom" class="truncate">Todas las Categorías</span>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Mod. de Contrato:</label>
+                    <button type="button" onclick="toggleDropdown('ddModNom')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2.5 text-left flex justify-between items-center">
+                        <span id="labelModNom" class="truncate">Todas las Modalidades</span>
                         <span class="text-xs text-slate-500">▼</span>
                     </button>
-                    <div id="ddCatNom" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-60 overflow-y-auto space-y-2 text-xs text-slate-200"></div>
+                    <div id="ddModNom" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-60 overflow-y-auto space-y-2 text-xs text-slate-200"></div>
                 </div>
 
                 <div>
@@ -863,7 +863,7 @@
                             <th class="py-3 px-4">Apellido y Nombre</th>
                             <th class="py-3 px-4">Departamento</th>
                             <th class="py-3 px-3">Convenio</th>
-                            <th class="py-3 px-3">Categoría / Puesto</th>
+                            <th class="py-3 px-3">Mod. Contrato</th>
                             <th class="py-3 px-3 text-center">F. Ingreso</th>
                             <th class="py-3 px-3 text-center">Antigüedad</th>
                             <th class="py-3 px-3 text-center">Vac. LCT</th>
@@ -1350,16 +1350,31 @@
         }
 
         function parseNum(val) {
-            if (!val) return 0;
+            if (val === undefined || val === null || val === '') return 0;
             if (typeof val === 'number') return val;
             let s = val.toString().trim();
             if (!s) return 0;
+            s = s.replace(/[$ARS\s]/gi, '');
             if (s.includes('.') && s.includes(',')) {
-                s = s.replace(/\./g, '').replace(',', '.');
+                if (s.lastIndexOf(',') > s.lastIndexOf('.')) {
+                    s = s.replace(/\./g, '').replace(',', '.');
+                } else {
+                    s = s.replace(/,/g, '');
+                }
             } else if (s.includes(',')) {
-                s = s.replace(',', '.');
+                const parts = s.split(',');
+                if (parts[parts.length - 1].length === 3 && parts.length > 1) {
+                    s = s.replace(/,/g, '');
+                } else {
+                    s = s.replace(',', '.');
+                }
             } else if ((s.match(/\./g) || []).length > 1) {
                 s = s.replace(/\./g, '');
+            } else if (s.includes('.')) {
+                const parts = s.split('.');
+                if (parts[1] && parts[1].length === 3 && parts[0].length >= 1 && parts[0] !== '0') {
+                    s = s.replace(/\./g, '');
+                }
             }
             s = s.replace(/[^0-9.-]/g, '');
             let num = parseFloat(s);
@@ -2750,23 +2765,30 @@
         // =================================================================
         // 3. LÓGICA DE LA PESTAÑA 4: NÓMINA ACTIVA & MASA SALARIAL
         // =================================================================
-        const CSV_URL_NOMINA = 'https://docs.google.com/spreadsheets/d/17BMsyoY_RGgdgG2i_0aheKYPDeQj7xg4PbEfkXoR1_o/export?format=csv&gid=0';
+        const SHEET_ID_NOMINA = '17BMsyoY_RGgdgG2i_0aheKYPDeQj7xg4PbEfkXoR1_o';
+        const CSV_URL_NOMINA = `https://docs.google.com/spreadsheets/d/${SHEET_ID_NOMINA}/gviz/tq?tqx=out:csv&gid=0`;
+
         let rawNomina = [];
         let filteredNomina = [];
         let mapHeadcountPorDepto = {}; // Alimenta automáticamente la pestaña de Eficiencia
         let chartsNomina = {};
+        let ultimoHashNomina = '';
+        let timerAutoSyncNomina = null;
 
         function getValNom(row, candidates) {
+            const normalizeKey = k => k.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             for (let c of candidates) {
+                const target = normalizeKey(c);
                 for (let key in row) {
-                    if (key.trim().toLowerCase() === c.toLowerCase()) {
+                    if (normalizeKey(key) === target) {
                         return row[key] !== undefined && row[key] !== null ? row[key].toString().trim() : '';
                     }
                 }
             }
             for (let c of candidates) {
+                const target = normalizeKey(c);
                 for (let key in row) {
-                    if (key.trim().toLowerCase().includes(c.toLowerCase())) {
+                    if (normalizeKey(key).includes(target)) {
                         return row[key] !== undefined && row[key] !== null ? row[key].toString().trim() : '';
                     }
                 }
@@ -2781,7 +2803,7 @@
         }
 
         function calcularDiasVacacionesLCT(antiguedadAnios, mesesTrabajados) {
-            if (mesesTrabajados < 6) return Math.max(1, Math.floor(mesesTrabajados)); // 1 día cada 20 trabajados aprox.
+            if (mesesTrabajados < 6) return Math.max(1, Math.floor(mesesTrabajados));
             if (antiguedadAnios < 5) return 14;
             if (antiguedadAnios < 10) return 21;
             if (antiguedadAnios < 20) return 28;
@@ -2799,7 +2821,7 @@
                         Papa.parse(ev.target.result, {
                             header: true,
                             skipEmptyLines: true,
-                            complete: res => procesarYGuardarNomina(res.data, 'Archivo CSV local cargado correctamente.')
+                            complete: res => procesarYGuardarNomina(res.data, '✅ Archivo CSV local cargado correctamente.', false)
                         });
                     };
                     reader.readAsText(file);
@@ -2809,63 +2831,65 @@
                         const wb = XLSX.read(data, { type: 'array' });
                         const firstSheet = wb.SheetNames[0];
                         const rows = XLSX.utils.sheet_to_json(wb.Sheets[firstSheet]);
-                        procesarYGuardarNomina(rows, `Archivo Excel (${firstSheet}) cargado correctamente.`);
+                        procesarYGuardarNomina(rows, `✅ Archivo Excel (${firstSheet}) cargado correctamente.`, false);
                     };
                     reader.readAsArrayBuffer(file);
                 }
             });
 
-            cargarNominaDesdeURL();
+            cargarNominaDesdeURL(false);
+
+            // Sincronización automática cada 60 segundos ante cambios en Google Sheets
+            if (timerAutoSyncNomina) clearInterval(timerAutoSyncNomina);
+            timerAutoSyncNomina = setInterval(() => cargarNominaDesdeURL(true), 60000);
+
+            // Sincroniza automáticamente al volver a enfocarse en la pestaña
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) cargarNominaDesdeURL(true);
+            });
         }
 
-        function cargarNominaDesdeURL() {
-            mostrarStatusNomina('Sincronizando Nómina Sheraton Pilar desde Google Sheets...');
-            Papa.parse(CSV_URL_NOMINA, {
+        function cargarNominaDesdeURL(silencioso = false) {
+            if (!silencioso) {
+                mostrarStatusNomina('Sincronizando Nómina Sheraton Pilar desde Google Sheets...');
+            }
+            const urlSinCache = `${CSV_URL_NOMINA}&_t=${Date.now()}`;
+
+            Papa.parse(urlSinCache, {
                 download: true,
                 header: true,
                 skipEmptyLines: true,
                 complete: function(results) {
                     if (results.data && results.data.length > 0) {
-                        procesarYGuardarNomina(results.data, `✅ Nómina sincronizada (${results.data.length} registros activos).`);
-                    } else {
-                        generarPadronDesdeBasesConectadas();
+                        const nuevoHash = JSON.stringify(results.data);
+                        if (silencioso && nuevoHash === ultimoHashNomina) return;
+                        ultimoHashNomina = nuevoHash;
+
+                        const horaSync = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+                        procesarYGuardarNomina(
+                            results.data,
+                            `✅ Nómina sincronizada automáticamente (${horaSync} hs).`,
+                            silencioso
+                        );
+                    } else if (!silencioso) {
+                        mostrarStatusNomina('⚠️ La hoja de Nómina devolvió 0 filas. Verificá que en Google Sheets esté configurada como "Archivo -> Compartir -> Publicar en la web (CSV)" o "Cualquier persona con el enlace puede ver".');
                     }
                 },
                 error: function() {
-                    generarPadronDesdeBasesConectadas();
+                    if (!silencioso) {
+                        mostrarStatusNomina('⚠️ No se pudo conectar automáticamente con "Nomina Sheraton Pilar". Andá a Google Sheets -> Archivo -> Compartir -> Publicar en la web (CSV) para habilitar la lectura automática.');
+                    }
                 }
             });
         }
 
-        // Si el Google Sheet de Nómina aún no fue "Publicado en la web" como CSV público, consolida automáticamente los legajos únicos de la base de Sheraton Pilar y avisa cómo publicar el Sheet salarial
-        function generarPadronDesdeBasesConectadas() {
-            const mapaUnicos = {};
-            rawAusentismo.forEach(item => {
-                const leg = getValAus(item, ['Legajo', 'Nro. Legajo']);
-                if (!leg || mapaUnicos[leg]) return;
-                mapaUnicos[leg] = {
-                    'Legajo': leg,
-                    'Apellidos': getValAus(item, ['Apellidos', 'Apellido']),
-                    'Nombre': getValAus(item, ['Nombre', 'Nombres']),
-                    'Departamento': getValAus(item, ['Departamento', 'Sector']),
-                    'Convenio': getValAus(item, ['Convenio']) || 'CONVENIO',
-                    'Categoría': getValAus(item, ['Sindicato', 'Categoría', 'Puesto']) || 'Gastronómico',
-                    'Fecha de ingreso': getValAus(item, ['Fecha de ingreso']),
-                    'Fecha de nacimiento': getValAus(item, ['Fecha de nacimiento']),
-                    'Edad': getValAus(item, ['Edad']),
-                    'Sueldo Bruto': 0
-                };
-            });
-
-            const listaFallback = Object.values(mapaUnicos);
-            if (listaFallback.length > 0) {
-                procesarYGuardarNomina(
-                    listaFallback,
-                    'ℹ️ Mostrando padrón base detectado. Para ver los sueldos exactos desde Google Sheets sin subir el archivo, en tu hoja "Nomina Sheraton Pilar" andá a Archivo -> Compartir -> Publicar en la web (CSV), o subí el Excel con el botón azul de arriba.'
-                );
-            } else {
-                mostrarStatusNomina('ℹ️ Subí el archivo Excel/CSV de Nómina o publicá la hoja en la web (Archivo -> Compartir -> Publicar en la web) para visualizar los salarios.');
-            }
+        function esEmpleadoActivo(row) {
+            const estado = getValNom(row, ['Estado', 'Situación', 'Situacion', 'Activo', 'Condición', 'Condicion', 'Status']).toLowerCase();
+            const fBaja = getValNom(row, ['Fecha de baja', 'Fecha Baja', 'Baja', 'Egreso', 'Fecha Egreso']);
+            if (fBaja && fBaja !== '-' && fBaja.toLowerCase() !== 'no') return false;
+            if (!estado) return true;
+            if (estado.includes('baja') || estado.includes('inactivo') || estado.includes('egreso') || estado === 'no') return false;
+            return true;
         }
 
         function normalizarFilaNomina(row) {
@@ -2876,9 +2900,15 @@
             const nombreCompleto = nombreUnificado || `${apellido} ${nombre}`.trim() || 'Sin Nombre';
 
             const depto = normalizarDepartamento(getValNom(row, ['Departamento', 'Sector', 'Area', 'Área', 'Centro de Costo']));
-            const rawConv = getValNom(row, ['Convenio', 'Encuadre', 'Modalidad']) || 'CONVENIO';
-            const convenio = rawConv.toUpperCase().includes('FUERA') ? 'FUERA DE CONVENIO' : 'DENTRO DE CONVENIO';
-            const categoria = getValNom(row, ['Categoría', 'Categoria', 'Puesto', 'Cargo', 'Función', 'Sindicato']) || 'General';
+            const rawConv = getValNom(row, ['Convenio', 'Encuadre', 'Sindicato']) || 'CONVENIO';
+            const convenio = (rawConv.toUpperCase().includes('FUERA') || rawConv.toUpperCase().includes('NO POSEE'))
+                ? 'FUERA DE CONVENIO'
+                : 'DENTRO DE CONVENIO';
+
+            const modContrato = getValNom(row, [
+                'Mod. de contrato', 'Mod de contrato', 'Modalidad de contrato',
+                'Mod. Contrato', 'Modalidad Contrato', 'Tipo de contrato', 'Contrato', 'Modalidad'
+            ]) || 'Sin Especificar';
 
             const fIngresoStr = getValNom(row, ['Fecha de ingreso', 'Fecha Ingreso', 'Ingreso', 'Alta']);
             const fIngresoDate = parseFechaFlexible(fIngresoStr);
@@ -2895,10 +2925,23 @@
             let edad = parseNum(getValNom(row, ['Edad']));
             if (!edad && fNacStr) edad = calcularEdad(fNacStr);
 
-            const sueldoBruto = parseNum(getValNom(row, [
-                'Sueldo Bruto', 'Bruto', 'Sueldo', 'Salario', 'Básico', 'Basico',
-                'Remuneración', 'Remuneracion', 'Total Haberes', 'Haberes', 'Importe', 'Mensual'
-            ]));
+            // Lectura directa de la columna "sueldo bruto"
+            let sueldoRaw = getValNom(row, [
+                'sueldo bruto', 'Sueldo Bruto', 'Sueldo bruto', 'SUELDO BRUTO',
+                'Total Bruto', 'Sueldo Básico', 'Sueldo Basico', 'Bruto', 'Sueldo'
+            ]);
+
+            if (!sueldoRaw) {
+                for (let key in row) {
+                    const kl = key.trim().toLowerCase();
+                    if ((kl.includes('sueldo') || kl.includes('bruto')) && parseNum(row[key]) > 0) {
+                        sueldoRaw = row[key];
+                        break;
+                    }
+                }
+            }
+
+            const sueldoBruto = parseNum(sueldoRaw);
             const costoEmpresa = sueldoBruto * FACTOR_CARGAS_SOCIALES;
             const diasVacLCT = calcularDiasVacacionesLCT(antigAnios, mesesTrabajados);
             const enPeriodoPrueba = mesesTrabajados > 0 && mesesTrabajados < 6;
@@ -2908,7 +2951,7 @@
                 nombreCompleto,
                 depto,
                 convenio,
-                categoria,
+                modContrato,
                 fIngresoStr: fIngresoStr || '-',
                 antigAnios,
                 mesesTrabajados,
@@ -2920,10 +2963,15 @@
             };
         }
 
-        function procesarYGuardarNomina(rows, statusMsg) {
+        function procesarYGuardarNomina(rows, statusMsg, preservarFiltros = false) {
+            const prevDeptos = preservarFiltros ? getSelectedValues('chkDeptoNom') : null;
+            const prevConvs = preservarFiltros ? getSelectedValues('chkConvNom') : null;
+            const prevMods = preservarFiltros ? getSelectedValues('chkModNom') : null;
+
             rawNomina = rows
+                .filter(esEmpleadoActivo)
                 .map(normalizarFilaNomina)
-                .filter(r => r.legajo !== '-' || r.nombreCompleto !== 'Sin Nombre');
+                .filter(r => (r.legajo !== '-' || r.nombreCompleto !== 'Sin Nombre') && r.nombreCompleto.toLowerCase() !== 'total');
 
             // Actualizar mapa de Headcount real por departamento para el módulo de Eficiencia
             mapHeadcountPorDepto = {};
@@ -2931,22 +2979,30 @@
                 mapHeadcountPorDepto[r.depto] = (mapHeadcountPorDepto[r.depto] || 0) + 1;
             });
 
-            if (statusMsg) mostrarStatusNomina(statusMsg);
+            if (statusMsg) {
+                mostrarStatusNomina(`${statusMsg} Dotación activa detectada: ${rawNomina.length} colaboradores.`);
+            }
 
             const deptos = Array.from(new Set(rawNomina.map(r => r.depto))).sort();
             const convs = Array.from(new Set(rawNomina.map(r => r.convenio))).sort();
-            const cats = Array.from(new Set(rawNomina.map(r => r.categoria))).sort();
+            const mods = Array.from(new Set(rawNomina.map(r => r.modContrato))).sort();
 
             renderCheckboxes('ddDeptoNom', deptos, 'chkDeptoNom', 'aplicarFiltrosNomina()');
             renderCheckboxes('ddConvNom', convs, 'chkConvNom', 'aplicarFiltrosNomina()');
-            renderCheckboxes('ddCatNom', cats, 'chkCatNom', 'aplicarFiltrosNomina()');
+            renderCheckboxes('ddModNom', mods, 'chkModNom', 'aplicarFiltrosNomina()');
+
+            if (preservarFiltros && prevDeptos && prevConvs && prevMods) {
+                document.querySelectorAll('.chkDeptoNom').forEach(cb => cb.checked = prevDeptos.includes(cb.value));
+                document.querySelectorAll('.chkConvNom').forEach(cb => cb.checked = prevConvs.includes(cb.value));
+                document.querySelectorAll('.chkModNom').forEach(cb => cb.checked = prevMods.includes(cb.value));
+            }
 
             aplicarFiltrosNomina();
             enableAllTablesSorting();
         }
 
         function limpiarFiltrosNomina() {
-            ['chkDeptoNom', 'chkConvNom', 'chkCatNom'].forEach(cls => toggleAllCheckboxes(cls, true));
+            ['chkDeptoNom', 'chkConvNom', 'chkModNom'].forEach(cls => toggleAllCheckboxes(cls, true));
             document.getElementById('inputSearchNomina').value = '';
             aplicarFiltrosNomina();
         }
@@ -2954,17 +3010,17 @@
         function aplicarFiltrosNomina() {
             const selDeptos = getSelectedValues('chkDeptoNom');
             const selConvs = getSelectedValues('chkConvNom');
-            const selCats = getSelectedValues('chkCatNom');
+            const selMods = getSelectedValues('chkModNom');
             const q = (document.getElementById('inputSearchNomina').value || '').trim().toLowerCase();
 
             updateLabelText('labelDeptoNom', selDeptos, "Todos los Departamentos", "Deptos");
             updateLabelText('labelConvNom', selConvs, "Todos los Convenios", "Convenios");
-            updateLabelText('labelCatNom', selCats, "Todas las Categorías", "Categorías");
+            updateLabelText('labelModNom', selMods, "Todas las Modalidades", "Modalidades");
 
             filteredNomina = rawNomina.filter(r => {
                 if (!selDeptos.includes(r.depto)) return false;
                 if (!selConvs.includes(r.convenio)) return false;
-                if (!selCats.includes(r.categoria)) return false;
+                if (!selMods.includes(r.modContrato)) return false;
                 if (q && !r.nombreCompleto.toLowerCase().includes(q) && !r.legajo.toLowerCase().includes(q)) return false;
                 return true;
             });
@@ -3221,7 +3277,7 @@
                         <td class="py-3 px-4 font-bold text-slate-100">${r.nombreCompleto}</td>
                         <td class="py-3 px-4 text-slate-300">${r.depto}</td>
                         <td class="py-3 px-3">${badgeConv}</td>
-                        <td class="py-3 px-3 text-slate-300">${r.categoria}</td>
+                        <td class="py-3 px-3 text-slate-300">${r.modContrato}</td>
                         <td class="py-3 px-3 text-center font-mono text-slate-400">${r.fIngresoStr}</td>
                         <td class="py-3 px-3 text-center">${badgeAntig}</td>
                         <td class="py-3 px-3 text-center font-mono font-bold text-amber-400">${r.diasVacLCT} d</td>
