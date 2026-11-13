@@ -884,7 +884,7 @@
         <section class="bg-gradient-to-r from-slate-900 via-indigo-950/50 to-slate-900 p-6 rounded-2xl border border-indigo-800/40 shadow-xl">
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                 <div>
-                    <span class="text-[11px] font-bold uppercase tracking-widest px-2.5 py-1 bg-emerald-950 text-emerald-300 border border-emerald-700/50 rounded-full">Módulo Integrado con Nómina</span>
+                    <span class="text-[11px] font-bold uppercase tracking-widest px-2.5 py-1 bg-emerald-950 text-emerald-300 border border-emerald-700/50 rounded-full">Sectores Unificados (Nómina + Ausentismo + Extras)</span>
                     <h2 class="text-2xl font-bold text-white mt-2">⚡ Eficiencia de Personal & Productividad Operativa Hotelera</h2>
                     <p class="text-xs text-slate-300 mt-1">
                         Cruza automáticamente la <strong>Dotación Fija de Nómina</strong>, las <strong>Horas Perdidas por Ausentismo</strong> y las <strong>Horas Eventuales</strong> contra el <strong>Volumen de Actividad del Hotel</strong>.
@@ -996,13 +996,39 @@
         const MESES_LARGO = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
         const MESES_NOMBRES_HE = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
+        // =================================================================
+        // DICCIONARIO MAESTRO DE HOMOLOGACIÓN DE DEPARTAMENTOS
+        // Unifica nombres entre Ausentismo, Horas Extras y Nómina
+        // =================================================================
         function normalizarDepartamento(deptRaw) {
             if (!deptRaw) return 'Sin Depto';
             let d = deptRaw.toString().trim();
-            let dLow = d.toLowerCase();
-            if (dLow.includes('lobby bar') || dLow.includes('las vaji') || dLow.includes('vajilla') || dLow.includes('vajillas') || dLow.includes('vasija') || dLow.includes('vasijas')) {
-                return 'AA & BB';
+            let dLow = d.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            // 1. Alimentos & Bebidas (Ausentismo: AA & BB / Lobby Bar / Las Vasijas | HE: Banquetes 1 | Nómina: Alimentos y bebidas)
+            if (
+                dLow === 'aa & bb' ||
+                dLow === 'aa&bb' ||
+                dLow.includes('alimentos y bebidas') ||
+                dLow.includes('alimentos & bebidas') ||
+                dLow.includes('banquetes 1') ||
+                dLow.includes('lobby bar') ||
+                dLow.includes('las vaji') ||
+                dLow.includes('vajilla') ||
+                dLow.includes('vasija')
+            ) {
+                return 'Alimentos & Bebidas';
             }
+
+            // 2. Recepción / Front Office
+            if (
+                dLow === 'recepcion' ||
+                dLow.includes('front office') ||
+                dLow.includes('front-office')
+            ) {
+                return 'Recepción';
+            }
+
             return d;
         }
 
@@ -2290,7 +2316,7 @@
 
                 if (fechaNac) {
                     const edad = calcularEdad(fechaNac);
-                    if (edad > 0) {
+                    if (edad > 0 && edad < 100) {
                         if (edad < 25) rangosEtarios['< 25'] += horas;
                         else if (edad <= 35) rangosEtarios['25-35'] += horas;
                         else if (edad <= 50) rangosEtarios['36-50'] += horas;
@@ -2621,16 +2647,19 @@
             if (/^\d{1,2}\/\d{1,2}\/\d{2,4}$/.test(s)) {
                 const [d, m, y] = s.split('/');
                 const fullY = y.length === 2 ? (parseInt(y, 10) > 40 ? 1900 + parseInt(y, 10) : 2000 + parseInt(y, 10)) : parseInt(y, 10);
+                if (fullY < 1940 || fullY > 2030) return null;
                 return new Date(fullY, parseInt(m, 10) - 1, parseInt(d, 10));
             }
             const parsed = new Date(s);
-            return isNaN(parsed.getTime()) ? null : parsed;
+            if (isNaN(parsed.getTime()) || parsed.getFullYear() < 1940 || parsed.getFullYear() > 2030) return null;
+            return parsed;
         }
 
         function calcularEdad(fechaStr) {
             const birth = parseFechaFlexible(fechaStr);
             if (!birth) return 0;
-            return Math.max(0, Math.floor((Date.now() - birth.getTime()) / (1000 * 60 * 60 * 24 * 365.25)));
+            const age = Math.floor((Date.now() - birth.getTime()) / (1000 * 60 * 60 * 24 * 365.25));
+            return (age >= 16 && age <= 95) ? age : 0;
         }
 
         function renderTop10HE(empleadosMap) {
@@ -2769,7 +2798,7 @@
 
         let rawNomina = [];
         let filteredNomina = [];
-        let mapHeadcountPorDepto = {}; // Alimenta automáticamente la pestaña de Eficiencia
+        let mapHeadcountPorDepto = {};
         let chartsNomina = {};
         let ultimoHashNomina = '';
         let timerAutoSyncNomina = null;
@@ -2838,11 +2867,9 @@
 
             cargarNominaDesdeURL(false);
 
-            // Sincronización automática cada 60 segundos ante cambios en Google Sheets
             if (timerAutoSyncNomina) clearInterval(timerAutoSyncNomina);
             timerAutoSyncNomina = setInterval(() => cargarNominaDesdeURL(true), 60000);
 
-            // Sincroniza automáticamente al volver a enfocarse en la pestaña
             document.addEventListener('visibilitychange', () => {
                 if (!document.hidden) cargarNominaDesdeURL(true);
             });
@@ -2912,6 +2939,7 @@
             const fIngresoStr = getValNom(row, ['Fecha de ingreso', 'Fecha Ingreso', 'Ingreso', 'Alta']);
             const fIngresoDate = parseFechaFlexible(fIngresoStr);
             let antigAnios = parseNum(getValNom(row, ['Antigüedad', 'Antiguedad', 'Años']));
+            if (antigAnios > 55) antigAnios = 0; // Protección contra años corruptos (ej. 1900)
             let mesesTrabajados = antigAnios * 12;
 
             if (fIngresoDate) {
@@ -2924,7 +2952,6 @@
             let edad = parseNum(getValNom(row, ['Edad']));
             if (!edad && fNacStr) edad = calcularEdad(fNacStr);
 
-            // Lectura directa de la columna "sueldo bruto"
             let sueldoRaw = getValNom(row, [
                 'sueldo bruto', 'Sueldo Bruto', 'Sueldo bruto', 'SUELDO BRUTO',
                 'Total Bruto', 'Sueldo Básico', 'Sueldo Basico', 'Bruto', 'Sueldo'
@@ -2972,7 +2999,6 @@
                 .map(normalizarFilaNomina)
                 .filter(r => (r.legajo !== '-' || r.nombreCompleto !== 'Sin Nombre') && r.nombreCompleto.toLowerCase() !== 'total');
 
-            // Actualizar mapa de Headcount real por departamento para el módulo de Eficiencia
             mapHeadcountPorDepto = {};
             rawNomina.forEach(r => {
                 mapHeadcountPorDepto[r.depto] = (mapHeadcountPorDepto[r.depto] || 0) + 1;
@@ -3294,12 +3320,12 @@
 
         function obtenerDriverSugerido(depto) {
             const d = depto.toLowerCase();
-            if (d.includes('aa & bb') || d.includes('cocina') || d.includes('rest') || d.includes('bar') || d.includes('steward')) return { driver: '🍽️ Cubiertos Vendidos', defaultEmp: 18, defaultAct: 4200 };
+            if (d.includes('alimentos & bebidas') || d.includes('cocina') || d.includes('rest') || d.includes('bar') || d.includes('steward')) return { driver: '🍽️ Cubiertos Vendidos', defaultEmp: 17, defaultAct: 4200 };
             if (d.includes('banquete') || d.includes('evento') || d.includes('convencion')) return { driver: '🥂 Pax en Eventos', defaultEmp: 8, defaultAct: 1800 };
-            if (d.includes('ama de llaves') || d.includes('pisos') || d.includes('housekeeping') || d.includes('limpieza') || d.includes('lavander')) return { driver: '🛏️ Habitaciones Ocupadas', defaultEmp: 22, defaultAct: 3100 };
-            if (d.includes('recepcion') || d.includes('front') || d.includes('reserva') || d.includes('conserj')) return { driver: '🛎️ Check-ins / Hab. Ocup.', defaultEmp: 10, defaultAct: 3100 };
-            if (d.includes('spa') || d.includes('recreacion') || d.includes('wellness') || d.includes('health')) return { driver: '💆 Servicios / Tratamientos', defaultEmp: 6, defaultAct: 650 };
-            if (d.includes('mantenimiento') || d.includes('ingenieria')) return { driver: '🔧 Hab. Disponibles / OT', defaultEmp: 8, defaultAct: 4000 };
+            if (d.includes('ama de llaves') || d.includes('pisos') || d.includes('housekeeping') || d.includes('limpieza') || d.includes('lavander')) return { driver: '🛏️ Habitaciones Ocupadas', defaultEmp: 11, defaultAct: 3100 };
+            if (d.includes('recepción') || d.includes('recepcion') || d.includes('front') || d.includes('reserva') || d.includes('conserj')) return { driver: '🛎️ Check-ins / Hab. Ocup.', defaultEmp: 11, defaultAct: 3100 };
+            if (d.includes('spa') || d.includes('recreacion') || d.includes('wellness') || d.includes('health')) return { driver: '💆 Servicios / Tratamientos', defaultEmp: 10, defaultAct: 650 };
+            if (d.includes('mantenimiento') || d.includes('ingenieria')) return { driver: '🔧 Hab. Disponibles / OT', defaultEmp: 11, defaultAct: 4000 };
             return { driver: '📈 Unidades Operativas', defaultEmp: 6, defaultAct: 1000 };
         }
 
@@ -3345,7 +3371,7 @@
             });
 
             if (todosDeptos.size === 0) {
-                ['AA & BB', 'Banquetes', 'Ama de Llaves', 'Cocina', 'Recepción', 'Health Club', 'Mantenimiento'].forEach(d => todosDeptos.add(d));
+                ['Alimentos & Bebidas', 'Ama de Llaves', 'Cocina', 'Recepción', 'Health Club', 'Mantenimiento'].forEach(d => todosDeptos.add(d));
             }
 
             const tbody = document.getElementById('tbodyEficiencia');
@@ -3355,7 +3381,7 @@
 
             tbody.innerHTML = deptosOrdenados.map(d => {
                 const sugerencia = obtenerDriverSugerido(d);
-                const hcRealNomina = mapHeadcountPorDepto[d] || sugerencia.defaultEmp;
+                const hcRealNomina = mapHeadcountPorDepto[d] !== undefined ? mapHeadcountPorDepto[d] : sugerencia.defaultEmp;
                 const stateKey = `${periodoKey}|${d}`;
 
                 if (!estadoSimuladorEficiencia[stateKey]) {
