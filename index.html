@@ -2765,8 +2765,7 @@
         // =================================================================
         // 3. LÓGICA DE LA PESTAÑA 4: NÓMINA ACTIVA & MASA SALARIAL
         // =================================================================
-        const SHEET_ID_NOMINA = '17BMsyoY_RGgdgG2i_0aheKYPDeQj7xg4PbEfkXoR1_o';
-        const CSV_URL_NOMINA = `https://docs.google.com/spreadsheets/d/${SHEET_ID_NOMINA}/gviz/tq?tqx=out:csv&gid=0`;
+        const CSV_URL_NOMINA = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQJknZgU_ki7nOQewYrypm08PiPvRf9sixQyF1_Gs-YbsyL6BY3LtkpmZsHUb8jxWkcD5IyY5-39OQO/pub?output=csv';
 
         let rawNomina = [];
         let filteredNomina = [];
@@ -2872,12 +2871,12 @@
                             silencioso
                         );
                     } else if (!silencioso) {
-                        mostrarStatusNomina('⚠️ La hoja de Nómina devolvió 0 filas. Verificá que en Google Sheets esté configurada como "Archivo -> Compartir -> Publicar en la web (CSV)" o "Cualquier persona con el enlace puede ver".');
+                        mostrarStatusNomina('⚠️ La hoja de Nómina devolvió 0 filas.');
                     }
                 },
                 error: function() {
                     if (!silencioso) {
-                        mostrarStatusNomina('⚠️ No se pudo conectar automáticamente con "Nomina Sheraton Pilar". Andá a Google Sheets -> Archivo -> Compartir -> Publicar en la web (CSV) para habilitar la lectura automática.');
+                        mostrarStatusNomina('⚠️ No se pudo conectar automáticamente con la hoja de Nómina.');
                     }
                 }
             });
