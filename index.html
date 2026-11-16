@@ -3386,12 +3386,7 @@
         }
 
         // =================================================================
-        // 4. LÓGICA DE LA PESTAÑA 5: EFICIENCIA MENSUAL (MATRIZ DESDE O2)
-        // Fila 3 (idx 2): Hab. Ocupadas
-        // Fila 4 (idx 3): Uso Total Spa
-        // Fila 8 (idx 7): Cubiertos Restaurantes
-        // Fila 9 (idx 8): Cubiertos Banquetes
-        // Columna O (idx 14): Enero 2025 -> consecutivos mes a mes
+        // 4. LÓGICA DE LA PESTAÑA 5: EFICIENCIA MENSUAL (AUTO-DETECCIÓN + O2)
         // =================================================================
         const CSV_URL_EFICIENCIA_MATRIZ = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTg2QXNLqM1i06ZjKnUoldlaEqZWWXgnCsNnJDm0oMd60NASHAQzLgHnccAikHB0KDsLlqqC8vkEbpA/pub?output=csv';
 
@@ -3422,18 +3417,40 @@
                     const rows = results.data || [];
                     mapActividadMensual = {};
 
-                    if (rows.length >= 9) {
-                        const rowHab = rows[2] || [];   // Fila 3: Habitaciones ocupadas
-                        const rowSpa = rows[3] || [];   // Fila 4: Uso total del spa
-                        const rowRest = rows[7] || [];  // Fila 8: Cubiertos Restaurantes
-                        const rowBanq = rows[8] || [];  // Fila 9: Cubiertos Banquetes
+                    if (rows.length > 0) {
+                        // 1. Buscar automáticamente la columna donde arranca Enero 2025 (por defecto O = índice 14)
+                        let startCol = 14;
+                        for (let r = 0; r < Math.min(5, rows.length); r++) {
+                            for (let c = 0; c < (rows[r] || []).length; c++) {
+                                const cell = String(rows[r][c] || '').toLowerCase().trim();
+                                if ((cell.includes('ene') || cell.includes('jan') || cell.startsWith('01/') || cell.startsWith('1/')) && cell.includes('25')) {
+                                    startCol = c;
+                                    break;
+                                }
+                            }
+                        }
 
-                        const START_COL_O = 14; // Columna O = índice 14 = Enero 2025
+                        // 2. Buscar filas por palabra clave o usar fallback filas 3, 4, 8, 9 (índices 2, 3, 7, 8)
+                        const findRowByText = (keywords, fallbackIdx) => {
+                            for (let r = 0; r < rows.length; r++) {
+                                const firstCols = (rows[r] || []).slice(0, startCol).join(' ').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                                if (keywords.some(kw => firstCols.includes(kw))) {
+                                    return rows[r];
+                                }
+                            }
+                            return rows[fallbackIdx] || [];
+                        };
+
+                        const rowHab = findRowByText(['habitacion', 'room', 'ocupad'], 2);
+                        const rowSpa = findRowByText(['spa', 'health'], 3);
+                        const rowRest = findRowByText(['restaurante', 'restaurant', 'cubiertos rest'], 7);
+                        const rowBanq = findRowByText(['banquete', 'evento'], 8);
+
                         const maxCols = Math.max(rowHab.length, rowSpa.length, rowRest.length, rowBanq.length);
                         let mesesDetectados = 0;
 
-                        for (let c = START_COL_O; c < maxCols; c++) {
-                            const offsetMes = c - START_COL_O; // 0 = Ene 2025, 11 = Dic 2025, 12 = Ene 2026...
+                        for (let c = startCol; c < maxCols; c++) {
+                            const offsetMes = c - startCol;
                             const anio = 2025 + Math.floor(offsetMes / 12);
                             const mes = (offsetMes % 12) + 1;
                             const key = `${String(mes).padStart(2, '0')}/${anio}`;
@@ -3451,12 +3468,15 @@
                         }
 
                         if (badge) {
-                            badge.textContent = `✅ Matriz conectada desde O2 (${mesesDetectados} meses con datos)`;
-                            badge.className = 'text-[11px] font-semibold px-2.5 py-1 bg-emerald-950/80 text-emerald-300 border border-emerald-700/50 rounded-full';
+                            if (mesesDetectados > 0) {
+                                badge.textContent = `✅ Matriz conectada (${mesesDetectados} meses detectados desde col ${startCol + 1})`;
+                                badge.className = 'text-[11px] font-semibold px-2.5 py-1 bg-emerald-950/80 text-emerald-300 border border-emerald-700/50 rounded-full';
+                            } else {
+                                const muestraA1 = String((rows[0] && rows[0][0]) || (rows[1] && rows[1][0]) || 'vacía').slice(0, 25);
+                                badge.textContent = `⚠️ 0 datos numéricos (Filas: ${rows.length}, A1="${muestraA1}") — Revisar pestaña publicada`;
+                                badge.className = 'text-[11px] font-semibold px-2.5 py-1 bg-amber-950 text-amber-300 border border-amber-700/50 rounded-full';
+                            }
                         }
-                    } else if (badge) {
-                        badge.textContent = '⚠️ La planilla tiene menos de 9 filas';
-                        badge.className = 'text-[11px] font-semibold px-2.5 py-1 bg-rose-950 text-rose-300 border border-rose-700/50 rounded-full';
                     }
 
                     renderEficienciaOperativa();
