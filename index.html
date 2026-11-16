@@ -813,7 +813,7 @@
             </div>
         </section>
 
-        <!-- TABLA RESUMEN DE MASA SALARIAL POR SECTOR + CRUCE CON HORAS EXTRAS -->
+        <!-- TABLA RESUMEN DE MASA SALARIAL POR SECTOR -->
         <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg space-y-4">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-slate-800 pb-3">
                 <div>
@@ -878,33 +878,33 @@
     </main>
 
     <!-- ================================================================= -->
-    <!-- VISTA 5: EFICIENCIA & PRODUCTIVIDAD HOTELERA (OPERATIVA + DIARIA) -->
+    <!-- VISTA 5: EFICIENCIA & PRODUCTIVIDAD HOTELERA (100% MENSUAL)       -->
     <!-- ================================================================= -->
     <main id="viewEficiencia" class="hidden max-w-7xl mx-auto p-6 space-y-6">
-        <!-- HEADER Y FILTROS -->
+        <!-- HEADER Y FILTROS MENSUALES -->
         <section class="bg-gradient-to-r from-slate-900 via-indigo-950/50 to-slate-900 p-6 rounded-2xl border border-indigo-800/40 shadow-xl">
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                 <div>
                     <div class="flex flex-wrap items-center gap-2">
-                        <span class="text-[11px] font-bold uppercase tracking-widest px-2.5 py-1 bg-emerald-950 text-emerald-300 border border-emerald-700/50 rounded-full">Solo Sectores Operativos</span>
-                        <span id="badgeEstadoActividad" class="text-[11px] font-semibold px-2.5 py-1 bg-slate-800 text-cyan-300 border border-slate-700 rounded-full">⏳ Sincronizando actividad...</span>
+                        <span class="text-[11px] font-bold uppercase tracking-widest px-2.5 py-1 bg-emerald-950 text-emerald-300 border border-emerald-700/50 rounded-full">Análisis Mensual Consolidado</span>
+                        <span id="badgeEstadoActividad" class="text-[11px] font-semibold px-2.5 py-1 bg-slate-800 text-cyan-300 border border-slate-700 rounded-full">⏳ Sincronizando matriz desde O2...</span>
                     </div>
-                    <h2 class="text-2xl font-bold text-white mt-2">⚡ Eficiencia de Personal & Productividad Operativa</h2>
+                    <h2 class="text-2xl font-bold text-white mt-2">⚡ Eficiencia de Personal & Productividad Operativa Mensual</h2>
                     <p class="text-xs text-slate-300 mt-1">
-                        Cruce diario y mensual de <strong>Horas Netas Trabajadas</strong> (Planta Fija - Ausentismo + Extras) contra la <strong>Demanda Real</strong> de cada área.
+                        Cruce mensual de <strong>Horas Netas Trabajadas</strong> (Planta Fija - Ausentismo + Eventuales) contra la <strong>Demanda Real</strong> (Habitaciones, Spa, Cubiertos Rest. y Banquetes).
                     </p>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3 bg-slate-950/90 p-3 rounded-xl border border-slate-800">
                     <div>
-                        <label class="block text-[10px] font-bold uppercase text-slate-400">Año</label>
+                        <label class="block text-[10px] font-bold uppercase text-slate-400">Año (Matriz)</label>
                         <select id="eficAnioSelect" onchange="renderEficienciaOperativa()" class="bg-slate-900 border border-slate-700 text-cyan-300 text-xs font-bold rounded-lg p-2">
                             <option value="2026">2026</option>
                             <option value="2025">2025</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold uppercase text-slate-400">Mes</label>
+                        <label class="block text-[10px] font-bold uppercase text-slate-400">Mes (Matriz)</label>
                         <select id="eficMesSelect" onchange="renderEficienciaOperativa()" class="bg-slate-900 border border-slate-700 text-amber-300 text-xs font-bold rounded-lg p-2">
                             <option value="1">Enero</option>
                             <option value="2">Febrero</option>
@@ -921,18 +921,18 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold uppercase text-slate-400">Sector Operativo (Gráfico / Diario)</label>
+                        <label class="block text-[10px] font-bold uppercase text-slate-400">Sector (Evolución Interanual)</label>
                         <select id="eficSectorSelect" onchange="renderEficienciaOperativa()" class="bg-slate-900 border border-emerald-700/60 text-emerald-300 text-xs font-bold rounded-lg p-2">
                             <option value="TODOS">Todos los Sectores Operativos</option>
                             <option value="Alimentos & Bebidas">Alimentos & Bebidas (Cubiertos Rest.)</option>
-                            <option value="Banquetes">Banquetes (Pax Eventos)</option>
+                            <option value="Banquetes">Banquetes (Cubiertos Banquetes)</option>
                             <option value="Cocina">Cocina + Steward (Total Cubiertos)</option>
                             <option value="Recepción">Recepción (Hab. Ocupadas)</option>
                             <option value="Ama de Llaves">Ama de Llaves (Hab. Ocupadas)</option>
-                            <option value="Health Club">Health Club (Usos Spa)</option>
-                            <option value="Limpieza">Limpieza (Hab. + Eventos Pond.)</option>
-                            <option value="Lavandería">Lavandería (Hab. + Eventos Pond.)</option>
-                            <option value="Mantenimiento">Mantenimiento (Hab. + Eventos Pond.)</option>
+                            <option value="Health Club">Health Club (Uso Total Spa)</option>
+                            <option value="Limpieza">Limpieza (Hab. + Banquetes Pond.)</option>
+                            <option value="Lavandería">Lavandería (Hab. + Banquetes Pond.)</option>
+                            <option value="Mantenimiento">Mantenimiento (Hab. + Banquetes Pond.)</option>
                             <option value="Seguridad">Seguridad (Hab. Ocupadas)</option>
                         </select>
                     </div>
@@ -940,54 +940,41 @@
             </div>
         </section>
 
-        <!-- TARJETAS KPI DEL SECTOR / HOTEL -->
+        <!-- TARJETAS KPI DEL MES / SECTOR -->
         <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
-                <p class="text-xs font-bold uppercase text-slate-400">Horas Netas Trabajadas</p>
+                <p class="text-xs font-bold uppercase text-slate-400">Horas Netas del Mes</p>
                 <p id="kpiEficHsNetas" class="text-2xl font-extrabold text-emerald-400 mt-1">0 hs</p>
                 <p id="kpiEficDesgloseHs" class="text-[11px] text-slate-400 mt-1">Fijas: 0 | Aus: -0 | Ext: +0</p>
             </div>
             <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
-                <p class="text-xs font-bold uppercase text-cyan-400">Volumen Actividad (Driver)</p>
+                <p class="text-xs font-bold uppercase text-cyan-400">Actividad Mensual (Driver)</p>
                 <p id="kpiEficVolumen" class="text-2xl font-extrabold text-cyan-300 mt-1">0 un.</p>
                 <p id="kpiEficDriverNombre" class="text-[11px] text-slate-400 mt-1">Según planilla operativa</p>
             </div>
             <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
-                <p class="text-xs font-bold uppercase text-amber-400">Ratio Productividad Mes</p>
+                <p class="text-xs font-bold uppercase text-amber-400">Ratio Horas / Unidad</p>
                 <p id="kpiEficRatio" class="text-2xl font-extrabold text-amber-300 mt-1">0.00 hs/u</p>
                 <p id="kpiEficInvRatio" class="text-[11px] text-slate-400 mt-1">0.00 unidades / hora</p>
             </div>
-            <div class="bg-rose-950/25 p-4 rounded-xl border border-rose-800/40">
-                <p class="text-xs font-bold uppercase text-rose-300">Día de Mayor Desfasaje</p>
-                <p id="kpiEficPeorDia" class="text-base font-extrabold text-rose-400 mt-1.5">-</p>
-                <p id="kpiEficPeorDiaSub" class="text-[11px] text-rose-300/70 mt-1">Mayor relación horas / demanda</p>
+            <div class="bg-indigo-950/30 p-4 rounded-xl border border-indigo-800/40">
+                <p class="text-xs font-bold uppercase text-indigo-300">Var. Interanual Ratio (26 vs 25)</p>
+                <p id="kpiEficVarInteranual" class="text-xl font-extrabold text-slate-100 mt-1.5">-</p>
+                <p id="kpiEficVarSub" class="text-[11px] text-indigo-300/70 mt-1">Comparado contra mismo mes 2025</p>
             </div>
         </section>
 
-        <!-- GRÁFICO INTERACTIVO DOBLE EJE (EVOLUCIÓN DIARIA) -->
-        <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
-                <div>
-                    <h3 id="tituloGraficoEficiencia" class="text-lg font-bold text-slate-100">📈 Evolución Diaria: Horas Netas vs. Demanda Operativa</h3>
-                    <p class="text-xs text-slate-400">Barras (Cian) = Actividad diaria del sector | Línea (Ámbar) = Horas netas utilizadas ese día</p>
-                </div>
-            </div>
-            <div class="h-80 w-full">
-                <canvas id="chartEficienciaDiaria"></canvas>
-            </div>
-        </section>
-
-        <!-- TABLA 1: RESUMEN MENSUAL DEPURADO (SOLO SECTORES OPERATIVOS) -->
+        <!-- TABLA 1: MATRIZ MENSUAL POR SECTOR OPERATIVO -->
         <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg space-y-4">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-slate-800 pb-3">
                 <div>
-                    <h3 class="text-lg font-bold text-slate-100">📊 Resumen Mensual por Sector Operativo (Unificado)</h3>
+                    <h3 id="tituloTablaMatrizEfic" class="text-lg font-bold text-slate-100">📊 Matriz Mensual por Sector Operativo (Unificado)</h3>
                     <p class="text-xs text-slate-400">
-                        Sin sectores administrativos. <strong>Ama de Llaves</strong> y <strong>Recepción</strong> unificados; <strong>Steward</strong> integrado en Cocina. (Hacé clic en una fila para ver su detalle diario)
+                        Hacé clic en cualquier sector para ver su evolución mensual comparada 2025 vs. 2026 debajo (Ordenable ▲▼)
                     </p>
                 </div>
                 <button onclick="copiarTablaGenerica('tablaEficiencia', 'btnCopiarEfic')" id="btnCopiarEfic" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-2 rounded-lg transition-all">
-                    📋 Copiar Resumen Mensual
+                    📋 Copiar Matriz para Excel
                 </button>
             </div>
 
@@ -1012,32 +999,46 @@
             </div>
         </section>
 
-        <!-- TABLA 2: AUDITORÍA DÍA POR DÍA -->
+        <!-- GRÁFICO MENSUAL INTERANUAL (ENERO A DICIEMBRE: 2025 vs 2026) -->
+        <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
+                <div>
+                    <h3 id="tituloGraficoEficiencia" class="text-lg font-bold text-slate-100">📈 Evolución Mensual Interanual del Ratio (Hs / Unidad) — 2025 vs. 2026</h3>
+                    <p class="text-xs text-slate-400">Línea Ámbar = 2025 | Línea Cian = 2026 (Menor valor = mayor productividad por hora trabajada)</p>
+                </div>
+            </div>
+            <div class="h-80 w-full">
+                <canvas id="chartEficienciaMensual"></canvas>
+            </div>
+        </section>
+
+        <!-- TABLA 2: EVOLUCIÓN MENSUAL COMPARATIVA 2025 VS 2026 (ENERO A DICIEMBRE) -->
         <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg space-y-4">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-slate-800 pb-3">
                 <div>
-                    <h3 id="tituloTablaDiariaEfic" class="text-lg font-bold text-slate-100">📅 Auditoría Día por Día (Detalle Operativo)</h3>
-                    <p class="text-xs text-slate-400">Desglose diario de demanda contra horas fijas diarias, ausentismos fechados y horas extras fechadas</p>
+                    <h3 id="tituloTablaAnualEfic" class="text-lg font-bold text-slate-100">📅 Comparativa Mensual 2025 vs. 2026 (Enero a Diciembre)</h3>
+                    <p class="text-xs text-slate-400">Evolución mes a mes de Volumen Operativo, Horas Netas y Ratio de Eficiencia (Ordenable ▲▼)</p>
                 </div>
-                <button onclick="copiarTablaGenerica('tablaEficienciaDiaria', 'btnCopiarEficDiaria')" id="btnCopiarEficDiaria" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3 py-2 rounded-lg border border-slate-700 transition-all">
-                    📋 Copiar Detalle Diario
+                <button onclick="copiarTablaGenerica('tablaEficienciaAnual', 'btnCopiarEficAnual')" id="btnCopiarEficAnual" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3 py-2 rounded-lg border border-slate-700 transition-all">
+                    📋 Copiar Evolución Anual
                 </button>
             </div>
 
             <div class="overflow-x-auto border border-slate-800 rounded-xl">
-                <table id="tablaEficienciaDiaria" class="min-w-full text-xs text-left text-slate-200">
+                <table id="tablaEficienciaAnual" class="min-w-full text-xs text-left text-slate-200">
                     <thead class="bg-slate-950 border-b border-slate-800 text-slate-300 uppercase">
                         <tr>
-                            <th class="py-3 px-3">Fecha</th>
-                            <th class="py-3 px-3 text-right text-cyan-300">Actividad del Día</th>
-                            <th class="py-3 px-3 text-right">Hs Fijas / Día</th>
-                            <th class="py-3 px-3 text-right text-rose-400">(-) Hs Ausentismo</th>
-                            <th class="py-3 px-3 text-right text-cyan-400">(+) Hs Extras</th>
-                            <th class="py-3 px-3 text-right font-bold text-emerald-400">(=) Hs Netas Día</th>
-                            <th class="py-3 px-3 text-right font-bold text-amber-300">Ratio Diario (Hs/Un)</th>
+                            <th class="py-3 px-3">Mes</th>
+                            <th class="py-3 px-3 text-right text-amber-300">Actividad 2025</th>
+                            <th class="py-3 px-3 text-right text-amber-400">Hs Netas 2025</th>
+                            <th class="py-3 px-3 text-right font-bold text-amber-300">Ratio 2025</th>
+                            <th class="py-3 px-3 text-right text-cyan-300 border-l border-slate-800">Actividad 2026</th>
+                            <th class="py-3 px-3 text-right text-cyan-400">Hs Netas 2026</th>
+                            <th class="py-3 px-3 text-right font-bold text-cyan-300">Ratio 2026</th>
+                            <th class="py-3 px-3 text-center border-l border-slate-800">Var. Ratio (26 vs 25)</th>
                         </tr>
                     </thead>
-                    <tbody id="tbodyEficienciaDiaria" class="divide-y divide-slate-800 font-mono"></tbody>
+                    <tbody id="tbodyEficienciaAnual" class="divide-y divide-slate-800 font-mono"></tbody>
                 </table>
             </div>
         </section>
@@ -1049,10 +1050,9 @@
     <script>
         Chart.register(ChartDataLabels);
 
-        // PALETA DE ALTO CONTRASTE PARA MODO OSCURO
-        const COLOR_2025 = '#f59e0b'; // Ámbar / Naranja brillante
+        const COLOR_2025 = '#f59e0b';
         const COLOR_2025_BG = 'rgba(245, 158, 11, 0.2)';
-        const COLOR_2026 = '#06b6d4'; // Cian eléctrico
+        const COLOR_2026 = '#06b6d4';
         const COLOR_2026_BG = 'rgba(6, 182, 212, 0.25)';
         const PALETA_VIBRANTE = [
             '#06b6d4', '#f59e0b', '#ec4899', '#10b981', '#8b5cf6',
@@ -1064,7 +1064,6 @@
 
         // =================================================================
         // DICCIONARIO MAESTRO DE HOMOLOGACIÓN DE DEPARTAMENTOS
-        // Unifica nombres entre Ausentismo, Horas Extras y Nómina
         // =================================================================
         function normalizarDepartamento(deptRaw) {
             if (!deptRaw) return 'Sin Depto';
@@ -3387,9 +3386,14 @@
         }
 
         // =================================================================
-        // 4. LÓGICA DE LA PESTAÑA 5: EFICIENCIA & PRODUCTIVIDAD HOTELERA
+        // 4. LÓGICA DE LA PESTAÑA 5: EFICIENCIA MENSUAL (MATRIZ DESDE O2)
+        // Fila 3 (idx 2): Hab. Ocupadas
+        // Fila 4 (idx 3): Uso Total Spa
+        // Fila 8 (idx 7): Cubiertos Restaurantes
+        // Fila 9 (idx 8): Cubiertos Banquetes
+        // Columna O (idx 14): Enero 2025 -> consecutivos mes a mes
         // =================================================================
-        const CSV_URL_ACTIVIDAD = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQxYPPibJxFNdrwgO1PUmcVOqYZbCW2zpD2W38IYx4DfH6O54kmozWnTNq_c1Cx3HZYfBKAiYDue2z5/pub?output=csv';
+        const CSV_URL_EFICIENCIA_MATRIZ = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTg2QXNLqM1i06ZjKnUoldlaEqZWWXgnCsNnJDm0oMd60NASHAQzLgHnccAikHB0KDsLlqqC8vkEbpA/pub?output=csv';
 
         const SECTORES_OPERATIVOS_LISTA = [
             'Alimentos & Bebidas',
@@ -3404,90 +3408,127 @@
             'Seguridad'
         ];
 
-        let rawActividadDiaria = [];
-        let chartEficienciaInst = null;
+        // Mapa mensual: clave "MM/YYYY" -> { hab, spa, rest, banq }
+        let mapActividadMensual = {};
+        let chartEficienciaMensualInst = null;
 
-        function initActividadDiaria() {
+        function initActividadMensual() {
             const badge = document.getElementById('badgeEstadoActividad');
-            Papa.parse(`${CSV_URL_ACTIVIDAD}&_t=${Date.now()}`, {
+            Papa.parse(`${CSV_URL_EFICIENCIA_MATRIZ}&_t=${Date.now()}`, {
                 download: true,
-                header: true,
-                skipEmptyLines: true,
+                header: false,
+                skipEmptyLines: false,
                 complete: function(results) {
-                    rawActividadDiaria = results.data || [];
-                    if (badge) {
-                        badge.textContent = `✅ Actividad sincronizada (${rawActividadDiaria.length} días)`;
-                        badge.className = 'text-[11px] font-semibold px-2.5 py-1 bg-emerald-950/80 text-emerald-300 border border-emerald-700/50 rounded-full';
+                    const rows = results.data || [];
+                    mapActividadMensual = {};
+
+                    if (rows.length >= 9) {
+                        const rowHab = rows[2] || [];   // Fila 3: Habitaciones ocupadas
+                        const rowSpa = rows[3] || [];   // Fila 4: Uso total del spa
+                        const rowRest = rows[7] || [];  // Fila 8: Cubiertos Restaurantes
+                        const rowBanq = rows[8] || [];  // Fila 9: Cubiertos Banquetes
+
+                        const START_COL_O = 14; // Columna O = índice 14 = Enero 2025
+                        const maxCols = Math.max(rowHab.length, rowSpa.length, rowRest.length, rowBanq.length);
+                        let mesesDetectados = 0;
+
+                        for (let c = START_COL_O; c < maxCols; c++) {
+                            const offsetMes = c - START_COL_O; // 0 = Ene 2025, 11 = Dic 2025, 12 = Ene 2026...
+                            const anio = 2025 + Math.floor(offsetMes / 12);
+                            const mes = (offsetMes % 12) + 1;
+                            const key = `${String(mes).padStart(2, '0')}/${anio}`;
+
+                            const hab = parseNum(rowHab[c]);
+                            const spa = parseNum(rowSpa[c]);
+                            const rest = parseNum(rowRest[c]);
+                            const banq = parseNum(rowBanq[c]);
+
+                            if (hab > 0 || spa > 0 || rest > 0 || banq > 0) {
+                                mesesDetectados++;
+                            }
+
+                            mapActividadMensual[key] = { hab, spa, rest, banq };
+                        }
+
+                        if (badge) {
+                            badge.textContent = `✅ Matriz conectada desde O2 (${mesesDetectados} meses con datos)`;
+                            badge.className = 'text-[11px] font-semibold px-2.5 py-1 bg-emerald-950/80 text-emerald-300 border border-emerald-700/50 rounded-full';
+                        }
+                    } else if (badge) {
+                        badge.textContent = '⚠️ La planilla tiene menos de 9 filas';
+                        badge.className = 'text-[11px] font-semibold px-2.5 py-1 bg-rose-950 text-rose-300 border border-rose-700/50 rounded-full';
                     }
+
                     renderEficienciaOperativa();
+                    enableAllTablesSorting();
                 },
                 error: function() {
                     if (badge) {
-                        badge.textContent = '⚠️ Error al leer CSV Actividad';
+                        badge.textContent = '⚠️ Error al conectar CSV Eficiencia';
                         badge.className = 'text-[11px] font-semibold px-2.5 py-1 bg-rose-950 text-rose-300 border border-rose-700/50 rounded-full';
                     }
                 }
             });
         }
 
-        function parseFechaISO_DMY(fechaStr) {
-            if (!fechaStr) return null;
-            const s = String(fechaStr).trim().split(' ')[0];
-            if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
-                const [y, m, d] = s.split('-');
-                return { anio: y, mes: String(parseInt(m, 10)), dia: String(parseInt(d, 10)), iso: `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}` };
-            }
-            if (/^\d{1,2}\/\d{1,2}\/\d{2,4}$/.test(s)) {
-                const [d, m, y] = s.split('/');
-                const fullY = y.length === 2 ? `20${y}` : y;
-                return { anio: fullY, mes: String(parseInt(m, 10)), dia: String(parseInt(d, 10)), iso: `${fullY}-${m.padStart(2,'0')}-${d.padStart(2,'0')}` };
-            }
-            return null;
-        }
-
         function getDriverInfo(sector) {
             switch (sector) {
-                case 'Alimentos & Bebidas': return { label: '🍽️ Cubiertos Restaurante', defaultEmp: 17 };
-                case 'Banquetes': return { label: '🥂 Pax Eventos', defaultEmp: 8 };
-                case 'Cocina': return { label: '👨‍🍳 Total Cubiertos (Rest + Ev)', defaultEmp: 22 };
+                case 'Alimentos & Bebidas': return { label: '🍽️ Cubiertos Restaurantes', defaultEmp: 17 };
+                case 'Banquetes': return { label: '🥂 Cubiertos Banquetes', defaultEmp: 8 };
+                case 'Cocina': return { label: '👨‍🍳 Total Cubiertos (Rest + Banq)', defaultEmp: 22 };
                 case 'Recepción': return { label: '🛎️ Habitaciones Ocupadas', defaultEmp: 11 };
                 case 'Ama de Llaves': return { label: '🛏️ Habitaciones Ocupadas', defaultEmp: 14 };
-                case 'Health Club': return { label: '💆 Usos de Spa', defaultEmp: 10 };
-                case 'Limpieza': return { label: '🧹 Hab. + (Eventos / 3)', defaultEmp: 6 };
-                case 'Lavandería': return { label: '🧺 Hab. + (Eventos / 3)', defaultEmp: 4 };
-                case 'Mantenimiento': return { label: '🔧 Hab. + (Eventos / 3)', defaultEmp: 11 };
+                case 'Health Club': return { label: '💆 Uso Total Spa', defaultEmp: 10 };
+                case 'Limpieza': return { label: '🧹 Hab. + (Banquetes / 3)', defaultEmp: 6 };
+                case 'Lavandería': return { label: '🧺 Hab. + (Banquetes / 3)', defaultEmp: 4 };
+                case 'Mantenimiento': return { label: '🔧 Hab. + (Banquetes / 3)', defaultEmp: 11 };
                 case 'Seguridad': return { label: '🛡️ Habitaciones Ocupadas', defaultEmp: 6 };
                 default: return { label: '📈 Unidades Operativas', defaultEmp: 6 };
             }
         }
 
-        function calcularVolumenPorFilaActividad(sector, rowAct) {
-            if (!rowAct) return 0;
-            const hab = parseNum(getValNom(rowAct, ['Hab_Ocupadas', 'Habitaciones Ocupadas', 'Habitaciones', 'Ocupacion', 'Ocupación']));
-            const rest = parseNum(getValNom(rowAct, ['Cubiertos_Rest', 'Cubiertos Restaurante', 'Cubiertos', 'Restaurante']));
-            const ev = parseNum(getValNom(rowAct, ['Pax_Eventos', 'Cubiertos Eventos', 'Eventos', 'Pax']));
-            const spa = parseNum(getValNom(rowAct, ['Usos_Spa', 'Uso Spa', 'Spa', 'Tratamientos']));
+        function calcularVolumenMensualSector(sector, periodoKey) {
+            const datos = mapActividadMensual[periodoKey];
+            if (!datos) return 0;
 
-            if (sector === 'TODOS') return hab + rest + ev + spa;
+            const { hab, spa, rest, banq } = datos;
+            if (sector === 'TODOS') return hab + spa + rest + banq;
             if (sector === 'Alimentos & Bebidas') return rest;
-            if (sector === 'Banquetes') return ev;
-            if (sector === 'Cocina') return rest + ev;
+            if (sector === 'Banquetes') return banq;
+            if (sector === 'Cocina') return rest + banq;
             if (sector === 'Recepción' || sector === 'Ama de Llaves' || sector === 'Seguridad') return hab;
             if (sector === 'Health Club') return spa;
             if (sector === 'Limpieza' || sector === 'Lavandería' || sector === 'Mantenimiento') {
-                return Math.round(hab + (ev / 3));
+                return Math.round(hab + (banq / 3));
             }
             return hab;
         }
 
-        function extraerFechaRegistroRH(row, tipo) {
-            if (tipo === 'AUS') {
-                const f = getValAus(row, ['Fecha desde', 'Fecha inicio', 'Fecha', 'Dia', 'Día']);
-                return parseFechaISO_DMY(f);
-            } else {
-                const f = getValNom(row, ['Fecha', 'Fecha desde', 'Fecha trabajada', 'Dia', 'Día']);
-                return parseFechaISO_DMY(f);
-            }
+        function obtenerHorasMensualesPorPeriodo(periodoKey) {
+            const hsAus = {};
+            const hsEv = {};
+
+            rawAusentismo.forEach(item => {
+                const d = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
+                if (!SECTORES_OPERATIVOS_LISTA.includes(d)) return;
+                const p = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
+                if (p === periodoKey) {
+                    const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
+                    hsAus[d] = (hsAus[d] || 0) + (dias * HORAS_POR_DIA);
+                }
+            });
+
+            allRawDataHE.forEach(row => {
+                const d = normalizarDepartamento(getValNom(row, ['Departamento', 'O']));
+                if (!SECTORES_OPERATIVOS_LISTA.includes(d)) return;
+                const p = estandarizarPeriodo(getValNom(row, ['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']));
+                if (p === periodoKey) {
+                    const hs = parseMontoHE(getValNom(row, ['Cantidad liquidada', 'Cantidad', 'M']));
+                    hsEv[d] = (hsEv[d] || 0) + hs;
+                }
+            });
+
+            return { hsAus, hsEv };
         }
 
         function renderEficienciaOperativa() {
@@ -3496,89 +3537,24 @@
             const sectorFiltro = document.getElementById('eficSectorSelect').value;
             const mesPad = mes.padStart(2, '0');
             const periodoKey = `${mesPad}/${anio}`;
-            const diasEnMes = new Date(parseInt(anio, 10), parseInt(mes, 10), 0).getDate();
 
-            const actividadPorDia = {};
-            rawActividadDiaria.forEach(r => {
-                const fStr = getValNom(r, ['Fecha', 'Dia', 'Día', 'Date']);
-                const fObj = parseFechaISO_DMY(fStr);
-                if (fObj && fObj.anio === anio && fObj.mes === mes) {
-                    actividadPorDia[fObj.dia] = r;
-                }
-            });
-
-            const hsAusMes = {};
-            const hsAusDiario = {};
-            rawAusentismo.forEach(item => {
-                const d = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
-                if (!SECTORES_OPERATIVOS_LISTA.includes(d)) return;
-
-                const p = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
-                const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
-                const hs = dias * HORAS_POR_DIA;
-
-                if (p === periodoKey) {
-                    hsAusMes[d] = (hsAusMes[d] || 0) + hs;
-
-                    const fObj = extraerFechaRegistroRH(item, 'AUS');
-                    if (fObj && fObj.anio === anio && fObj.mes === mes) {
-                        const diaIni = parseInt(fObj.dia, 10);
-                        const cantDiasInt = Math.max(1, Math.round(dias));
-                        for (let offset = 0; offset < cantDiasInt; offset++) {
-                            const diaActual = diaIni + offset;
-                            if (diaActual <= diasEnMes) {
-                                const k = `${d}|${diaActual}`;
-                                hsAusDiario[k] = (hsAusDiario[k] || 0) + HORAS_POR_DIA;
-                            }
-                        }
-                    }
-                }
-            });
-
-            const hsEvMes = {};
-            const hsEvDiario = {};
-            allRawDataHE.forEach(row => {
-                const d = normalizarDepartamento(getValNom(row, ['Departamento', 'O']));
-                if (!SECTORES_OPERATIVOS_LISTA.includes(d)) return;
-
-                const periodo = getValNom(row, ['Período liquidado', 'Periodo liquidado', 'Periodo', 'K']);
-                const hs = parseMontoHE(getValNom(row, ['Cantidad liquidada', 'Cantidad', 'M']));
-
-                let perteneceMes = false;
-                if (periodo && String(periodo).includes('/')) {
-                    const partes = String(periodo).split('/');
-                    if (partes[1].trim() === anio && String(parseInt(partes[0].trim(), 10)) === mes) {
-                        perteneceMes = true;
-                    }
-                }
-
-                if (perteneceMes) {
-                    hsEvMes[d] = (hsEvMes[d] || 0) + hs;
-                    const fObj = extraerFechaRegistroRH(row, 'HE');
-                    if (fObj && fObj.anio === anio && fObj.mes === mes) {
-                        const k = `${d}|${fObj.dia}`;
-                        hsEvDiario[k] = (hsEvDiario[k] || 0) + hs;
-                    }
-                }
-            });
-
+            const { hsAus, hsEv } = obtenerHorasMensualesPorPeriodo(periodoKey);
             const tbodyMensual = document.getElementById('tbodyEficiencia');
             const dotacionPorSector = {};
 
+            document.getElementById('tituloTablaMatrizEfic').textContent = `📊 Matriz Mensual por Sector Operativo — ${MESES_LARGO[parseInt(mes,10)-1]} ${anio}`;
+
+            // 1. Renderizar Tabla Matriz por Sector para el Mes Elegido
             tbodyMensual.innerHTML = SECTORES_OPERATIVOS_LISTA.map(sec => {
                 const info = getDriverInfo(sec);
                 const cantEmp = mapHeadcountPorDepto[sec] !== undefined ? mapHeadcountPorDepto[sec] : info.defaultEmp;
                 dotacionPorSector[sec] = cantEmp;
 
                 const hsFijas = cantEmp * 200;
-                const hsAus = hsAusMes[sec] || 0;
-                const hsEv = hsEvMes[sec] || 0;
-                const hsNetas = Math.max(0, hsFijas - hsAus + hsEv);
-
-                let volMes = 0;
-                for (let dia = 1; dia <= diasEnMes; dia++) {
-                    volMes += calcularVolumenPorFilaActividad(sec, actividadPorDia[String(dia)]);
-                }
+                const aus = hsAus[sec] || 0;
+                const ev = hsEv[sec] || 0;
+                const hsNetas = Math.max(0, hsFijas - aus + ev);
+                const volMes = calcularVolumenMensualSector(sec, periodoKey);
 
                 const ratioHsU = volMes > 0 ? (hsNetas / volMes).toFixed(2) : '-';
                 const ratioUHs = hsNetas > 0 && volMes > 0 ? (volMes / hsNetas).toFixed(2) : '-';
@@ -3590,8 +3566,8 @@
                         <td class="py-3 px-3 font-sans text-slate-300">${info.label}</td>
                         <td class="py-3 px-3 text-center font-bold text-indigo-300">${cantEmp} emp.</td>
                         <td class="py-3 px-3 text-right text-slate-300">${hsFijas.toLocaleString('es-AR')} hs</td>
-                        <td class="py-3 px-3 text-right text-rose-400">-${hsAus.toLocaleString('es-AR', { maximumFractionDigits: 1 })} hs</td>
-                        <td class="py-3 px-3 text-right text-cyan-400">+${hsEv.toLocaleString('es-AR', { maximumFractionDigits: 1 })} hs</td>
+                        <td class="py-3 px-3 text-right text-rose-400">-${aus.toLocaleString('es-AR', { maximumFractionDigits: 1 })} hs</td>
+                        <td class="py-3 px-3 text-right text-cyan-400">+${ev.toLocaleString('es-AR', { maximumFractionDigits: 1 })} hs</td>
                         <td class="py-3 px-3 text-right font-extrabold text-emerald-400 bg-emerald-950/15">${hsNetas.toLocaleString('es-AR', { maximumFractionDigits: 1 })} hs</td>
                         <td class="py-3 px-3 text-right font-bold text-amber-300">${volMes.toLocaleString('es-AR')}</td>
                         <td class="py-3 px-3 text-right font-bold text-cyan-300">${ratioHsU} ${ratioHsU !== '-' ? 'hs/u' : ''}</td>
@@ -3600,149 +3576,168 @@
                 `;
             }).join('');
 
+            // 2. Evolución Mensual 2025 vs 2026 (Enero a Diciembre) para el sector elegido
             const sectoresTarget = sectorFiltro === 'TODOS' ? SECTORES_OPERATIVOS_LISTA : [sectorFiltro];
-            const etiquetasDias = [];
-            const serieActividad = [];
-            const serieHorasNetas = [];
-            const filasDiariasHTML = [];
+            const serieRatio2025 = [];
+            const serieRatio2026 = [];
+            const filasAnualesHTML = [];
 
-            let sumFijas = 0, sumAus = 0, sumEv = 0, sumNetas = 0, sumVolumen = 0;
-            let peorDiaInfo = { fecha: '-', ratio: 0, detalle: '' };
+            let kpiMesActual = { fijas: 0, aus: 0, ev: 0, netas: 0, vol: 0, ratio: 0 };
+            let kpiMes2025 = { ratio: 0 };
 
-            for (let dia = 1; dia <= diasEnMes; dia++) {
-                const diaStr = String(dia);
-                const fechaLabel = `${diaStr.padStart(2, '0')}/${mesPad}/${anio}`;
-                etiquetasDias.push(`${diaStr.padStart(2, '0')}/${mesPad}`);
+            for (let mIdx = 1; mIdx <= 12; mIdx++) {
+                const mStr = String(mIdx).padStart(2, '0');
+                const p25 = `${mStr}/2025`;
+                const p26 = `${mStr}/2026`;
 
-                const actDia = calcularVolumenPorFilaActividad(sectorFiltro, actividadPorDia[diaStr]);
+                const hrs25 = obtenerHorasMensualesPorPeriodo(p25);
+                const hrs26 = obtenerHorasMensualesPorPeriodo(p26);
 
-                let fijasDia = 0, ausDia = 0, evDia = 0;
+                let fijasBase = 0, aus25 = 0, ev25 = 0, aus26 = 0, ev26 = 0;
                 sectoresTarget.forEach(sec => {
-                    const hsFijasMesSec = (dotacionPorSector[sec] || 0) * 200;
-                    fijasDia += (hsFijasMesSec / diasEnMes);
-
-                    const tieneAusFechado = Object.keys(hsAusDiario).some(k => k.startsWith(`${sec}|`));
-                    const tieneEvFechado = Object.keys(hsEvDiario).some(k => k.startsWith(`${sec}|`));
-
-                    ausDia += tieneAusFechado ? (hsAusDiario[`${sec}|${diaStr}`] || 0) : ((hsAusMes[sec] || 0) / diasEnMes);
-                    evDia += tieneEvFechado ? (hsEvDiario[`${sec}|${diaStr}`] || 0) : ((hsEvMes[sec] || 0) / diasEnMes);
+                    fijasBase += (dotacionPorSector[sec] || 0) * 200;
+                    aus25 += (hrs25.hsAus[sec] || 0);
+                    ev25 += (hrs25.hsEv[sec] || 0);
+                    aus26 += (hrs26.hsAus[sec] || 0);
+                    ev26 += (hrs26.hsEv[sec] || 0);
                 });
 
-                const netasDia = Math.max(0, fijasDia - ausDia + evDia);
-                const ratioDia = actDia > 0 ? (netasDia / actDia) : 0;
+                const netas25 = Math.max(0, fijasBase - aus25 + ev25);
+                const netas26 = Math.max(0, fijasBase - aus26 + ev26);
 
-                if (actDia > 0 && ratioDia > peorDiaInfo.ratio) {
-                    peorDiaInfo = {
-                        fecha: fechaLabel,
-                        ratio: ratioDia,
-                        detalle: `${netasDia.toFixed(1)} hs p/ ${actDia} un.`
-                    };
+                const vol25 = calcularVolumenMensualSector(sectorFiltro, p25);
+                const vol26 = calcularVolumenMensualSector(sectorFiltro, p26);
+
+                const r25 = vol25 > 0 ? +(netas25 / vol25).toFixed(2) : null;
+                const r26 = vol26 > 0 ? +(netas26 / vol26).toFixed(2) : null;
+
+                serieRatio2025.push(r25);
+                serieRatio2026.push(r26);
+
+                if (String(mIdx) === mes) {
+                    if (anio === '2025') {
+                        kpiMesActual = { fijas: fijasBase, aus: aus25, ev: ev25, netas: netas25, vol: vol25, ratio: r25 || 0 };
+                    } else {
+                        kpiMesActual = { fijas: fijasBase, aus: aus26, ev: ev26, netas: netas26, vol: vol26, ratio: r26 || 0 };
+                    }
+                    kpiMes2025 = { ratio: r25 || 0 };
                 }
 
-                sumFijas += fijasDia;
-                sumAus += ausDia;
-                sumEv += evDia;
-                sumNetas += netasDia;
-                sumVolumen += actDia;
+                let badgeVar = `<span class="text-slate-500">-</span>`;
+                if (r25 !== null && r26 !== null && r25 > 0) {
+                    const diffPct = ((r26 - r25) / r25) * 100;
+                    const sign = diffPct > 0 ? '+' : '';
+                    if (diffPct < 0) {
+                        badgeVar = `<span class="bg-emerald-950 text-emerald-300 border border-emerald-800/50 px-2 py-0.5 rounded font-bold">${diffPct.toFixed(1)}% (Mejor)</span>`;
+                    } else if (diffPct > 0) {
+                        badgeVar = `<span class="bg-rose-950 text-rose-300 border border-rose-800/50 px-2 py-0.5 rounded font-bold">${sign}${diffPct.toFixed(1)}%</span>`;
+                    } else {
+                        badgeVar = `<span class="bg-slate-800 text-slate-300 px-2 py-0.5 rounded">0.0%</span>`;
+                    }
+                }
 
-                serieActividad.push(actDia);
-                serieHorasNetas.push(+netasDia.toFixed(1));
+                const highlightMes = String(mIdx) === mes ? 'bg-slate-800/70' : '';
 
-                filasDiariasHTML.push(`
-                    <tr class="hover:bg-slate-800/50 transition-colors">
-                        <td class="py-2.5 px-3 font-semibold text-slate-200">${fechaLabel}</td>
-                        <td class="py-2.5 px-3 text-right font-bold text-cyan-300">${actDia.toLocaleString('es-AR')}</td>
-                        <td class="py-2.5 px-3 text-right text-slate-300">${fijasDia.toFixed(1)} hs</td>
-                        <td class="py-2.5 px-3 text-right text-rose-400">-${ausDia.toFixed(1)} hs</td>
-                        <td class="py-2.5 px-3 text-right text-cyan-400">+${evDia.toFixed(1)} hs</td>
-                        <td class="py-2.5 px-3 text-right font-extrabold text-emerald-400">${netasDia.toFixed(1)} hs</td>
-                        <td class="py-2.5 px-3 text-right font-bold text-amber-300">${actDia > 0 ? ratioDia.toFixed(2) + ' hs/u' : '-'}</td>
+                filasAnualesHTML.push(`
+                    <tr class="hover:bg-slate-800/50 transition-colors ${highlightMes}">
+                        <td class="py-2.5 px-3 font-sans font-bold text-slate-100">${MESES_LARGO[mIdx - 1]}</td>
+                        <td class="py-2.5 px-3 text-right text-amber-200">${vol25 > 0 ? vol25.toLocaleString('es-AR') : '-'}</td>
+                        <td class="py-2.5 px-3 text-right text-amber-400">${vol25 > 0 ? netas25.toLocaleString('es-AR', { maximumFractionDigits: 0 }) + ' hs' : '-'}</td>
+                        <td class="py-2.5 px-3 text-right font-bold text-amber-300">${r25 !== null ? r25.toFixed(2) + ' hs/u' : '-'}</td>
+                        <td class="py-2.5 px-3 text-right text-cyan-200 border-l border-slate-800">${vol26 > 0 ? vol26.toLocaleString('es-AR') : '-'}</td>
+                        <td class="py-2.5 px-3 text-right text-cyan-400">${vol26 > 0 ? netas26.toLocaleString('es-AR', { maximumFractionDigits: 0 }) + ' hs' : '-'}</td>
+                        <td class="py-2.5 px-3 text-right font-bold text-cyan-300">${r26 !== null ? r26.toFixed(2) + ' hs/u' : '-'}</td>
+                        <td class="py-2.5 px-3 text-center border-l border-slate-800">${badgeVar}</td>
                     </tr>
                 `);
             }
 
-            document.getElementById('tbodyEficienciaDiaria').innerHTML = filasDiariasHTML.join('');
+            document.getElementById('tbodyEficienciaAnual').innerHTML = filasAnualesHTML.join('');
 
+            // Actualizar KPIs y Títulos
             const nombreSectorTitulo = sectorFiltro === 'TODOS' ? 'Todos los Sectores Operativos' : sectorFiltro;
             const driverTitulo = sectorFiltro === 'TODOS' ? 'Suma de Drivers Operativos' : getDriverInfo(sectorFiltro).label;
 
-            document.getElementById('tituloGraficoEficiencia').textContent = `📈 Evolución Diaria: ${nombreSectorTitulo} (${MESES_LARGO[parseInt(mes,10)-1]} ${anio})`;
-            document.getElementById('tituloTablaDiariaEfic').textContent = `📅 Auditoría Día por Día — ${nombreSectorTitulo}`;
+            document.getElementById('tituloGraficoEficiencia').textContent = `📈 Evolución Mensual Interanual del Ratio (Hs / Unidad) — ${nombreSectorTitulo}`;
+            document.getElementById('tituloTablaAnualEfic').textContent = `📅 Comparativa Mensual 2025 vs. 2026 — ${nombreSectorTitulo}`;
 
-            document.getElementById('kpiEficHsNetas').textContent = `${sumNetas.toLocaleString('es-AR', { maximumFractionDigits: 1 })} hs`;
-            document.getElementById('kpiEficDesgloseHs').textContent = `Fijas: ${Math.round(sumFijas)} | Aus: -${Math.round(sumAus)} | Ext: +${Math.round(sumEv)}`;
-            document.getElementById('kpiEficVolumen').textContent = `${sumVolumen.toLocaleString('es-AR')} un.`;
+            document.getElementById('kpiEficHsNetas').textContent = `${kpiMesActual.netas.toLocaleString('es-AR', { maximumFractionDigits: 1 })} hs`;
+            document.getElementById('kpiEficDesgloseHs').textContent = `Fijas: ${Math.round(kpiMesActual.fijas)} | Aus: -${Math.round(kpiMesActual.aus)} | Ext: +${Math.round(kpiMesActual.ev)}`;
+            document.getElementById('kpiEficVolumen').textContent = `${kpiMesActual.vol.toLocaleString('es-AR')} un.`;
             document.getElementById('kpiEficDriverNombre').textContent = driverTitulo;
 
-            const ratioMesGeneral = sumVolumen > 0 ? (sumNetas / sumVolumen).toFixed(2) : '0.00';
-            const invRatioGeneral = sumNetas > 0 && sumVolumen > 0 ? (sumVolumen / sumNetas).toFixed(2) : '0.00';
-            document.getElementById('kpiEficRatio').textContent = `${ratioMesGeneral} hs/u`;
-            document.getElementById('kpiEficInvRatio').textContent = `${invRatioGeneral} unidades / hora`;
+            const invRatio = kpiMesActual.netas > 0 && kpiMesActual.vol > 0 ? (kpiMesActual.vol / kpiMesActual.netas).toFixed(2) : '0.00';
+            document.getElementById('kpiEficRatio').textContent = `${kpiMesActual.ratio.toFixed(2)} hs/u`;
+            document.getElementById('kpiEficInvRatio').textContent = `${invRatio} unidades / hora`;
 
-            document.getElementById('kpiEficPeorDia').textContent = peorDiaInfo.fecha !== '-' ? `${peorDiaInfo.fecha} (${peorDiaInfo.ratio.toFixed(2)} hs/u)` : 'Sin datos de actividad';
-            document.getElementById('kpiEficPeorDiaSub').textContent = peorDiaInfo.detalle || 'Cargá actividad en Google Sheets';
+            const elVar = document.getElementById('kpiEficVarInteranual');
+            const elVarSub = document.getElementById('kpiEficVarSub');
+            if (anio === '2026' && kpiMesActual.ratio > 0 && kpiMes2025.ratio > 0) {
+                const diff = ((kpiMesActual.ratio - kpiMes2025.ratio) / kpiMes2025.ratio) * 100;
+                const sign = diff > 0 ? '+' : '';
+                elVar.textContent = `${sign}${diff.toFixed(1)}%`;
+                elVar.className = `text-xl font-extrabold mt-1.5 ${diff <= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+                elVarSub.textContent = `2025: ${kpiMes2025.ratio.toFixed(2)} hs/u vs 2026: ${kpiMesActual.ratio.toFixed(2)} hs/u`;
+            } else {
+                elVar.textContent = anio === '2025' ? 'Año Base 2025' : 'Sin base 2025';
+                elVar.className = 'text-lg font-extrabold text-slate-300 mt-1.5';
+                elVarSub.textContent = `Período: ${MESES_LARGO[parseInt(mes,10)-1]} ${anio}`;
+            }
 
-            renderGraficoEficienciaDiaria(etiquetasDias, serieActividad, serieHorasNetas, driverTitulo);
+            renderGraficoEficienciaMensual(serieRatio2025, serieRatio2026);
         }
 
-        function renderGraficoEficienciaDiaria(etiquetas, datosAct, datosHs, labelDriver) {
-            const ctx = document.getElementById('chartEficienciaDiaria').getContext('2d');
-            if (chartEficienciaInst) chartEficienciaInst.destroy();
+        function renderGraficoEficienciaMensual(data2025, data2026) {
+            const ctx = document.getElementById('chartEficienciaMensual').getContext('2d');
+            if (chartEficienciaMensualInst) chartEficienciaMensualInst.destroy();
 
-            chartEficienciaInst = new Chart(ctx, {
-                type: 'bar',
+            chartEficienciaMensualInst = new Chart(ctx, {
+                type: 'line',
                 data: {
-                    labels: etiquetas,
+                    labels: MESES_NOMBRES_HE,
                     datasets: [
                         {
-                            label: labelDriver,
-                            data: datosAct,
-                            backgroundColor: 'rgba(6, 182, 212, 0.35)',
-                            borderColor: '#06b6d4',
-                            borderWidth: 1.5,
-                            borderRadius: 4,
-                            yAxisID: 'y-act',
-                            order: 2
+                            label: 'Ratio 2025 (hs/unidad)',
+                            data: data2025,
+                            borderColor: COLOR_2025,
+                            backgroundColor: COLOR_2025_BG,
+                            pointBackgroundColor: COLOR_2025,
+                            borderWidth: 3,
+                            tension: 0.3,
+                            spanGaps: true
                         },
                         {
-                            label: 'Horas Netas Trabajadas',
-                            data: datosHs,
-                            type: 'line',
-                            borderColor: '#f59e0b',
-                            backgroundColor: '#f59e0b',
-                            borderWidth: 2.5,
-                            pointRadius: 3,
+                            label: 'Ratio 2026 (hs/unidad)',
+                            data: data2026,
+                            borderColor: COLOR_2026,
+                            backgroundColor: COLOR_2026_BG,
+                            pointBackgroundColor: COLOR_2026,
+                            borderWidth: 3,
                             tension: 0.3,
-                            yAxisID: 'y-hs',
-                            order: 1
+                            spanGaps: true
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
                     plugins: {
-                        datalabels: { display: false },
+                        datalabels: {
+                            align: 'top',
+                            color: ctx => ctx.dataset.borderColor,
+                            font: { weight: 'bold', size: 10 },
+                            formatter: v => v !== null ? v.toFixed(2) : ''
+                        },
                         legend: { labels: { color: '#f1f5f9', font: { weight: 'bold', size: 11 } } }
                     },
                     scales: {
-                        x: { grid: { color: '#1e293b' }, ticks: { color: '#cbd5e1', font: { size: 10 } } },
-                        'y-act': {
-                            type: 'linear',
-                            position: 'left',
+                        x: { grid: { color: '#1e293b' }, ticks: { color: '#cbd5e1' } },
+                        y: {
                             beginAtZero: true,
-                            title: { display: true, text: 'Volumen Actividad', color: '#22d3ee', font: { size: 11, weight: 'bold' } },
                             grid: { color: '#1e293b' },
-                            ticks: { color: '#22d3ee' }
-                        },
-                        'y-hs': {
-                            type: 'linear',
-                            position: 'right',
-                            beginAtZero: true,
-                            title: { display: true, text: 'Horas Netas', color: '#fbbf24', font: { size: 11, weight: 'bold' } },
-                            grid: { drawOnChartArea: false },
-                            ticks: { color: '#fbbf24' }
+                            ticks: { color: '#cbd5e1' },
+                            grace: '15%',
+                            title: { display: true, text: 'Horas por Unidad Operativa', color: '#94a3b8', font: { size: 11 } }
                         }
                     }
                 }
@@ -3754,7 +3749,7 @@
             initAusentismo();
             initHorasExtras();
             initNomina();
-            initActividadDiaria();
+            initActividadMensual();
             enableAllTablesSorting();
         };
     </script>
