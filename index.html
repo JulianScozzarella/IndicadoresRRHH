@@ -297,6 +297,57 @@
                 </table>
             </div>
         </section>
+        <!-- TABLA DE DÍAS DE AUSENCIA POR SECTOR Y MES (EXPORTABLE A EXCEL) -->
+<section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg space-y-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-slate-800 pb-3">
+        <div>
+            <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                📑 Días de Ausencia por Sector y Mes (Listo para Excel)
+            </h3>
+            <p class="text-xs text-slate-400">
+                Total de días liquidados por departamento y mes según los filtros de Año, Departamento y Concepto seleccionados (Ordenable ▲▼)
+            </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+            <div class="flex items-center gap-2">
+                <label for="selectAnioTablaResumenAus" class="text-xs font-semibold text-slate-300">Año:</label>
+                <select id="selectAnioTablaResumenAus" onchange="renderTablaResumenDiasAusentismo()" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="2026">2026</option>
+                    <option value="2025">2025</option>
+                    <option value="TODOS">Consolidado (Todos)</option>
+                </select>
+            </div>
+            <button onclick="copiarTablaGenerica('tablaResumenDiasAus', 'btnCopiarTablaAus')" id="btnCopiarTablaAus" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-2 rounded-lg shadow transition-all flex items-center gap-1.5">
+                📋 Copiar Tabla para Excel
+            </button>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto border border-slate-800 rounded-xl">
+        <table id="tablaResumenDiasAus" class="min-w-full text-right text-xs text-slate-200 border-collapse">
+            <thead>
+                <tr class="bg-slate-950 border-b border-slate-800 text-slate-300 font-bold uppercase">
+                    <th class="py-3 px-3 text-left border-r border-slate-800">Sector / Departamento</th>
+                    <th class="py-3 px-2">Ene</th>
+                    <th class="py-3 px-2">Feb</th>
+                    <th class="py-3 px-2">Mar</th>
+                    <th class="py-3 px-2">Abr</th>
+                    <th class="py-3 px-2">May</th>
+                    <th class="py-3 px-2">Jun</th>
+                    <th class="py-3 px-2">Jul</th>
+                    <th class="py-3 px-2">Ago</th>
+                    <th class="py-3 px-2">Sep</th>
+                    <th class="py-3 px-2">Oct</th>
+                    <th class="py-3 px-2">Nov</th>
+                    <th class="py-3 px-2">Dic</th>
+                    <th class="py-3 px-3 bg-slate-900 border-l border-slate-800 text-amber-400">Total Días</th>
+                </tr>
+            </thead>
+            <tbody id="tablaResumenDiasAusBody" class="divide-y divide-slate-800 font-mono"></tbody>
+            <tfoot id="tablaResumenDiasAusFoot" class="bg-slate-950 border-t-2 border-slate-700 font-mono font-bold text-slate-100"></tfoot>
+        </table>
+    </div>
+</section>
     </main>
 
     <!-- ================================================================= -->
@@ -1765,8 +1816,84 @@
             renderChartDepartamentoAusentismo(rawAusentismo);
             renderChartMotivoAusentismo(filtered);
             renderRankingLicenciasCortas();
+            renderTablaResumenDiasAusentismo();
             renderTablaAusentismo(filtered);
+        }function renderTablaResumenDiasAusentismo() {
+    const tbody = document.getElementById('tablaResumenDiasAusBody');
+    const tfoot = document.getElementById('tablaResumenDiasAusFoot');
+    const anioSeleccionado = document.getElementById('selectAnioTablaResumenAus').value;
+
+    // Respetamos los filtros globales de Departamento y Concepto seleccionados arriba
+    const selectedDepts = getSelectedValues('chkDeptAus');
+    const selectedMotivos = getSelectedValues('chkMotivoAus');
+
+    const matriz = {};
+    const totalesMes = new Array(12).fill(0);
+    let granTotal = 0;
+
+    rawAusentismo.forEach(item => {
+        const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
+        const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Motivo']);
+        
+        if (!selectedDepts.includes(dept)) return;
+        if (!selectedMotivos.includes(motivo)) return;
+
+        const periodo = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
+        if (!periodo || !periodo.includes('/')) return;
+
+        const [m, y] = periodo.split('/');
+        if (anioSeleccionado !== 'TODOS' && y !== anioSeleccionado) return;
+
+        const mesIdx = parseInt(m, 10) - 1;
+        const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
+
+        if (mesIdx >= 0 && mesIdx < 12) {
+            if (!matriz[dept]) {
+                matriz[dept] = new Array(12).fill(0);
+            }
+            matriz[dept][mesIdx] += dias;
+            totalesMes[mesIdx] += dias;
+            granTotal += dias;
         }
+    });
+
+    // Ordenar sectores alfabéticamente
+    const sectoresOrdenados = Object.keys(matriz).sort((a, b) => a.localeCompare(b, 'es'));
+
+    if (sectoresOrdenados.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="14" class="py-6 text-center text-slate-500 font-sans">No hay días de ausencia registrados para el año y filtros seleccionados.</td></tr>`;
+        tfoot.innerHTML = '';
+        return;
+    }
+
+    tbody.innerHTML = sectoresOrdenados.map(dept => {
+        const meses = matriz[dept];
+        const totalSector = meses.reduce((acc, val) => acc + val, 0);
+        const celdasMeses = meses.map(d => 
+            `<td class="py-2.5 px-2 ${d > 0 ? 'text-slate-200' : 'text-slate-600'}">${d > 0 ? d.toLocaleString('es-AR') : '0'}</td>`
+        ).join('');
+
+        return `
+            <tr class="hover:bg-slate-800/50 transition-colors">
+                <td class="py-2.5 px-3 text-left font-sans font-bold text-slate-200 border-r border-slate-800">${dept}</td>
+                ${celdasMeses}
+                <td class="py-2.5 px-3 bg-slate-900/60 border-l border-slate-800 font-bold text-amber-400">${totalSector.toLocaleString('es-AR')}</td>
+            </tr>
+        `;
+    }).join('');
+
+    const celdasTotales = totalesMes.map(t => 
+        `<td class="py-3 px-2 text-cyan-300">${t.toLocaleString('es-AR')}</td>`
+    ).join('');
+
+    tfoot.innerHTML = `
+        <tr>
+            <td class="py-3 px-3 text-left font-sans uppercase text-slate-300 border-r border-slate-800">Total General</td>
+            ${celdasTotales}
+            <td class="py-3 px-3 bg-slate-900 border-l border-slate-800 text-amber-400 text-sm">${granTotal.toLocaleString('es-AR')}</td>
+        </tr>
+    `;
+}
 
         function renderRankingLicenciasCortas() {
             const sectorElegido = document.getElementById('selectSectorLicCortas').value;
