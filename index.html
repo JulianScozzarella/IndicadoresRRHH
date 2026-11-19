@@ -297,57 +297,58 @@
                 </table>
             </div>
         </section>
-        <!-- TABLA DE DÍAS DE AUSENCIA POR SECTOR Y MES (EXPORTABLE A EXCEL) -->
-<section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg space-y-4">
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-slate-800 pb-3">
-        <div>
-            <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
-                📑 Días de Ausencia por Sector y Mes (Listo para Excel)
-            </h3>
-            <p class="text-xs text-slate-400">
-                Total de días liquidados por departamento y mes según los filtros de Año, Departamento y Concepto seleccionados (Ordenable ▲▼)
-            </p>
-        </div>
-        <div class="flex flex-wrap items-center gap-3">
-            <div class="flex items-center gap-2">
-                <label for="selectAnioTablaResumenAus" class="text-xs font-semibold text-slate-300">Año:</label>
-                <select id="selectAnioTablaResumenAus" onchange="renderTablaResumenDiasAusentismo()" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-indigo-500 focus:border-indigo-500">
-                    <option value="2026">2026</option>
-                    <option value="2025">2025</option>
-                    <option value="TODOS">Consolidado (Todos)</option>
-                </select>
-            </div>
-            <button onclick="copiarTablaGenerica('tablaResumenDiasAus', 'btnCopiarTablaAus')" id="btnCopiarTablaAus" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-2 rounded-lg shadow transition-all flex items-center gap-1.5">
-                📋 Copiar Tabla para Excel
-            </button>
-        </div>
-    </div>
 
-    <div class="overflow-x-auto border border-slate-800 rounded-xl">
-        <table id="tablaResumenDiasAus" class="min-w-full text-right text-xs text-slate-200 border-collapse">
-            <thead>
-                <tr class="bg-slate-950 border-b border-slate-800 text-slate-300 font-bold uppercase">
-                    <th class="py-3 px-3 text-left border-r border-slate-800">Sector / Departamento</th>
-                    <th class="py-3 px-2">Ene</th>
-                    <th class="py-3 px-2">Feb</th>
-                    <th class="py-3 px-2">Mar</th>
-                    <th class="py-3 px-2">Abr</th>
-                    <th class="py-3 px-2">May</th>
-                    <th class="py-3 px-2">Jun</th>
-                    <th class="py-3 px-2">Jul</th>
-                    <th class="py-3 px-2">Ago</th>
-                    <th class="py-3 px-2">Sep</th>
-                    <th class="py-3 px-2">Oct</th>
-                    <th class="py-3 px-2">Nov</th>
-                    <th class="py-3 px-2">Dic</th>
-                    <th class="py-3 px-3 bg-slate-900 border-l border-slate-800 text-amber-400">Total Días</th>
-                </tr>
-            </thead>
-            <tbody id="tablaResumenDiasAusBody" class="divide-y divide-slate-800 font-mono"></tbody>
-            <tfoot id="tablaResumenDiasAusFoot" class="bg-slate-950 border-t-2 border-slate-700 font-mono font-bold text-slate-100"></tfoot>
-        </table>
-    </div>
-</section>
+        <!-- TABLA DE DÍAS DE AUSENCIA POR SECTOR Y MES (EXPORTABLE A EXCEL) -->
+        <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg space-y-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-slate-800 pb-3">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                        📑 Días de Ausencia por Sector y Mes (Listo para Excel)
+                    </h3>
+                    <p class="text-xs text-slate-400">
+                        Total de días liquidados por departamento y mes según los filtros de Año, Departamento y Concepto seleccionados (Ordenable ▲▼)
+                    </p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="flex items-center gap-2">
+                        <label for="selectAnioTablaResumenAus" class="text-xs font-semibold text-slate-300">Año:</label>
+                        <select id="selectAnioTablaResumenAus" onchange="renderTablaResumenDiasAusentismo()" class="bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="2026">2026</option>
+                            <option value="2025">2025</option>
+                            <option value="TODOS">Consolidado (Todos)</option>
+                        </select>
+                    </div>
+                    <button onclick="copiarTablaGenerica('tablaResumenDiasAus', 'btnCopiarTablaAus')" id="btnCopiarTablaAus" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-2 rounded-lg shadow transition-all flex items-center gap-1.5">
+                        📋 Copiar Tabla para Excel
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto border border-slate-800 rounded-xl">
+                <table id="tablaResumenDiasAus" class="min-w-full text-right text-xs text-slate-200 border-collapse">
+                    <thead>
+                        <tr class="bg-slate-950 border-b border-slate-800 text-slate-300 font-bold uppercase">
+                            <th class="py-3 px-3 text-left border-r border-slate-800">Sector / Departamento</th>
+                            <th class="py-3 px-2">Ene</th>
+                            <th class="py-3 px-2">Feb</th>
+                            <th class="py-3 px-2">Mar</th>
+                            <th class="py-3 px-2">Abr</th>
+                            <th class="py-3 px-2">May</th>
+                            <th class="py-3 px-2">Jun</th>
+                            <th class="py-3 px-2">Jul</th>
+                            <th class="py-3 px-2">Ago</th>
+                            <th class="py-3 px-2">Sep</th>
+                            <th class="py-3 px-2">Oct</th>
+                            <th class="py-3 px-2">Nov</th>
+                            <th class="py-3 px-2">Dic</th>
+                            <th class="py-3 px-3 bg-slate-900 border-l border-slate-800 text-amber-400">Total Días</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaResumenDiasAusBody" class="divide-y divide-slate-800 font-mono"></tbody>
+                    <tfoot id="tablaResumenDiasAusFoot" class="bg-slate-950 border-t-2 border-slate-700 font-mono font-bold text-slate-100"></tfoot>
+                </table>
+            </div>
+        </section>
     </main>
 
     <!-- ================================================================= -->
@@ -742,7 +743,7 @@
                 <h2 class="text-2xl font-bold text-white flex items-center gap-2">
                     👥 Nómina Activa, Demografía & Masa Salarial
                 </h2>
-                <p class="text-cyan-400 text-sm">Estructura de personal efectivo, costos salariales (+33% CS), antigüedad, vacaciones LCT y cruce con eventuales</p>
+                <p class="text-cyan-400 text-sm">Estructura de personal efectivo, costos salariales (+33% CS), género, antigüedad, vacaciones LCT y cruce con eventuales</p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
                 <label class="bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold px-4 py-2 rounded-lg shadow-md cursor-pointer text-sm transition-all">
@@ -757,7 +758,7 @@
 
         <div id="statusAlertNomina" class="hidden p-3.5 rounded-lg bg-cyan-950/70 border border-cyan-500/30 text-cyan-200 text-xs"></div>
 
-        <!-- FILTROS MULTI-SELECCIÓN DE NÓMINA -->
+        <!-- FILTROS MULTI-SELECCIÓN DE NÓMINA (CON GÉNERO) -->
         <section class="bg-slate-900/95 backdrop-blur p-5 rounded-2xl border border-slate-800 shadow-2xl sticky top-16 z-40 space-y-3">
             <div class="flex items-center justify-between border-b border-slate-800 pb-2">
                 <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Filtros de Nómina Activa (Multi-Selección)</h3>
@@ -765,7 +766,7 @@
                     🧹 Limpiar Filtros
                 </button>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                 <div class="relative">
                     <label class="block text-xs font-medium text-slate-300 mb-1">Departamento(s) / Sector:</label>
                     <button type="button" onclick="toggleDropdown('ddDeptoNom')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2.5 text-left flex justify-between items-center">
@@ -791,6 +792,15 @@
                         <span class="text-xs text-slate-500">▼</span>
                     </button>
                     <div id="ddModNom" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-60 overflow-y-auto space-y-2 text-xs text-slate-200"></div>
+                </div>
+
+                <div class="relative">
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Género:</label>
+                    <button type="button" onclick="toggleDropdown('ddGeneroNom')" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-lg p-2.5 text-left flex justify-between items-center">
+                        <span id="labelGeneroNom" class="truncate">Todos los Géneros</span>
+                        <span class="text-xs text-slate-500">▼</span>
+                    </button>
+                    <div id="ddGeneroNom" class="hidden absolute left-0 right-0 mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl p-3 z-50 max-h-60 overflow-y-auto space-y-2 text-xs text-slate-200"></div>
                 </div>
 
                 <div>
@@ -847,7 +857,7 @@
             </div>
         </section>
 
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
                 <h3 class="text-lg font-bold text-slate-100 mb-1">3. Pirámide de Antigüedad (Tenure)</h3>
                 <p class="text-xs text-slate-400 mb-4">Distribución por años de permanencia en Sheraton Pilar</p>
@@ -860,6 +870,13 @@
                 <p class="text-xs text-slate-400 mb-4">Distribución generacional de la planta activa</p>
                 <div class="h-72">
                     <canvas id="chartNomEdad"></canvas>
+                </div>
+            </div>
+            <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
+                <h3 class="text-lg font-bold text-slate-100 mb-1">5. Distribución por Género</h3>
+                <p class="text-xs text-slate-400 mb-4">Porcentaje y cantidad de personal Masculino y Femenino</p>
+                <div class="h-72">
+                    <canvas id="chartNomGenero"></canvas>
                 </div>
             </div>
         </section>
@@ -895,12 +912,12 @@
             </div>
         </section>
 
-        <!-- PADRÓN DETALLADO DE EMPLEADOS -->
+        <!-- PADRÓN DETALLADO DE EMPLEADOS (CON COLUMNA GÉNERO) -->
         <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg space-y-4">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-slate-800 pb-3">
                 <div>
                     <h3 class="text-lg font-bold text-slate-100">📋 Padrón Detallado de Nómina Activa (Ordenable ▲▼)</h3>
-                    <p class="text-xs text-slate-400">Incluye cálculo automático de antigüedad, alerta de período de prueba (&lt;6 meses) y días de vacaciones LCT</p>
+                    <p class="text-xs text-slate-400">Incluye género, cálculo automático de antigüedad, alerta de período de prueba (&lt;6 meses) y días de vacaciones LCT</p>
                 </div>
                 <button onclick="copiarTablaGenerica('tablaPadronNomina', 'btnCopiarPadronNom')" id="btnCopiarPadronNom" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3 py-2 rounded-lg border border-slate-700 transition-all">
                     📋 Copiar Padrón
@@ -912,6 +929,7 @@
                         <tr>
                             <th class="py-3 px-4">Legajo</th>
                             <th class="py-3 px-4">Apellido y Nombre</th>
+                            <th class="py-3 px-3 text-center">Género</th>
                             <th class="py-3 px-4">Departamento</th>
                             <th class="py-3 px-3">Convenio</th>
                             <th class="py-3 px-3">Mod. Contrato</th>
@@ -1229,7 +1247,7 @@
 
             const numCandidate = clean
                 .replace(/\(.+?\)/g, '')
-                .replace(/[$%a-zA-ZáéíóúÁÉÍÓÚñÑ🔸🔹🏆✅⚠️⏳]/g, '')
+                .replace(/[$%a-zA-ZáéíóúÁÉÍÓÚñÑ🔸🔹🏆✅⚠️⏳♂️♀️]/g, '')
                 .trim();
 
             if (/^[+-]?[\d.,]+$/.test(numCandidate)) {
@@ -1818,82 +1836,82 @@
             renderRankingLicenciasCortas();
             renderTablaResumenDiasAusentismo();
             renderTablaAusentismo(filtered);
-        }function renderTablaResumenDiasAusentismo() {
-    const tbody = document.getElementById('tablaResumenDiasAusBody');
-    const tfoot = document.getElementById('tablaResumenDiasAusFoot');
-    const anioSeleccionado = document.getElementById('selectAnioTablaResumenAus').value;
-
-    // Respetamos los filtros globales de Departamento y Concepto seleccionados arriba
-    const selectedDepts = getSelectedValues('chkDeptAus');
-    const selectedMotivos = getSelectedValues('chkMotivoAus');
-
-    const matriz = {};
-    const totalesMes = new Array(12).fill(0);
-    let granTotal = 0;
-
-    rawAusentismo.forEach(item => {
-        const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
-        const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Motivo']);
-        
-        if (!selectedDepts.includes(dept)) return;
-        if (!selectedMotivos.includes(motivo)) return;
-
-        const periodo = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
-        if (!periodo || !periodo.includes('/')) return;
-
-        const [m, y] = periodo.split('/');
-        if (anioSeleccionado !== 'TODOS' && y !== anioSeleccionado) return;
-
-        const mesIdx = parseInt(m, 10) - 1;
-        const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
-
-        if (mesIdx >= 0 && mesIdx < 12) {
-            if (!matriz[dept]) {
-                matriz[dept] = new Array(12).fill(0);
-            }
-            matriz[dept][mesIdx] += dias;
-            totalesMes[mesIdx] += dias;
-            granTotal += dias;
         }
-    });
 
-    // Ordenar sectores alfabéticamente
-    const sectoresOrdenados = Object.keys(matriz).sort((a, b) => a.localeCompare(b, 'es'));
+        function renderTablaResumenDiasAusentismo() {
+            const tbody = document.getElementById('tablaResumenDiasAusBody');
+            const tfoot = document.getElementById('tablaResumenDiasAusFoot');
+            const anioSeleccionado = document.getElementById('selectAnioTablaResumenAus').value;
 
-    if (sectoresOrdenados.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="14" class="py-6 text-center text-slate-500 font-sans">No hay días de ausencia registrados para el año y filtros seleccionados.</td></tr>`;
-        tfoot.innerHTML = '';
-        return;
-    }
+            const selectedDepts = getSelectedValues('chkDeptAus');
+            const selectedMotivos = getSelectedValues('chkMotivoAus');
 
-    tbody.innerHTML = sectoresOrdenados.map(dept => {
-        const meses = matriz[dept];
-        const totalSector = meses.reduce((acc, val) => acc + val, 0);
-        const celdasMeses = meses.map(d => 
-            `<td class="py-2.5 px-2 ${d > 0 ? 'text-slate-200' : 'text-slate-600'}">${d > 0 ? d.toLocaleString('es-AR') : '0'}</td>`
-        ).join('');
+            const matriz = {};
+            const totalesMes = new Array(12).fill(0);
+            let granTotal = 0;
 
-        return `
-            <tr class="hover:bg-slate-800/50 transition-colors">
-                <td class="py-2.5 px-3 text-left font-sans font-bold text-slate-200 border-r border-slate-800">${dept}</td>
-                ${celdasMeses}
-                <td class="py-2.5 px-3 bg-slate-900/60 border-l border-slate-800 font-bold text-amber-400">${totalSector.toLocaleString('es-AR')}</td>
-            </tr>
-        `;
-    }).join('');
+            rawAusentismo.forEach(item => {
+                const dept = normalizarDepartamento(getValAus(item, ['Departamento', 'Sector']));
+                const motivo = getValAus(item, ['Desc. de concep', 'Desc. concepto', 'Motivo']);
+                
+                if (!selectedDepts.includes(dept)) return;
+                if (!selectedMotivos.includes(motivo)) return;
 
-    const celdasTotales = totalesMes.map(t => 
-        `<td class="py-3 px-2 text-cyan-300">${t.toLocaleString('es-AR')}</td>`
-    ).join('');
+                const periodo = estandarizarPeriodo(getValAus(item, ['Período liqui', 'Período', 'Periodo']));
+                if (!periodo || !periodo.includes('/')) return;
 
-    tfoot.innerHTML = `
-        <tr>
-            <td class="py-3 px-3 text-left font-sans uppercase text-slate-300 border-r border-slate-800">Total General</td>
-            ${celdasTotales}
-            <td class="py-3 px-3 bg-slate-900 border-l border-slate-800 text-amber-400 text-sm">${granTotal.toLocaleString('es-AR')}</td>
-        </tr>
-    `;
-}
+                const [m, y] = periodo.split('/');
+                if (anioSeleccionado !== 'TODOS' && y !== anioSeleccionado) return;
+
+                const mesIdx = parseInt(m, 10) - 1;
+                const dias = parseNum(getValAus(item, ['Cantidad liquic', 'Cantidad liqui', 'Cantidad']));
+
+                if (mesIdx >= 0 && mesIdx < 12) {
+                    if (!matriz[dept]) {
+                        matriz[dept] = new Array(12).fill(0);
+                    }
+                    matriz[dept][mesIdx] += dias;
+                    totalesMes[mesIdx] += dias;
+                    granTotal += dias;
+                }
+            });
+
+            const sectoresOrdenados = Object.keys(matriz).sort((a, b) => a.localeCompare(b, 'es'));
+
+            if (sectoresOrdenados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="14" class="py-6 text-center text-slate-500 font-sans">No hay días de ausencia registrados para el año y filtros seleccionados.</td></tr>`;
+                tfoot.innerHTML = '';
+                return;
+            }
+
+            tbody.innerHTML = sectoresOrdenados.map(dept => {
+                const meses = matriz[dept];
+                const totalSector = meses.reduce((acc, val) => acc + val, 0);
+                const celdasMeses = meses.map(d => 
+                    `<td class="py-2.5 px-2 ${d > 0 ? 'text-slate-200' : 'text-slate-600'}">${d > 0 ? d.toLocaleString('es-AR') : '0'}</td>`
+                ).join('');
+
+                return `
+                    <tr class="hover:bg-slate-800/50 transition-colors">
+                        <td class="py-2.5 px-3 text-left font-sans font-bold text-slate-200 border-r border-slate-800">${dept}</td>
+                        ${celdasMeses}
+                        <td class="py-2.5 px-3 bg-slate-900/60 border-l border-slate-800 font-bold text-amber-400">${totalSector.toLocaleString('es-AR')}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            const celdasTotales = totalesMes.map(t => 
+                `<td class="py-3 px-2 text-cyan-300">${t.toLocaleString('es-AR')}</td>`
+            ).join('');
+
+            tfoot.innerHTML = `
+                <tr>
+                    <td class="py-3 px-3 text-left font-sans uppercase text-slate-300 border-r border-slate-800">Total General</td>
+                    ${celdasTotales}
+                    <td class="py-3 px-3 bg-slate-900 border-l border-slate-800 text-amber-400 text-sm">${granTotal.toLocaleString('es-AR')}</td>
+                </tr>
+            `;
+        }
 
         function renderRankingLicenciasCortas() {
             const sectorElegido = document.getElementById('selectSectorLicCortas').value;
@@ -3023,6 +3041,18 @@
             return '';
         }
 
+        function normalizarGenero(generoRaw) {
+            if (!generoRaw) return 'Sin Especificar';
+            const g = generoRaw.toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            if (g === 'm' || g.startsWith('masc') || g.startsWith('homb') || g.startsWith('varon') || g === 'male') {
+                return 'Masculino';
+            }
+            if (g === 'f' || g.startsWith('fem') || g.startsWith('muj') || g === 'female') {
+                return 'Femenino';
+            }
+            return generoRaw.toString().trim();
+        }
+
         function mostrarStatusNomina(msg) {
             const el = document.getElementById('statusAlertNomina');
             el.classList.remove('hidden');
@@ -3124,6 +3154,8 @@
             const nombreUnificado = getValNom(row, ['Apellido y Nombre', 'Nombre y Apellido', 'Empleado', 'Colaborador']);
             const nombreCompleto = nombreUnificado || `${apellido} ${nombre}`.trim() || 'Sin Nombre';
 
+            const genero = normalizarGenero(getValNom(row, ['Género', 'Genero', 'Sexo', 'Gender']));
+
             const depto = normalizarDepartamento(getValNom(row, ['Departamento', 'Sector', 'Area', 'Área', 'Centro de Costo']));
             const rawConv = getValNom(row, ['Convenio', 'Encuadre', 'Sindicato']) || 'CONVENIO';
             const convenio = (rawConv.toUpperCase().includes('FUERA') || rawConv.toUpperCase().includes('NO POSEE'))
@@ -3174,6 +3206,7 @@
             return {
                 legajo,
                 nombreCompleto,
+                genero,
                 depto,
                 convenio,
                 modContrato,
@@ -3192,6 +3225,7 @@
             const prevDeptos = preservarFiltros ? getSelectedValues('chkDeptoNom') : null;
             const prevConvs = preservarFiltros ? getSelectedValues('chkConvNom') : null;
             const prevMods = preservarFiltros ? getSelectedValues('chkModNom') : null;
+            const prevGeneros = preservarFiltros ? getSelectedValues('chkGeneroNom') : null;
 
             rawNomina = rows
                 .filter(esEmpleadoActivo)
@@ -3210,15 +3244,18 @@
             const deptos = Array.from(new Set(rawNomina.map(r => r.depto))).sort();
             const convs = Array.from(new Set(rawNomina.map(r => r.convenio))).sort();
             const mods = Array.from(new Set(rawNomina.map(r => r.modContrato))).sort();
+            const generos = Array.from(new Set(rawNomina.map(r => r.genero))).sort();
 
             renderCheckboxes('ddDeptoNom', deptos, 'chkDeptoNom', 'aplicarFiltrosNomina()');
             renderCheckboxes('ddConvNom', convs, 'chkConvNom', 'aplicarFiltrosNomina()');
             renderCheckboxes('ddModNom', mods, 'chkModNom', 'aplicarFiltrosNomina()');
+            renderCheckboxes('ddGeneroNom', generos, 'chkGeneroNom', 'aplicarFiltrosNomina()');
 
-            if (preservarFiltros && prevDeptos && prevConvs && prevMods) {
+            if (preservarFiltros && prevDeptos && prevConvs && prevMods && prevGeneros) {
                 document.querySelectorAll('.chkDeptoNom').forEach(cb => cb.checked = prevDeptos.includes(cb.value));
                 document.querySelectorAll('.chkConvNom').forEach(cb => cb.checked = prevConvs.includes(cb.value));
                 document.querySelectorAll('.chkModNom').forEach(cb => cb.checked = prevMods.includes(cb.value));
+                document.querySelectorAll('.chkGeneroNom').forEach(cb => cb.checked = prevGeneros.includes(cb.value));
             }
 
             aplicarFiltrosNomina();
@@ -3226,7 +3263,7 @@
         }
 
         function limpiarFiltrosNomina() {
-            ['chkDeptoNom', 'chkConvNom', 'chkModNom'].forEach(cls => toggleAllCheckboxes(cls, true));
+            ['chkDeptoNom', 'chkConvNom', 'chkModNom', 'chkGeneroNom'].forEach(cls => toggleAllCheckboxes(cls, true));
             document.getElementById('inputSearchNomina').value = '';
             aplicarFiltrosNomina();
         }
@@ -3235,16 +3272,19 @@
             const selDeptos = getSelectedValues('chkDeptoNom');
             const selConvs = getSelectedValues('chkConvNom');
             const selMods = getSelectedValues('chkModNom');
+            const selGeneros = getSelectedValues('chkGeneroNom');
             const q = (document.getElementById('inputSearchNomina').value || '').trim().toLowerCase();
 
             updateLabelText('labelDeptoNom', selDeptos, "Todos los Departamentos", "Deptos");
             updateLabelText('labelConvNom', selConvs, "Todos los Convenios", "Convenios");
             updateLabelText('labelModNom', selMods, "Todas las Modalidades", "Modalidades");
+            updateLabelText('labelGeneroNom', selGeneros, "Todos los Géneros", "Géneros");
 
             filteredNomina = rawNomina.filter(r => {
                 if (!selDeptos.includes(r.depto)) return false;
                 if (!selConvs.includes(r.convenio)) return false;
                 if (!selMods.includes(r.modContrato)) return false;
+                if (!selGeneros.includes(r.genero)) return false;
                 if (q && !r.nombreCompleto.toLowerCase().includes(q) && !r.legajo.toLowerCase().includes(q)) return false;
                 return true;
             });
@@ -3258,6 +3298,7 @@
             let sumaBruto = 0, sumaCosto = 0, sumaAntig = 0, sumaVac = 0, cantPrueba = 0;
 
             const deptoMap = {};
+            const generoMap = { 'Masculino': 0, 'Femenino': 0 };
             const tramosAntig = { '< 1 año': 0, '1 a 5 años': 0, '5 a 10 años': 0, '10 a 20 años': 0, '+20 años': 0 };
             const tramosEdad = { '< 25': 0, '25-35': 0, '36-50': 0, '> 50': 0 };
 
@@ -3270,6 +3311,9 @@
                 sumaAntig += r.antigAnios;
                 sumaVac += r.diasVacLCT;
                 if (r.enPeriodoPrueba) cantPrueba++;
+
+                const genKey = r.genero || 'Sin Especificar';
+                generoMap[genKey] = (generoMap[genKey] || 0) + 1;
 
                 if (!deptoMap[r.depto]) {
                     deptoMap[r.depto] = { count: 0, bruto: 0, costo: 0, antigSum: 0, vacSum: 0 };
@@ -3306,15 +3350,16 @@
             document.getElementById('kpiNomVacaciones').textContent = `${sumaVac.toLocaleString('es-AR')} d`;
             document.getElementById('kpiNomPruebaSub').textContent = `En período prueba (<6m): ${cantPrueba}`;
 
-            renderChartsNomina(deptoMap, cantConv, cantFuera, tramosAntig, tramosEdad);
+            renderChartsNomina(deptoMap, cantConv, cantFuera, tramosAntig, tramosEdad, generoMap);
             renderTablasNomina(deptoMap, lista, headcount, sumaBruto, sumaCosto, sumaVac, antigProm);
         }
 
-        function renderChartsNomina(deptoMap, cantConv, cantFuera, tramosAntig, tramosEdad) {
+        function renderChartsNomina(deptoMap, cantConv, cantFuera, tramosAntig, tramosEdad, generoMap) {
             if (chartsNomina.depto) chartsNomina.depto.destroy();
             if (chartsNomina.conv) chartsNomina.conv.destroy();
             if (chartsNomina.antig) chartsNomina.antig.destroy();
             if (chartsNomina.edad) chartsNomina.edad.destroy();
+            if (chartsNomina.genero) chartsNomina.genero.destroy();
 
             const sortedDeptos = Object.keys(deptoMap).sort((a, b) => deptoMap[b].count - deptoMap[a].count);
 
@@ -3434,6 +3479,48 @@
                     }
                 }
             });
+
+            // Gráfico 5: Distribución por Género (% y Cantidad)
+            const generoEntries = Object.entries(generoMap).filter(([, v]) => v > 0);
+            const generoLabels = generoEntries.map(([k]) => k);
+            const generoValues = generoEntries.map(([, v]) => v);
+            const generoColors = generoLabels.map(lbl => {
+                if (lbl === 'Masculino') return '#3b82f6';
+                if (lbl === 'Femenino') return '#ec4899';
+                return '#64748b';
+            });
+
+            chartsNomina.genero = new Chart(document.getElementById('chartNomGenero'), {
+                type: 'doughnut',
+                data: {
+                    labels: generoLabels,
+                    datasets: [{
+                        data: generoValues,
+                        backgroundColor: generoColors,
+                        borderColor: '#0f172a',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#f1f5f9', font: { weight: 'bold' } } },
+                        datalabels: {
+                            color: '#ffffff',
+                            font: { weight: 'bold', size: 12 },
+                            textStrokeColor: 'rgba(15, 23, 42, 0.85)',
+                            textStrokeWidth: 3,
+                            formatter: (v, ctx) => {
+                                const tot = generoValues.reduce((acc, val) => acc + val, 0);
+                                if (v === 0 || tot === 0) return '';
+                                const pct = ((v / tot) * 100).toFixed(1);
+                                return `${pct}%\n(${v} emp.)`;
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         function renderTablasNomina(deptoMap, lista, totalHC, totalBruto, totalCosto, totalVac, antigGeneral) {
@@ -3482,7 +3569,7 @@
 
             const tbodyPadron = document.getElementById('tbodyPadronNomina');
             if (lista.length === 0) {
-                tbodyPadron.innerHTML = `<tr><td colspan="10" class="py-6 text-center text-slate-500">No hay colaboradores que coincidan con los filtros.</td></tr>`;
+                tbodyPadron.innerHTML = `<tr><td colspan="11" class="py-6 text-center text-slate-500">No hay colaboradores que coincidan con los filtros.</td></tr>`;
                 return;
             }
 
@@ -3495,10 +3582,18 @@
                     ? `<span class="bg-rose-950 text-rose-300 border border-rose-700/60 px-2 py-0.5 rounded text-[11px] font-bold">⏳ Prueba (${r.mesesTrabajados}m)</span>`
                     : `<span class="font-mono text-slate-200">${r.antigAnios} años</span>`;
 
+                let badgeGenero = `<span class="bg-slate-800 text-slate-400 px-2 py-0.5 rounded text-[11px]">${r.genero}</span>`;
+                if (r.genero === 'Masculino') {
+                    badgeGenero = `<span class="bg-blue-950 text-blue-300 border border-blue-800/60 px-2 py-0.5 rounded text-[11px] font-semibold">♂️ Masculino</span>`;
+                } else if (r.genero === 'Femenino') {
+                    badgeGenero = `<span class="bg-pink-950 text-pink-300 border border-pink-800/60 px-2 py-0.5 rounded text-[11px] font-semibold">♀️ Femenino</span>`;
+                }
+
                 return `
                     <tr class="hover:bg-slate-800/50 transition-colors">
                         <td class="py-3 px-4 font-mono font-semibold text-slate-200">${r.legajo}</td>
                         <td class="py-3 px-4 font-bold text-slate-100">${r.nombreCompleto}</td>
+                        <td class="py-3 px-3 text-center">${badgeGenero}</td>
                         <td class="py-3 px-4 text-slate-300">${r.depto}</td>
                         <td class="py-3 px-3">${badgeConv}</td>
                         <td class="py-3 px-3 text-slate-300">${r.modContrato}</td>
@@ -3530,7 +3625,6 @@
             'Seguridad'
         ];
 
-        // Mapa mensual: clave "MM/YYYY" -> { hab, spa, rest, banq }
         let mapActividadMensual = {};
         let chartEficienciaMensualInst = null;
 
@@ -3545,7 +3639,6 @@
                     mapActividadMensual = {};
 
                     if (rows.length > 0) {
-                        // 1. Buscar automáticamente la columna donde arranca Enero 2025 (por defecto O = índice 14)
                         let startCol = 14;
                         for (let r = 0; r < Math.min(5, rows.length); r++) {
                             for (let c = 0; c < (rows[r] || []).length; c++) {
@@ -3557,7 +3650,6 @@
                             }
                         }
 
-                        // 2. Buscar filas por palabra clave o usar fallback filas 3, 4, 8, 9 (índices 2, 3, 7, 8)
                         const findRowByText = (keywords, fallbackIdx) => {
                             for (let r = 0; r < rows.length; r++) {
                                 const firstCols = (rows[r] || []).slice(0, startCol).join(' ').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -3691,7 +3783,6 @@
 
             document.getElementById('tituloTablaMatrizEfic').textContent = `📊 Matriz Mensual por Sector Operativo — ${MESES_LARGO[parseInt(mes,10)-1]} ${anio}`;
 
-            // 1. Renderizar Tabla Matriz por Sector para el Mes Elegido
             tbodyMensual.innerHTML = SECTORES_OPERATIVOS_LISTA.map(sec => {
                 const info = getDriverInfo(sec);
                 const cantEmp = mapHeadcountPorDepto[sec] !== undefined ? mapHeadcountPorDepto[sec] : info.defaultEmp;
@@ -3723,7 +3814,6 @@
                 `;
             }).join('');
 
-            // 2. Evolución Mensual 2025 vs 2026 (Enero a Diciembre) para el sector elegido
             const sectoresTarget = sectorFiltro === 'TODOS' ? SECTORES_OPERATIVOS_LISTA : [sectorFiltro];
             const serieRatio2025 = [];
             const serieRatio2026 = [];
@@ -3801,7 +3891,6 @@
 
             document.getElementById('tbodyEficienciaAnual').innerHTML = filasAnualesHTML.join('');
 
-            // Actualizar KPIs y Títulos
             const nombreSectorTitulo = sectorFiltro === 'TODOS' ? 'Todos los Sectores Operativos' : sectorFiltro;
             const driverTitulo = sectorFiltro === 'TODOS' ? 'Suma de Drivers Operativos' : getDriverInfo(sectorFiltro).label;
 
